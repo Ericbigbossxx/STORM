@@ -1,0 +1,34 @@
+schema_version: 1
+
+evaluation:
+  missing_input: UNKNOWN
+  blank_to_green: forbidden
+  conflict_resolution: most_severe_health_wins
+  advisory_only: true
+  human_decision_authoritative: true
+
+rules:
+  - id: BUYABILITY_NO
+    when: 'buyability == "NO"'
+    health: RED
+    category: BUYABILITY
+
+  - id: SALES_WOW_WARN
+    when: "wow_sales_pct <= -20"
+    health: YELLOW
+    category: SALES
+
+  - id: SALES_WOW_CRITICAL
+    when: "wow_sales_pct <= -35"
+    health: RED
+    category: SALES
+
+  - id: DOS_WARN
+    when: "dos < 14"
+    health: YELLOW
+    category: INVENTORY
+
+  - id: DOS_CRITICAL
+    when: "dos < 7"
+    health: RED
+    category: INVENTORY

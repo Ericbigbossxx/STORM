@@ -1,0 +1,35 @@
+# Project-owned environment and caches
+.venv/
+.uv-cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+config/*.local.yaml
+config/*.local.yml
+
+# Operational inputs, snapshots, logs, and exports
+data/**
+logs/**
+exports/**
+*.xlsx
+*.xls
+*.csv
+*.tsv
+
+# Build and editor output
+dist/
+build/
+*.egg-info/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

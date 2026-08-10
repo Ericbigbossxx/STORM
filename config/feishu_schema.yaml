@@ -1,0 +1,232 @@
+schema_version: 1
+base:
+  name: "STORM | Business Control"
+  live_base_id: null
+  status: planned
+
+field_types:
+  text: Feishu text
+  multiline_text: Feishu multiline text
+  number: Feishu number
+  single_select: Feishu single select
+  checkbox: Feishu checkbox
+  date: Feishu date
+  datetime: Feishu date-time
+  created_time: Feishu created-time system field
+  modified_time: Feishu modified-time system field
+  link_record: Feishu bidirectional record link
+
+storm_ids:
+  immutable: true
+  machine_minted: true
+  human_read_only: true
+  feishu_record_id_is_domain_id: false
+  formats:
+    business_health: "HLT-{YYYYWww}-{MARKET}-{PLATFORM_CODE}"
+    core_sku: "SKU-{YYYYWww}-{MARKET}-{PLATFORM_CODE}-{NORMALIZED_SKU}"
+    action: "ACT-{YYYYWww}-{sequence}"
+    signal: "SIG-{YYYYWww}-{sequence}"
+  platform_codes:
+    Walmart: WMT
+    THD: THD
+    "Lowe's": LOWES
+  sequence:
+    allocator: STORM service
+    user_maintained: false
+
+tables:
+  - name: "01 Business Health"
+    live_table_id: null
+    grain: "week x market x platform x level=PLATFORM"
+    uniqueness: [Week, Market, Platform, Level]
+    v0_1_level: PLATFORM
+    fields:
+      - {name: "Health ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, feishu_record_id_substitute: forbidden}
+      - {name: "Week", type: text, required: true, format: "YYYY-Www"}
+      - {name: "Market", type: single_select, required: true, options: [US]}
+      - {name: "Platform", type: single_select, required: true, options: [Walmart, THD, "Lowe's"]}
+      - {name: "Level", type: single_select, required: true, default: PLATFORM, options: [PLATFORM, CHANNEL], v0_1_allowed: [PLATFORM]}
+      - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"], must_be_blank_when: {Level: PLATFORM}}
+      - {name: "Overall Health", type: single_select, required: true, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Sales Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Ads Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Inventory Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Buyability Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Listing Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: true}
+      - {name: "Fulfillment Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: true}
+      - {name: "Review Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: true}
+      - {name: "Project Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: true, core_health_input: false}
+      - {name: "Weekly Summary", type: multiline_text, required: false}
+      - {name: "Top Change", type: multiline_text, required: false}
+      - {name: "Top Risk", type: multiline_text, required: false}
+      - {name: "Top Opportunity", type: multiline_text, required: false}
+      - {name: "Next Priority", type: multiline_text, required: false}
+      - {name: "Data Completeness", type: single_select, required: true, options: [COMPLETE, PARTIAL, MINIMAL, UNKNOWN]}
+      - {name: "Data As Of", type: date, required: false}
+      - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
+      - {name: "Source Ref", type: text, required: false}
+      - {name: "Human Reviewed", type: checkbox, required: true, default: false}
+      - {name: "Snapshot Locked", type: checkbox, required: true, default: false, workflow_control: true}
+      - {name: "Last Reviewed At", type: datetime, required: false}
+      - {name: "Created At", type: created_time, required: false, system_managed: true}
+      - {name: "Updated At", type: modified_time, required: false, system_managed: true}
+    ui:
+      platform_switch: filter
+      default_visible_health_fields: [Overall Health, Sales Health, Ads Health, Inventory Health, Buyability Health]
+      default_hidden_health_fields: [Listing Health, Fulfillment Health, Review Health, Project Health]
+    views:
+      - 本周总览
+      - 红黄灯
+
+  - name: "02 Core SKU Performance"
+    live_table_id: null
+    grain: "week x market x platform x optional channel x sku"
+    fields:
+      - {name: "SKU Perf ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, feishu_record_id_substitute: forbidden}
+      - {name: "Week", type: text, required: true, format: "YYYY-Www"}
+      - {name: "Market", type: single_select, required: true, options: [US]}
+      - {name: "Platform", type: single_select, required: true, options: [Walmart, THD, "Lowe's"]}
+      - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"]}
+      - {name: "Product Line", type: single_select, required: true, options: [Robot, OPE, Accessories, Other]}
+      - {name: "SKU", type: text, required: true}
+      - {name: "Model / Product", type: text, required: false}
+      - {name: "SKU Role", type: single_select, required: true, options: [HERO, GROWTH, PROFIT, TRAFFIC, CLEARANCE, NEW, WATCH, OTHER]}
+      - {name: "Sales", type: number, required: false}
+      - {name: "Orders", type: number, required: false}
+      - {name: "Units", type: number, required: false}
+      - {name: "WoW Sales %", type: number, required: false, format: percent}
+      - {name: "Target", type: number, required: false}
+      - {name: "Target Gap %", type: number, required: false, format: percent}
+      - {name: "Traffic", type: number, required: false}
+      - {name: "Conversion Rate", type: number, required: false, format: percent}
+      - {name: "Ad Spend", type: number, required: false}
+      - {name: "ROAS", type: number, required: false}
+      - {name: "Inventory", type: number, required: false}
+      - {name: "DOS", type: number, required: false}
+      - {name: "Buyability", type: single_select, required: true, options: [YES, NO, UNKNOWN]}
+      - {name: "Listing Status", type: single_select, required: true, options: [HEALTHY, ISSUE, DOWN, UNKNOWN]}
+      - {name: "Status", type: single_select, required: true, options: [GREEN, YELLOW, RED, UNKNOWN]}
+      - {name: "Main Change", type: multiline_text, required: false}
+      - {name: "Diagnosis", type: multiline_text, required: false}
+      - {name: "Recommended Action", type: multiline_text, required: false}
+      - {name: "Data As Of", type: date, required: false}
+      - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
+      - {name: "Source Ref", type: text, required: false}
+      - {name: "Evidence", type: multiline_text, required: false}
+      - {name: "Human Reviewed", type: checkbox, required: true, default: false}
+      - {name: "Snapshot Locked", type: checkbox, required: true, default: false, workflow_control: true}
+      - {name: "Created At", type: created_time, required: false, system_managed: true}
+      - {name: "Updated At", type: modified_time, required: false, system_managed: true}
+    ui:
+      platform_switch: filter
+    views:
+      - 本周核心SKU
+      - 异常SKU
+
+  - name: "03 Action & Validation"
+    live_table_id: null
+    grain: "one business action and its validation lifecycle"
+    fields:
+      - {name: "Action ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, sequence_user_maintained: false, feishu_record_id_substitute: forbidden}
+      - {name: "Week Created", type: text, required: true, format: "YYYY-Www"}
+      - {name: "Market", type: single_select, required: true, options: [US]}
+      - {name: "Platform", type: single_select, required: true, options: [Walmart, THD, "Lowe's"]}
+      - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"]}
+      - {name: "Product Line", type: single_select, required: false, options: [Robot, OPE, Accessories, Other]}
+      - {name: "SKU", type: text, required: false}
+      - {name: "Action Title", type: text, required: true}
+      - {name: "Objective", type: multiline_text, required: true}
+      - {name: "Why / Problem", type: multiline_text, required: false}
+      - {name: "Action Taken", type: multiline_text, required: false}
+      - {name: "Expected Result", type: multiline_text, required: false}
+      - {name: "Baseline", type: multiline_text, required: false}
+      - {name: "Success Criteria", type: multiline_text, required: true}
+      - {name: "Owner", type: text, required: true}
+      - {name: "Priority", type: single_select, required: true, options: [P0, P1, P2, P3]}
+      - {name: "Status", type: single_select, required: true, options: [PLANNED, IN_PROGRESS, EXECUTED_WAITING_VALIDATION, VALIDATED_EFFECTIVE, VALIDATED_INEFFECTIVE, INCONCLUSIVE, BLOCKED, CANCELLED]}
+      - {name: "Execution Date", type: date, required: false}
+      - {name: "Validation Date", type: date, required: false}
+      - {name: "Validation Window", type: text, required: false}
+      - {name: "Actual Result", type: multiline_text, required: false}
+      - {name: "Conclusion", type: multiline_text, required: false}
+      - {name: "AI Analysis", type: multiline_text, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2"}
+      - {name: "AI Suggested Status", type: single_select, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2", options: [PLANNED, IN_PROGRESS, EXECUTED_WAITING_VALIDATION, VALIDATED_EFFECTIVE, VALIDATED_INEFFECTIVE, INCONCLUSIVE, BLOCKED, CANCELLED]}
+      - {name: "AI Confidence", type: single_select, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2", options: [HIGH, MEDIUM, LOW]}
+      - {name: "Human Decision", type: multiline_text, required: false, authority: final}
+      - {name: "Related Signals", type: link_record, required: false, related_table: "04 Signal Register", cardinality: many, reciprocal_field: "Related Actions"}
+      - {name: "Evidence", type: multiline_text, required: false}
+      - {name: "Last Reviewed At", type: datetime, required: false}
+      - {name: "Created At", type: created_time, required: false, system_managed: true}
+      - {name: "Updated At", type: modified_time, required: false, system_managed: true}
+    ui:
+      platform_switch: filter
+    views:
+      - 本周动作
+      - 等待验证
+      - 逾期
+      - P0-P1
+      - 无效或不确定
+
+  - name: "04 Signal Register"
+    live_table_id: null
+    grain: "one issue, risk, or opportunity lifecycle"
+    fields:
+      - {name: "Signal ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, sequence_user_maintained: false, feishu_record_id_substitute: forbidden}
+      - {name: "Week Opened", type: text, required: true, format: "YYYY-Www"}
+      - {name: "Market", type: single_select, required: true, options: [US]}
+      - {name: "Platform", type: single_select, required: true, options: [Walmart, THD, "Lowe's"]}
+      - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"]}
+      - {name: "Product Line", type: single_select, required: false, options: [Robot, OPE, Accessories, Other]}
+      - {name: "SKU", type: text, required: false}
+      - {name: "Signal Type", type: single_select, required: true, options: [ISSUE, RISK, OPPORTUNITY]}
+      - {name: "Category", type: single_select, required: true, options: [SALES, TRAFFIC, CONVERSION, ADS, INVENTORY, BUYABILITY, LISTING, FULFILLMENT, REVIEW, ACCOUNT, PROMOTION, ONBOARDING, SYSTEM, OTHER]}
+      - {name: "Title", type: text, required: true}
+      - {name: "Description", type: multiline_text, required: true}
+      - {name: "Business Impact", type: multiline_text, required: false}
+      - {name: "Priority", type: single_select, required: true, options: [P0, P1, P2, P3]}
+      - {name: "Confidence", type: single_select, required: true, options: [HIGH, MEDIUM, LOW]}
+      - {name: "Root Cause", type: multiline_text, required: false}
+      - {name: "Current Status", type: single_select, required: true, options: [OPEN, INVESTIGATING, ACTION_REQUIRED, WAITING_EXTERNAL, MONITORING, RESOLVED, CLOSED]}
+      - {name: "Owner", type: text, required: false}
+      - {name: "Next Step", type: multiline_text, required: false}
+      - {name: "DDL", type: date, required: false}
+      - {name: "Related Actions", type: link_record, required: false, related_table: "03 Action & Validation", cardinality: many, reciprocal_field: "Related Signals"}
+      - {name: "Evidence", type: multiline_text, required: false}
+      - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
+      - {name: "Source Ref", type: text, required: false}
+      - {name: "AI Analysis", type: multiline_text, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2"}
+      - {name: "Human Decision", type: multiline_text, required: false, authority: final}
+      - {name: "Resolved At", type: datetime, required: false}
+      - {name: "Created At", type: created_time, required: false, system_managed: true}
+      - {name: "Updated At", type: modified_time, required: false, system_managed: true}
+    ui:
+      platform_switch: filter
+    views:
+      - 未决Signal
+      - P0-P1
+      - 风险
+      - 机会
+
+governance:
+  existing_bases_may_be_modified: false
+  missing_metrics: blank_or_unknown
+  unknown_to_green: forbidden
+  ai_authority: advisory
+  human_decision_authority: final
+  ai_fields:
+    names: [AI Analysis, AI Suggested Status, AI Confidence]
+    required: false
+    default_hidden: true
+    manual_entry: false
+    reserved_for: "Hermes v0.2"
+  platform_switch: view_filter
+  persistent_view_sorting:
+    supported_by_lark_mcp_0_5_1: false
+    impact: non_blocking
+    runtime_record_sorting_allowed: true
+  weekly_snapshot:
+    lock_field_tables: ["01 Business Health", "02 Core SKU Performance"]
+    export_all_tables: true
+    local_path: "data/snapshots/{week_id}/"
+    local_snapshot_is_audit_record: true
+  live_schema_must_match_manifest: true
