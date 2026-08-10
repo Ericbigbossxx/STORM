@@ -2,7 +2,223 @@ schema_version: 1
 base:
   name: "STORM | Business Control"
   live_base_id: null
-  status: planned
+  status: phase2_complete
+  live_identifier_storage: session_runtime
+  default_table_id: null
+
+phase2_attempt:
+  writes_stopped: false
+  blocker: null
+  default_table:
+    name: 数据表
+    table_id: tblDCLNsvifgWLEJ
+    active: false
+    deleted: true
+    deletion_verified: true
+    fields:
+      文本: fld52IZQr5
+      单选: fldXYyR3ac
+      日期: fld09HjqBO
+      附件: fld38NkJ9A
+    default_view:
+      name: 表格
+      view_id: vewX74mwjG
+    system_blank_records: 10
+    objects_remaining: 0
+  intended_tables_created: 4
+  intended_fields_created: 123
+  intended_views_created: 13
+  business_records_inserted: 0
+  phase2r:
+    registry_version: "0.5.1"
+    delete_tool: bitable.v1.appTable.batchDelete
+    user_tool_scope_updated: true
+    mcp_restart_required: false
+    completed: true
+    delete_succeeded: true
+    final_status: READY_FOR_PHASE_3
+
+baseline:
+  name: "STORM v0.1 Weekly Pilot Baseline"
+  status: frozen
+  phase2_completed_at: "2026-08-10T16:27:47+08:00"
+  phase3_frozen_at: "2026-08-10T16:37:05+08:00"
+  base_identifier_storage: session_runtime_not_persisted
+  live_counts:
+    tables: 4
+    fields: 123
+    views: 13
+    reciprocal_relations: 1
+  business_records_at_freeze: 0
+  view_usability:
+    business_health_level_filter: PLATFORM
+    ai_fields_default_hidden: true
+    optional_health_fields_default_hidden: true
+    persistent_sorting_required: false
+  known_mcp_limitations:
+    - "lark-mcp 0.5.1 does not support persistent view sorting; this is non-blocking for the weekly pilot."
+  pilot_input_method: MANUAL_ASSISTED
+  automatic_ingestion_enabled: false
+
+live_identifiers:
+  base_token_persisted: false
+  tables:
+    "01 Business Health":
+      table_id: tblCw58AnpOBjQOZ
+      fields:
+        "Health ID": fldkZBt9or
+        Week: fld5YfoyHl
+        Market: fldsr7peSt
+        Platform: fldkRMmRQi
+        Level: fldeFZyzNP
+        Channel: fldtiS8hKG
+        "Overall Health": fldowH02iV
+        "Sales Health": fldHjvdbm8
+        "Ads Health": fldA4BbnNc
+        "Inventory Health": fldyzn03VP
+        "Buyability Health": fldRl5Nv5n
+        "Listing Health": fldGKvzPvb
+        "Fulfillment Health": fldUyCXWjL
+        "Review Health": flduSqs5vP
+        "Project Health": fldg1ln4Jp
+        "Weekly Summary": fldjpBYyqy
+        "Top Change": fldo2Tj2Nu
+        "Top Risk": fldySeabAq
+        "Top Opportunity": fldW50aWNB
+        "Next Priority": fld87eMtRi
+        "Data Completeness": fldU3QY2Vf
+        "Data As Of": fldSIh0szV
+        "Source Type": fldZRvDYuR
+        "Source Ref": fldWMIpePz
+        "Human Reviewed": fld45xTHqO
+        "Snapshot Locked": fldF72BWgQ
+        "Last Reviewed At": fldEOdyJ8l
+        "Created At": fld3PZ20qg
+        "Updated At": fldJBpQCE8
+      views:
+        本周总览: vewixmNybV
+        红黄灯: vewa4QEaNs
+    "02 Core SKU Performance":
+      table_id: tblCXQDjYYieW5O2
+      fields:
+        "SKU Perf ID": fldMm8hNV5
+        Week: fldvxKLc4G
+        Market: fldREIiGQy
+        Platform: fldbWbY8SX
+        Channel: fldqw7SR0P
+        "Product Line": flduwRG9w0
+        SKU: fldNfMc77e
+        "Model / Product": fldrOSQtbY
+        "SKU Role": fldAEdST3J
+        Sales: fldVdDr9n1
+        Orders: fldgDWcbx2
+        Units: fld1703Zui
+        "WoW Sales %": fldZ7ryOQh
+        Target: fldooIwBxf
+        "Target Gap %": fldw2QVzZG
+        Traffic: fldzDOF4dy
+        "Conversion Rate": fldRHaXcdG
+        "Ad Spend": fldZONQhfL
+        ROAS: fld4o8ZSfm
+        Inventory: fldz05Frsa
+        DOS: fldI9XgPHB
+        Buyability: fldk05oWBy
+        "Listing Status": fld7kiumow
+        Status: fldN0nneRH
+        "Main Change": flde68faJ2
+        Diagnosis: fldRfIxhv8
+        "Recommended Action": fldbpJDv2p
+        "Data As Of": fldeqnjVTB
+        "Source Type": fldCtjKjEg
+        "Source Ref": fldk0U7kZN
+        Evidence: fldqmu0YwI
+        "Human Reviewed": fldIThfRFq
+        "Snapshot Locked": fldDSKCzj0
+        "Created At": fldXKPk4MM
+        "Updated At": fld11xkMbQ
+      views:
+        本周核心SKU: vewVodWqXt
+        异常SKU: vewOEx7622
+    "03 Action & Validation":
+      table_id: tblzXdci4FSe97hL
+      fields:
+        "Action ID": fldUq99fiX
+        "Week Created": fld5TJ3vbc
+        Market: fldSsgjch0
+        Platform: fldpcfrvvR
+        Channel: fldl5h8zVi
+        "Product Line": fldPRw5Z5F
+        SKU: fldX5FCtIz
+        "Action Title": fldyPUa7da
+        Objective: fldmIKgnLt
+        "Why / Problem": fldJulkfM6
+        "Action Taken": fldIb59f6q
+        "Expected Result": fldCRMSDUX
+        Baseline: fldYEB4U2i
+        "Success Criteria": fldemyKJnK
+        Owner: fldBcLqn6M
+        Priority: fldcSU5eWD
+        Status: fldX0yUhaD
+        "Execution Date": fldc90V7yT
+        "Validation Date": fldS99zkDS
+        "Validation Window": fldlNTrshs
+        "Actual Result": fldZZaubJb
+        Conclusion: flds0UKCqj
+        "AI Analysis": fldEoCz6kF
+        "AI Suggested Status": fldIBIyMTv
+        "AI Confidence": fldR0WutGI
+        "Human Decision": fldGU4fas5
+        "Related Signals": fldWcLAewz
+        Evidence: fldjBdcHYi
+        "Last Reviewed At": fld9eqvQov
+        "Created At": fldLBg4Kxa
+        "Updated At": fldmIVWQe0
+      views:
+        本周动作: vewMmwE2dt
+        等待验证: vewnEKVSnr
+        逾期: vewso81iFt
+        P0-P1: vewpd0mmMe
+        无效或不确定: vewIukpmog
+    "04 Signal Register":
+      table_id: tblbBnQQmLWN6nUh
+      fields:
+        "Signal ID": fld0gkDxbB
+        "Week Opened": fldQINXG6Z
+        Market: fld7j3gwiB
+        Platform: fld0QZLDZg
+        Channel: fldjG5sIYY
+        "Product Line": fldp5BueVG
+        SKU: fldA1meWHA
+        "Signal Type": fldE8hbsbN
+        Category: fldLxD8MMR
+        Title: flde7rg1ow
+        Description: fldi3xCmM8
+        "Business Impact": fldGQyko0u
+        Priority: fldr5JXCa9
+        Confidence: fldURdRFxr
+        "Root Cause": fldiRMb00B
+        "Current Status": fldggmojDX
+        Owner: flde7Ro4jF
+        "Next Step": fldC0gGrX5
+        DDL: fldciFVt3N
+        "Related Actions": fldAIm1rSq
+        Evidence: fldHLwUGqA
+        "Source Type": fldM8AUMUo
+        "Source Ref": fldDO1GkVt
+        "AI Analysis": fldCeyOycM
+        "Human Decision": flddwrpdOq
+        "Resolved At": fldcmML1c0
+        "Created At": fldntLFFwI
+        "Updated At": fldiyvMohN
+      views:
+        未决Signal: vew2HUcsGN
+        P0-P1: vewW2l4nKO
+        风险: vewOtD4bgA
+        机会: vewJloQH3G
+  relation:
+    action_field_id: fldWcLAewz
+    signal_field_id: fldAIm1rSq
+    multiple: true
 
 field_types:
   text: Feishu text
@@ -36,7 +252,7 @@ storm_ids:
 
 tables:
   - name: "01 Business Health"
-    live_table_id: null
+    live_table_id: tblCw58AnpOBjQOZ
     grain: "week x market x platform x level=PLATFORM"
     uniqueness: [Week, Market, Platform, Level]
     v0_1_level: PLATFORM
@@ -79,7 +295,7 @@ tables:
       - 红黄灯
 
   - name: "02 Core SKU Performance"
-    live_table_id: null
+    live_table_id: tblCXQDjYYieW5O2
     grain: "week x market x platform x optional channel x sku"
     fields:
       - {name: "SKU Perf ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, feishu_record_id_substitute: forbidden}
@@ -124,7 +340,7 @@ tables:
       - 异常SKU
 
   - name: "03 Action & Validation"
-    live_table_id: null
+    live_table_id: tblzXdci4FSe97hL
     grain: "one business action and its validation lifecycle"
     fields:
       - {name: "Action ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, sequence_user_maintained: false, feishu_record_id_substitute: forbidden}
@@ -168,7 +384,7 @@ tables:
       - 无效或不确定
 
   - name: "04 Signal Register"
-    live_table_id: null
+    live_table_id: tblbBnQQmLWN6nUh
     grain: "one issue, risk, or opportunity lifecycle"
     fields:
       - {name: "Signal ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, sequence_user_maintained: false, feishu_record_id_substitute: forbidden}
