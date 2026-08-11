@@ -1,4 +1,4 @@
-# STORM v0.1 data contract
+# STORM v0.1.1 data contract
 
 ## Canonical identity
 
@@ -40,4 +40,4 @@ Facts record `Data As Of`, `Source Type`, `Source Ref`, and evidence where appli
 
 ## AI and human authority
 
-`AI Analysis`, `AI Suggested Status`, and `AI Confidence` are optional, default-hidden, non-manual fields reserved for Hermes v0.2. AI output is advisory only. `Human Decision` and human-reviewed status remain final. Execution alone is not validation; an unproven action remains `EXECUTED_WAITING_VALIDATION`.
+`AI Analysis`, `AI Suggested Status`, and `AI Confidence` are optional, default-hidden, non-manual fields reserved for Hermes v0.2. AI output is advisory only. `Human Decision` and human-reviewed status remain final. Every operational table has a `Human Reviewed` checkbox that defaults to `false`. AI may never set it to `true`; only the human review workflow may approve a record. Execution alone is not validation; an unproven action remains `EXECUTED_WAITING_VALIDATION`.

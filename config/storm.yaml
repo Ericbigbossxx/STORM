@@ -1,7 +1,7 @@
 project:
   name: STORM
   expansion: Strategic Tracking, Operations, Risks & Metrics
-  version: "0.1"
+  version: "0.1.1"
   purpose: North America Business Control System
   phase: Weekly Business Control MVP
 

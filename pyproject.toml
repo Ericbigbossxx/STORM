@@ -1,6 +1,6 @@
 [project]
 name = "storm-control"
-version = "0.1.0"
+version = "0.1.1"
 description = "STORM Weekly Business Control contracts and adapter boundaries"
 readme = "README.md"
 requires-python = ">=3.12"

@@ -10,7 +10,7 @@
 6. Record actual result and conclusion; execution without outcome evidence stays `EXECUTED_WAITING_VALIDATION`.
 7. Identify top risks and opportunities.
 8. Set one next priority per platform and one overall weekly priority.
-9. Complete human review. Human Decision is authoritative; AI fields remain advisory and optional.
+9. Complete human review. Human Decision is authoritative; AI fields remain advisory and optional. Set `Human Reviewed=true` only through the human review workflow; AI cannot approve a record.
 
 ## Weekly close and audit snapshot
 

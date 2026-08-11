@@ -69,6 +69,82 @@ def test_manifest_has_exactly_thirteen_weekly_pilot_views() -> None:
     assert sum(len(table["views"]) for table in tables.values()) == 13
 
 
+def test_v0_1_1_manifest_has_exactly_125_fields_and_live_review_ids() -> None:
+    manifest = _load_yaml("config/feishu_schema.yaml")
+    assert manifest["schema_version"] == "0.1.1"
+    assert sum(len(table["fields"]) for table in manifest["tables"]) == 125
+    live_tables = manifest["live_identifiers"]["tables"]
+    assert live_tables["03 Action & Validation"]["fields"]["Human Reviewed"] == "fldEkYL4yI"
+    assert live_tables["04 Signal Register"]["fields"]["Human Reviewed"] == "fldjj5yFif"
+
+
+def test_human_reviewed_is_human_only_on_every_table() -> None:
+    tables = _tables_by_name()
+    for table in tables.values():
+        field = _fields_by_name(table)["Human Reviewed"]
+        assert field["type"] == "checkbox"
+        assert field["default"] is False
+        assert field["purpose"] == "record_level_human_approval"
+        assert field["authority"] == "human_only"
+        assert field["ai_may_set_true"] is False
+
+    governance = _load_yaml("config/feishu_schema.yaml")["governance"]["human_reviewed"]
+    assert governance["ai_may_set_true"] is False
+    assert governance["true_authority"] == "human_review_workflow_only"
+
+
+def test_specialized_view_filters_match_v0_1_1_semantics() -> None:
+    tables = _tables_by_name()
+    health = tables["01 Business Health"]["view_filter_contracts"]["红黄灯"]
+    assert health["status"] == "ACTIVE"
+    assert health["conditions"][-1] == {
+        "field": "Overall Health",
+        "operator": "is_not",
+        "values": ["GREEN"],
+    }
+
+    core = tables["02 Core SKU Performance"]["view_filter_contracts"]["异常SKU"]
+    assert core["unknown_is_anomaly"] is False
+    assert {condition["field"] for condition in core["conditions"]} == {
+        "Status",
+        "Buyability",
+        "Listing Status",
+    }
+    assert {tuple(condition["values"]) for condition in core["conditions"]} >= {
+        ("YELLOW",),
+        ("RED",),
+        ("NO",),
+        ("ISSUE",),
+        ("DOWN",),
+    }
+
+    action = tables["03 Action & Validation"]["view_filter_contracts"]
+    assert action["等待验证"]["conditions"][0]["values"] == [
+        "EXECUTED_WAITING_VALIDATION"
+    ]
+    assert action["P0-P1"]["conditions"][0]["values"] == ["P0", "P1"]
+    assert action["无效或不确定"]["conditions"][0]["values"] == [
+        "VALIDATED_INEFFECTIVE",
+        "INCONCLUSIVE",
+    ]
+
+    signal = tables["04 Signal Register"]["view_filter_contracts"]
+    assert signal["未决Signal"]["conditions"][0] == {
+        "field": "Current Status",
+        "operator": "is_not",
+        "values": ["RESOLVED", "CLOSED"],
+    }
+    assert signal["风险"]["conditions"][0]["values"] == ["RISK"]
+    assert signal["机会"]["conditions"][0]["values"] == ["OPPORTUNITY"]
+
+
+def test_overdue_view_is_deferred_without_a_reliable_due_date() -> None:
+    action = _tables_by_name()["03 Action & Validation"]
+    overdue = action["view_filter_contracts"]["逾期"]
+    assert overdue["status"] == "DEFERRED_NOT_RELIABLY_FILTERABLE"
+    assert overdue["requires_human_date_confirmation"] is True
+
+
 def test_business_health_grain_and_default_health_visibility_are_converged() -> None:
     table = _tables_by_name()["01 Business Health"]
     fields = _fields_by_name(table)

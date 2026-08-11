@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: "0.1.1"
 base:
   name: "STORM | Business Control"
   live_base_id: null
@@ -39,19 +39,24 @@ phase2_attempt:
     final_status: READY_FOR_PHASE_3
 
 baseline:
-  name: "STORM v0.1 Weekly Pilot Baseline"
-  status: frozen
+  name: "STORM v0.1.1 Weekly Pilot Hardened Baseline"
+  status: hardened
+  prior_baseline: "STORM v0.1 Weekly Pilot Baseline"
   phase2_completed_at: "2026-08-10T16:27:47+08:00"
   phase3_frozen_at: "2026-08-10T16:37:05+08:00"
+  phase4d_hardened_at: "2026-08-11T09:55:41+08:00"
   base_identifier_storage: session_runtime_not_persisted
   live_counts:
     tables: 4
-    fields: 123
+    fields: 125
     views: 13
     reciprocal_relations: 1
-  business_records_at_freeze: 0
+  business_records_at_v0_1_freeze: 0
+  business_records_at_hardening: 26
   view_usability:
     business_health_level_filter: PLATFORM
+    specialized_filters_repaired: true
+    overdue_view_status: DEFERRED_NOT_RELIABLY_FILTERABLE
     ai_fields_default_hidden: true
     optional_health_fields_default_hidden: true
     persistent_sorting_required: false
@@ -59,6 +64,16 @@ baseline:
     - "lark-mcp 0.5.1 does not support persistent view sorting; this is non-blocking for the weekly pilot."
   pilot_input_method: MANUAL_ASSISTED
   automatic_ingestion_enabled: false
+
+phase4d:
+  status: complete
+  pre_change_checkpoint: storm-v0.1.0-pre-4d
+  human_reviewed_fields_added: 2
+  approved_pilot_records_updated: 15
+  live_counts_verified: {tables: 4, fields: 125, views: 13, records: 26}
+  pilot_reciprocal_links_verified: 5
+  quantitative_metrics_changed: false
+  weekly_close_executed: false
 
 live_identifiers:
   base_token_persisted: false
@@ -168,6 +183,7 @@ live_identifiers:
         "AI Suggested Status": fldIBIyMTv
         "AI Confidence": fldR0WutGI
         "Human Decision": fldGU4fas5
+        "Human Reviewed": fldEkYL4yI
         "Related Signals": fldWcLAewz
         Evidence: fldjBdcHYi
         "Last Reviewed At": fld9eqvQov
@@ -207,6 +223,7 @@ live_identifiers:
         "Source Ref": fldDO1GkVt
         "AI Analysis": fldCeyOycM
         "Human Decision": flddwrpdOq
+        "Human Reviewed": fldjj5yFif
         "Resolved At": fldcmML1c0
         "Created At": fldntLFFwI
         "Updated At": fldiyvMohN
@@ -281,7 +298,7 @@ tables:
       - {name: "Data As Of", type: date, required: false}
       - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
       - {name: "Source Ref", type: text, required: false}
-      - {name: "Human Reviewed", type: checkbox, required: true, default: false}
+      - {name: "Human Reviewed", type: checkbox, required: true, default: false, purpose: record_level_human_approval, authority: human_only, ai_may_set_true: false}
       - {name: "Snapshot Locked", type: checkbox, required: true, default: false, workflow_control: true}
       - {name: "Last Reviewed At", type: datetime, required: false}
       - {name: "Created At", type: created_time, required: false, system_managed: true}
@@ -293,6 +310,15 @@ tables:
     views:
       - 本周总览
       - 红黄灯
+    view_filter_contracts:
+      本周总览: {status: GENERAL_WEEKLY_VIEW, week_scope: current_week_context}
+      红黄灯:
+        status: ACTIVE
+        week_scope: current_week_context
+        conjunction: and
+        conditions:
+          - {field: Level, operator: is, values: [PLATFORM]}
+          - {field: "Overall Health", operator: is_not, values: [GREEN]}
 
   - name: "02 Core SKU Performance"
     live_table_id: tblCXQDjYYieW5O2
@@ -329,7 +355,7 @@ tables:
       - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
       - {name: "Source Ref", type: text, required: false}
       - {name: "Evidence", type: multiline_text, required: false}
-      - {name: "Human Reviewed", type: checkbox, required: true, default: false}
+      - {name: "Human Reviewed", type: checkbox, required: true, default: false, purpose: record_level_human_approval, authority: human_only, ai_may_set_true: false}
       - {name: "Snapshot Locked", type: checkbox, required: true, default: false, workflow_control: true}
       - {name: "Created At", type: created_time, required: false, system_managed: true}
       - {name: "Updated At", type: modified_time, required: false, system_managed: true}
@@ -338,6 +364,19 @@ tables:
     views:
       - 本周核心SKU
       - 异常SKU
+    view_filter_contracts:
+      本周核心SKU: {status: GENERAL_WEEKLY_VIEW, week_scope: current_week_context}
+      异常SKU:
+        status: ACTIVE
+        week_scope: current_week_context
+        conjunction: or
+        conditions:
+          - {field: Status, operator: is, values: [YELLOW]}
+          - {field: Status, operator: is, values: [RED]}
+          - {field: Buyability, operator: is, values: ["NO"]}
+          - {field: "Listing Status", operator: is, values: [ISSUE]}
+          - {field: "Listing Status", operator: is, values: [DOWN]}
+        unknown_is_anomaly: false
 
   - name: "03 Action & Validation"
     live_table_id: tblzXdci4FSe97hL
@@ -369,6 +408,7 @@ tables:
       - {name: "AI Suggested Status", type: single_select, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2", options: [PLANNED, IN_PROGRESS, EXECUTED_WAITING_VALIDATION, VALIDATED_EFFECTIVE, VALIDATED_INEFFECTIVE, INCONCLUSIVE, BLOCKED, CANCELLED]}
       - {name: "AI Confidence", type: single_select, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2", options: [HIGH, MEDIUM, LOW]}
       - {name: "Human Decision", type: multiline_text, required: false, authority: final}
+      - {name: "Human Reviewed", type: checkbox, required: false, default: false, purpose: record_level_human_approval, authority: human_only, ai_may_set_true: false}
       - {name: "Related Signals", type: link_record, required: false, related_table: "04 Signal Register", cardinality: many, reciprocal_field: "Related Actions"}
       - {name: "Evidence", type: multiline_text, required: false}
       - {name: "Last Reviewed At", type: datetime, required: false}
@@ -382,6 +422,24 @@ tables:
       - 逾期
       - P0-P1
       - 无效或不确定
+    view_filter_contracts:
+      本周动作: {status: GENERAL_WEEKLY_VIEW, week_scope: current_week_context}
+      等待验证:
+        status: ACTIVE
+        conditions:
+          - {field: Status, operator: is, values: [EXECUTED_WAITING_VALIDATION]}
+      逾期:
+        status: DEFERRED_NOT_RELIABLY_FILTERABLE
+        reason: "Action has no general due-date field; Validation Date is not a reliable substitute."
+        requires_human_date_confirmation: true
+      P0-P1:
+        status: ACTIVE
+        conditions:
+          - {field: Priority, operator: is, values: [P0, P1]}
+      无效或不确定:
+        status: ACTIVE
+        conditions:
+          - {field: Status, operator: is, values: [VALIDATED_INEFFECTIVE, INCONCLUSIVE]}
 
   - name: "04 Signal Register"
     live_table_id: tblbBnQQmLWN6nUh
@@ -412,6 +470,7 @@ tables:
       - {name: "Source Ref", type: text, required: false}
       - {name: "AI Analysis", type: multiline_text, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2"}
       - {name: "Human Decision", type: multiline_text, required: false, authority: final}
+      - {name: "Human Reviewed", type: checkbox, required: false, default: false, purpose: record_level_human_approval, authority: human_only, ai_may_set_true: false}
       - {name: "Resolved At", type: datetime, required: false}
       - {name: "Created At", type: created_time, required: false, system_managed: true}
       - {name: "Updated At", type: modified_time, required: false, system_managed: true}
@@ -422,6 +481,23 @@ tables:
       - P0-P1
       - 风险
       - 机会
+    view_filter_contracts:
+      未决Signal:
+        status: ACTIVE
+        conditions:
+          - {field: "Current Status", operator: is_not, values: [RESOLVED, CLOSED]}
+      P0-P1:
+        status: ACTIVE
+        conditions:
+          - {field: Priority, operator: is, values: [P0, P1]}
+      风险:
+        status: ACTIVE
+        conditions:
+          - {field: "Signal Type", operator: is, values: [RISK]}
+      机会:
+        status: ACTIVE
+        conditions:
+          - {field: "Signal Type", operator: is, values: [OPPORTUNITY]}
 
 governance:
   existing_bases_may_be_modified: false
@@ -429,6 +505,12 @@ governance:
   unknown_to_green: forbidden
   ai_authority: advisory
   human_decision_authority: final
+  human_reviewed:
+    field_name: "Human Reviewed"
+    tables: ["01 Business Health", "02 Core SKU Performance", "03 Action & Validation", "04 Signal Register"]
+    default: false
+    true_authority: human_review_workflow_only
+    ai_may_set_true: false
   ai_fields:
     names: [AI Analysis, AI Suggested Status, AI Confidence]
     required: false

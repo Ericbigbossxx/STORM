@@ -1,8 +1,8 @@
-# STORM v0.1 Weekly Pilot entry contract
+# STORM v0.1.1 Weekly Pilot entry contract
 
 ## Baseline and scope
 
-The Weekly Pilot uses the frozen `STORM v0.1 Weekly Pilot Baseline` in the separately approved Feishu Base `STORM | Business Control`. The first round covers only Market `US` and Platforms `Walmart`, `THD`, and `Lowe's`.
+The Weekly Pilot uses the hardened `STORM v0.1.1 Weekly Pilot Baseline` in the separately approved Feishu Base `STORM | Business Control`. The first round covers only Market `US` and Platforms `Walmart`, `THD`, and `Lowe's`.
 
 The pilot is `MANUAL / ASSISTED INPUT`. It does not authorize automated ingestion, scheduling, notifications, autonomous write-back, Hermes, or Streamlit. Schema changes require a separate reviewed phase; pilot input must not add fields, tables, views, or select options.
 
@@ -12,6 +12,7 @@ The pilot is `MANUAL / ASSISTED INPUT`. It does not authorize automated ingestio
 - Record source provenance using the applicable `Source Type`, `Source Ref`, `Data As Of`, and `Evidence` fields.
 - Enter structured metrics only when an actual source supports the value. Unknown values remain blank; status fields use `UNKNOWN` when evidence is insufficient. Never estimate, zero-fill, or convert unknown evidence to `GREEN`.
 - Operational facts may be manually entered or AI-assisted, but a human reviews the final wording and status. AI fields remain advisory and default hidden; `Human Decision` is authoritative.
+- `Human Reviewed` defaults to `false` on every table. Only the human review workflow may set it to `true`; AI-assisted input cannot approve a record.
 - Do not backfill history merely for completeness. Include only records that remain relevant to the current operating cycle.
 - Do not enter credentials, tokens, secrets, raw exports, or unrelated business data into the repository.
 
