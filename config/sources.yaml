@@ -1,0 +1,66 @@
+{
+  "contract_version": "1.2.0-phase4-operating-extension",
+  "source_file": "STORM V2 RAW DATA.xlsx",
+  "read_mode": "READ_ONLY_HASH_VERIFIED",
+  "canonical_hierarchy": ["Platform", "Channel/Subchannel", "Brand", "Power Source", "SKU"],
+  "sources": [
+    {
+      "source_id": "overview_management_summary",
+      "sheet": "over view",
+      "status": "AUTHORITATIVE_BUSINESS_PERFORMANCE_INPUT",
+      "weekly_actual_input": false,
+      "metric_domain": ["CM_BUSINESS_PERFORMANCE", "OPERATING_EFFICIENCY"],
+      "metric_origin": "SOURCE_REPORTED",
+      "approved_analysis_levels": ["CHANNEL", "BRAND", "POWER_SOURCE"],
+      "semantic_sections": ["By Brand", "By Power Source", "By Channel", "Actual CM vs. BP CM", "All Brand", "BI Channel Name", "GMV", "MKT-Insite", "Fixed Cost", "Return+Warranty", "Funding"],
+      "position_policy": "section labels and header sequence are authoritative; coordinates are validation hints only"
+    },
+    {
+      "source_id": "actual_cost_core_contract",
+      "sheet": "2026 acutal cost",
+      "status": "PHASE4_OPERATING_SOURCE_VALIDATION_AND_RECONCILIATION",
+      "weekly_actual_input": false,
+      "included_channel_contract": "CORE_APPROVED_ONLY",
+      "excluded_financial_contract": "DFC_FINANCIAL_ROWS",
+      "required_headers": ["Item", "Channel", "Brand", "%-Refer to BP Version", "Year", "Jan", "Aug", "MTD", "YTD", "FY"],
+      "phase4_required_items": ["GMV", "MKT-Insite", "Fixed Cost", "Return+Warranty", "Funding"],
+      "phase4_policy": "validate item category, MTD field, sign convention, and total reconciliation; do not rebuild source-reported costs"
+    },
+    {
+      "source_id": "actual_order_weekly_actual",
+      "sheet": "actual order",
+      "status": "WEEKLY_ACTUAL_INPUT",
+      "weekly_actual_input": true,
+      "included_channel_contract": "CORE_APPROVED_ONLY",
+      "required_headers": ["Year", "Month", "Date", "Country", "Channel", "SKU", "Ordered Revenue", "Ordered Units", "Order Number"]
+    },
+    {
+      "source_id": "thd_dfc_consumer_sellout",
+      "sheet": "THD- robot Sell out",
+      "status": "WEEKLY_ACTUAL_INPUT",
+      "weekly_actual_input": true,
+      "metric_domain": "THD_DFC_SELLOUT",
+      "required_headers": ["day", "online manufacturing part number +", "Order Units", "GMV", "ASP", "PIP Visit", "Conversion Rate%"]
+    },
+    {
+      "source_id": "kpi_reference_baseline",
+      "sheet": "KPI Rawdata",
+      "status": "REFERENCE_BASELINE",
+      "input_role": "NOT_WEEKLY_ACTUAL_INPUT",
+      "weekly_actual_input": false,
+      "phase1_refresh": false,
+      "phase1_recalculate": false,
+      "controlled_update_allowed": true,
+      "controlled_update_requirements": ["version", "sha256", "approval", "replacement_record"],
+      "included_channel_contract": "CORE_APPROVED_REFERENCE_ONLY",
+      "required_headers": ["SKU", "ASIN/#", "Channel", "Customer", "Month-INT", "Year", "Month", "Qty", "TTL amount", "Brand", "Power Source"]
+    },
+    {
+      "source_id": "sku_mapping_baseline",
+      "sheet": "SKU MAP",
+      "status": "REFERENCE_MAPPING_INPUT",
+      "weekly_actual_input": false,
+      "required_headers": ["SKU", "ASIN", "Pource Source", "Brand", "Category"]
+    }
+  ]
+}

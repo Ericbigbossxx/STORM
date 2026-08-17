@@ -1,0 +1,38 @@
+{
+  "mapping_version": "1.0.0-phase1",
+  "normalization": {
+    "sku": ["unicode_nfkc", "trim", "collapse_whitespace", "uppercase", "preserve_punctuation"],
+    "unknown_policy": "UNMAPPED_OR_AMBIGUOUS_WITH_RAW_VALUE",
+    "silent_fallback": false
+  },
+  "channels": {
+    "Walmart Seller": {"platform": "Walmart", "channel_subchannel": "MP"},
+    "Walmart MP": {"platform": "Walmart", "channel_subchannel": "MP"},
+    "Walmart DSV": {"platform": "Walmart", "channel_subchannel": "DSV"},
+    "Lowe's": {"platform": "Lowe's", "channel_subchannel": "DS"},
+    "Lowes": {"platform": "Lowe's", "channel_subchannel": "DS"},
+    "The Home Depot Inc": {"platform": "THD", "channel_subchannel": "DS"},
+    "THD": {"platform": "THD", "channel_subchannel": "DS"},
+    "HomeDepot": {"platform": "THD", "channel_subchannel": "DS"}
+  },
+  "ambiguous_channels": ["Walmart"],
+  "excluded_contract_values": {
+    "The Home Depot Inc DFC": "EXCLUDED_CONTRACT_CONFLICT",
+    "HomeDepot DFC": "EXCLUDED_CONTRACT_CONFLICT",
+    "The Home Depot DFC-SK": "EXCLUDED_CONTRACT_CONFLICT"
+  },
+  "brands": {"Sunseeker": "Sunseeker", "Badger": "Badger"},
+  "power_sources": {"ACC": "ACC", "Gas": "Gas", "Lithium": "Lithium", "Robot": "Robot"},
+  "metrics": {
+    "Ordered Revenue": {"name": "revenue", "unit": "USD", "domain": "SALES"},
+    "GMV": {"name": "revenue", "unit": "USD", "domain": "SALES"},
+    "Ordered Units": {"name": "units", "unit": "unit", "domain": "SALES"},
+    "Order Units": {"name": "units", "unit": "unit", "domain": "THD_DFC_SELLOUT"},
+    "PIP Visit": {"name": "traffic", "unit": "visit", "domain": "THD_DFC_SELLOUT"},
+    "Conversion Rate%": {"name": "conversion_rate", "unit": "ratio", "domain": "THD_DFC_SELLOUT"},
+    "Inventory": {"name": "inventory", "unit": "unit", "domain": "THD_DFC_SELLOUT"},
+    "MKT-Insite": {"name": "ad_spend", "unit": "USD", "domain": "ADS"},
+    "CM": {"name": "contribution_margin", "unit": "USD", "domain": "CM_BUSINESS_PERFORMANCE"},
+    "CM%": {"name": "contribution_margin_rate", "unit": "ratio", "domain": "CM_BUSINESS_PERFORMANCE"}
+  }
+}

@@ -1,0 +1,61 @@
+# Secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+**/secrets.toml
+.git-credentials
+
+# Local production business data and generated production artifacts
+data/inbox/
+data/snapshots/
+data/latest/
+data/published/
+data/source_archive/
+data/archive/
+data/raw/
+data/production/
+data/weekly_runs/
+data/*.duckdb
+
+# Real workbook and tabular exports. Only approved synthetic fixtures may opt in.
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+*.parquet
+*.duckdb
+!tests/fixtures/**/*.csv
+!tests/fixtures/**/*.xlsx
+
+# Generated reports may contain production metrics. Phase 1 contract documents are safe.
+reports/*
+!reports/phase1/
+!reports/phase1/*.md
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.runtime-web/
+
+# Streamlit, logs, and temporary QA artifacts
+.streamlit/cache/
+*.log
+tmp/
+temp/
+outputs/
+screenshots/
+*.tmp
+*.temp
+~$*
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
