@@ -1,10 +1,44 @@
-schema_version: "0.1.1"
+schema_version: "0.3.0"
 base:
-  name: "STORM | Business Control"
+  name: "STORM Business Control"
   live_base_id: null
-  status: phase2_complete
+  status: ACTIVE_CANONICAL
   live_identifier_storage: session_runtime
   default_table_id: null
+
+deployment:
+  phase: PHASE_2F_R
+  deployment_status: ACTIVE_CANONICAL
+  deployed_at: "2026-08-12T12:11:23+08:00"
+  reconciliation: PASS
+  schema_fingerprint: sha256:f7ebfc99fae55083aacb46c53994aaeb085e46eb8bdbb0c52460ee12707c966f
+  schema_counts: {tables: 4, fields: 151, views: 13, reciprocal_relations: 1}
+  records_before_first_supervised_write: 0
+  base_display_name_source: user_approved_runtime_identity
+  base_resource_fingerprint: sha256:35bef9c6ee413887acc5bce28c30ccfc9b0b2e62d4f7493a509f0d19572aeac4
+  base_resource_locator_storage: session_runtime_only
+  authentication_credentials_persisted: false
+  first_supervised_write:
+    status: VERIFIED
+    written_at: "2026-08-12T12:20:00+08:00"
+    operation: bitable.v1.appTableRecord.create
+    table_id: tblrYMjU0V7eMo8F
+    record_id: recvs3jDMCtjeZ
+    record_identity: HLT-2026W33-US-WMT
+    pre_write_identity_matches: 0
+    records_created: 1
+    post_write_reconciliation: PASS
+    records_after: {business_health: 1, core_sku: 0, action: 0, signal: 0}
+
+phase2fr:
+  status: DATA_READY_MANUAL_DASHBOARD_LAYOUT_REQUIRED
+  dashboard_name: "STORM Weekly Cockpit"
+  dashboard_automation_capability: NOT_SUPPORTED
+  business_health_fields_added: 21
+  core_sku_fields_added: 3
+  records_after: {business_health: 1, core_sku: 14, action: 0, signal: 0}
+  backfill_reconciliation: PASS
+  core_dashboard_source_reconciliation: PASS
 
 phase2_attempt:
   writes_stopped: false
@@ -75,7 +109,8 @@ phase4d:
   quantitative_metrics_changed: false
   weekly_close_executed: false
 
-live_identifiers:
+legacy_identifiers:
+  deployment_status: LEGACY_UNRESOLVED
   base_token_persisted: false
   tables:
     "01 Business Health":
@@ -237,6 +272,208 @@ live_identifiers:
     signal_field_id: fldAIm1rSq
     multiple: true
 
+legacy_deployment:
+  deployment_status: LEGACY_UNRESOLVED
+  provenance: PROVENANCE_INCOMPLETE
+  historical_table_ids:
+    - tblCw58AnpOBjQOZ
+    - tblCXQDjYYieW5O2
+    - tblzXdci4FSe97hL
+    - tblbBnQQmLWN6nUh
+  historical_relation_field_ids: [fldWcLAewz, fldAIm1rSq]
+  source_checkpoint: "git:a71cebf and git:85f8d19 config/feishu_schema.yaml"
+
+live_identifiers:
+  deployment_status: ACTIVE_CANONICAL
+  base_resource_fingerprint: sha256:35bef9c6ee413887acc5bce28c30ccfc9b0b2e62d4f7493a509f0d19572aeac4
+  base_resource_locator_storage: session_runtime_only
+  authentication_credentials_persisted: false
+  tables:
+    "01 Business Health":
+      table_id: tblrYMjU0V7eMo8F
+      fields:
+        "Health ID": fldyqFnsd8
+        "Week": fldFUfhOc1
+        "Market": fldUwJt9kd
+        "Platform": fldOl40Ndu
+        "Level": fldNrniXDG
+        "Channel": fldPYbQcGj
+        "Overall Health": fldJuspxcY
+        "Sales Health": fldd1238kC
+        "CM Health": fldNSdSCqu
+        "Ads Health": fldYdVc1cN
+        "Inventory Health": fldAZCu4Ok
+        "Buyability Health": fldd8YDTBP
+        "Listing Health": fld50TsV4D
+        "Fulfillment Health": flde2Sw0Oc
+        "Review Health": flddJR2dZS
+        "Project Health": fld9WwG9xe
+        "Weekly Summary": fldf0yNPou
+        "Top Change": fld7f4YfFL
+        "Top Risk": fldjfA0ICX
+        "Top Opportunity": fldo14PqJT
+        "Next Priority": fldMi6DJDn
+        "Data Completeness": fld6Edi3lD
+        "Data Confidence": fldj9HwTg5
+        "Actual Sales": fldrwpGGTS
+        "BP Sales": fldlRkrLk6
+        "Sales Gap": fld4yeb119
+        "Sales Attainment": fldwdQcH3H
+        "Weekly Operating Sales": fldtfqDcm9
+        "Weekly Sales Change $": fldb1AmHQI
+        "Weekly Sales Change %": fldtQoaatu
+        "Actual CM": fld9djsmp5
+        "BP CM": fldOmO3plQ
+        "CM Gap": fldZjZKl6w
+        "CM Attainment": fldNANMnt5
+        "CM %": fldC3mBSo3
+        "Ad Spend": fldrDUSopv
+        "Attributed Sales": fldbqdSL0m
+        "ROAS": fldymvKF68
+        "Available Units": fldCTNbKIE
+        "OOS SKU Count": fldbNAstka
+        "Sales Data Through": fldgKYSwT4
+        "CM Data Through": fldrQH9475
+        "Ads Data Through": fldYOTtHdX
+        "Inventory Data Through": fldnDpH78b
+        "Data As Of": fldyQLfk2D
+        "Source Type": fldOqtXURt
+        "Source Ref": fldC4nf2Fm
+        "Human Reviewed": fldXuWv4ZJ
+        "Snapshot Locked": fldZnD2mQV
+        "Last Reviewed At": fldmcxwbJb
+        "Created At": fld6j5sJ1O
+        "Updated At": fld4XjQ3dC
+      views:
+        "本周总览": vewv8xEPDD
+        "红黄灯": vewBV0eD0c
+    "02 Core SKU Performance":
+      table_id: tblIzh0LL7fjUoTu
+      fields:
+        "SKU Perf ID": fld2XGYgLg
+        "Week": fld40HrCyx
+        "Market": fldzuMTMJx
+        "Platform": fld7Nb84gI
+        "Channel": fldm6nD6XS
+        "Product Line": fldhtkgrNW
+        "SKU": fldIhiZ26O
+        "Model / Product": fldlMC8PXE
+        "Sales": fldqC60DYO
+        "SKU Role": fldNfeC5TA
+        "Orders": fld509X0nL
+        "Units": fldsGF4Urs
+        "WoW Sales %": fldKda1A6y
+        "Target": fldrracR3d
+        "Target Gap %": fldywif86F
+        "Sales Gap": fldyd7vw1x
+        "Sales Attainment": fldpphnZa6
+        "Traffic": fldImHfL8J
+        "Conversion Rate": fldKHfHQ0B
+        "Ad Spend": fldxLifBNX
+        "Attributed Sales": fldCoNgA8K
+        "ROAS": fldpjBXRGL
+        "Inventory": fldeFIDjhC
+        "DOS": fldGD3EU9Y
+        "Buyability": fldTejgjPA
+        "Listing Status": fldCUIdYJh
+        "Status": fldykWXv2B
+        "Main Change": fldmYi5iTg
+        "Diagnosis": fldyBY1R2T
+        "Recommended Action": fldFa0W2XO
+        "Data As Of": fldKqsxok0
+        "Source Type": fldO7h22YK
+        "Source Ref": fldvbwGMAX
+        "Evidence": fldihwppG3
+        "Human Reviewed": fldMcjBtTr
+        "Snapshot Locked": fld2ifdcDT
+        "Created At": fldXkKxV08
+        "Updated At": fldHVT2UBG
+      views:
+        "本周核心SKU": vewOwzorz2
+        "异常SKU": vewjAY990T
+    "03 Action & Validation":
+      table_id: tblA1WTtIGZ0LFIj
+      fields:
+        "Action ID": fldBs4lkNL
+        "Week Created": fldc1CYEPo
+        "Market": fldVT2QLJy
+        "Platform": fldA0tAUOw
+        "Channel": fldv0bnwIJ
+        "Product Line": fldpoJS4Rq
+        "SKU": fldVlczy8l
+        "Action Title": fldsHzoSSj
+        "Objective": fld92vqDEe
+        "Why / Problem": fld2J7gc1y
+        "Action Taken": fldgGLKdDn
+        "Expected Result": flddlAMtmU
+        "Baseline": fldyJzcug2
+        "Success Criteria": fldcGwSZTo
+        "Owner": fld2Vam6m2
+        "Priority": fldK3NxI08
+        "Status": fldjXvnz6u
+        "Execution Date": fldcQ54T6r
+        "Validation Date": fldT3Q3ehA
+        "Validation Window": fldshEynOn
+        "Actual Result": flddfUWuYG
+        "Conclusion": fld18uVWAR
+        "AI Analysis": fldICEcemD
+        "AI Suggested Status": fldIuuDyNW
+        "AI Confidence": fld7sQO6sn
+        "Human Decision": fldTsRdvX5
+        "Human Reviewed": fld0VvlT5B
+        "Evidence": fldUawWQBB
+        "Last Reviewed At": fldNWnHgQD
+        "Created At": fldIwAJVBr
+        "Updated At": fldBMOkVw3
+        "Related Signals": fld1sRIAow
+      views:
+        "本周动作": vewJPD05G9
+        "等待验证": vewmoWWU7o
+        "逾期": vewuYaYUUB
+        "P0-P1": vewFQwLs9q
+        "无效或不确定": vewTfjCTKy
+    "04 Signal Register":
+      table_id: tbl7uPALFSsJOthP
+      fields:
+        "Signal ID": fldq5hTbF9
+        "Week Opened": fldpqdamm7
+        "Market": fldO8P3Jak
+        "Platform": fldC41u4kN
+        "Channel": fldITHtEKu
+        "Product Line": fldGCL6tub
+        "SKU": fldR1e3sg4
+        "Signal Type": flddQ50Z6o
+        "Category": fldMMpGT21
+        "Title": fldTNOeXXQ
+        "Description": fldRzIDLiT
+        "Business Impact": fld0Tiz4Wv
+        "Priority": fldSvgAV3S
+        "Confidence": fldCRUggia
+        "Root Cause": fldT0RBBMa
+        "Current Status": fldk09l3Sr
+        "Owner": fldreIIeWN
+        "Next Step": fldGJLvB8d
+        "DDL": fldGaq7sTE
+        "Evidence": fldjEqvx60
+        "Source Type": fldD3OlvWV
+        "AI Analysis": fldPx9JM2p
+        "Source Ref": fldzwCohO1
+        "Human Decision": fldAGxRCNo
+        "Human Reviewed": fld25Fykbx
+        "Resolved At": fldc1l53lJ
+        "Created At": fldjotD38Y
+        "Updated At": fldGJtsIzF
+        "Related Actions": fldEajvOrD
+      views:
+        "未决Signal": vew3P2qkBv
+        "P0-P1": vewMwDgieY
+        "风险": vews5HOqgu
+        "机会": vewyUoz9Dm
+  relation:
+    action_field_id: fld1sRIAow
+    signal_field_id: fldEajvOrD
+    multiple: true
+
 field_types:
   text: Feishu text
   multiline_text: Feishu multiline text
@@ -269,7 +506,7 @@ storm_ids:
 
 tables:
   - name: "01 Business Health"
-    live_table_id: tblCw58AnpOBjQOZ
+    live_table_id: null
     grain: "week x market x platform x level=PLATFORM"
     uniqueness: [Week, Market, Platform, Level]
     v0_1_level: PLATFORM
@@ -282,6 +519,7 @@ tables:
       - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"], must_be_blank_when: {Level: PLATFORM}}
       - {name: "Overall Health", type: single_select, required: true, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
       - {name: "Sales Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "CM Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
       - {name: "Ads Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
       - {name: "Inventory Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
       - {name: "Buyability Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
@@ -295,6 +533,28 @@ tables:
       - {name: "Top Opportunity", type: multiline_text, required: false}
       - {name: "Next Priority", type: multiline_text, required: false}
       - {name: "Data Completeness", type: single_select, required: true, options: [COMPLETE, PARTIAL, MINIMAL, UNKNOWN]}
+      - {name: "Data Confidence", type: single_select, required: true, options: [HIGH, MEDIUM, LOW, UNKNOWN]}
+      - {name: "Actual Sales", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "BP Sales", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Sales Gap", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Sales Attainment", type: number, required: false, format: percent}
+      - {name: "Weekly Operating Sales", type: number, ui_type: Currency, currency: USD, required: false, period_type: WEEKLY_OPERATING}
+      - {name: "Weekly Sales Change $", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Weekly Sales Change %", type: number, required: false, format: percent}
+      - {name: "Actual CM", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "BP CM", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "CM Gap", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "CM Attainment", type: number, required: false, format: percent}
+      - {name: "CM %", type: number, required: false, format: percent}
+      - {name: "Ad Spend", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Attributed Sales", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "ROAS", type: number, required: false}
+      - {name: "Available Units", type: number, required: false, format: integer}
+      - {name: "OOS SKU Count", type: number, required: false, format: integer}
+      - {name: "Sales Data Through", type: date, required: false}
+      - {name: "CM Data Through", type: date, required: false}
+      - {name: "Ads Data Through", type: date, required: false}
+      - {name: "Inventory Data Through", type: date, required: false}
       - {name: "Data As Of", type: date, required: false}
       - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
       - {name: "Source Ref", type: text, required: false}
@@ -305,7 +565,7 @@ tables:
       - {name: "Updated At", type: modified_time, required: false, system_managed: true}
     ui:
       platform_switch: filter
-      default_visible_health_fields: [Overall Health, Sales Health, Ads Health, Inventory Health, Buyability Health]
+      default_visible_health_fields: [Overall Health, Sales Health, CM Health, Ads Health, Inventory Health, Buyability Health]
       default_hidden_health_fields: [Listing Health, Fulfillment Health, Review Health, Project Health]
     views:
       - 本周总览
@@ -321,7 +581,7 @@ tables:
           - {field: "Overall Health", operator: is_not, values: [GREEN]}
 
   - name: "02 Core SKU Performance"
-    live_table_id: tblCXQDjYYieW5O2
+    live_table_id: null
     grain: "week x market x platform x optional channel x sku"
     fields:
       - {name: "SKU Perf ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, feishu_record_id_substitute: forbidden}
@@ -332,16 +592,19 @@ tables:
       - {name: "Product Line", type: single_select, required: true, options: [Robot, OPE, Accessories, Other]}
       - {name: "SKU", type: text, required: true}
       - {name: "Model / Product", type: text, required: false}
-      - {name: "SKU Role", type: single_select, required: true, options: [HERO, GROWTH, PROFIT, TRAFFIC, CLEARANCE, NEW, WATCH, OTHER]}
+      - {name: "SKU Role", type: single_select, required: true, options: [HERO, GROWTH, PROFIT, TRAFFIC, CLEARANCE, NEW, WATCH, OTHER, CORE, SUPPORT_ACCESSORY]}
       - {name: "Sales", type: number, required: false}
       - {name: "Orders", type: number, required: false}
       - {name: "Units", type: number, required: false}
       - {name: "WoW Sales %", type: number, required: false, format: percent}
       - {name: "Target", type: number, required: false}
       - {name: "Target Gap %", type: number, required: false, format: percent}
+      - {name: "Sales Gap", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Sales Attainment", type: number, required: false, format: percent}
       - {name: "Traffic", type: number, required: false}
       - {name: "Conversion Rate", type: number, required: false, format: percent}
       - {name: "Ad Spend", type: number, required: false}
+      - {name: "Attributed Sales", type: number, ui_type: Currency, currency: USD, required: false}
       - {name: "ROAS", type: number, required: false}
       - {name: "Inventory", type: number, required: false}
       - {name: "DOS", type: number, required: false}
@@ -379,7 +642,7 @@ tables:
         unknown_is_anomaly: false
 
   - name: "03 Action & Validation"
-    live_table_id: tblzXdci4FSe97hL
+    live_table_id: null
     grain: "one business action and its validation lifecycle"
     fields:
       - {name: "Action ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, sequence_user_maintained: false, feishu_record_id_substitute: forbidden}
@@ -442,7 +705,7 @@ tables:
           - {field: Status, operator: is, values: [VALIDATED_INEFFECTIVE, INCONCLUSIVE]}
 
   - name: "04 Signal Register"
-    live_table_id: tblbBnQQmLWN6nUh
+    live_table_id: null
     grain: "one issue, risk, or opportunity lifecycle"
     fields:
       - {name: "Signal ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, sequence_user_maintained: false, feishu_record_id_substitute: forbidden}

@@ -28,7 +28,7 @@ def test_dimensions_keep_market_platform_and_channel_separate() -> None:
 
 def test_feishu_manifest_has_exactly_four_operational_tables() -> None:
     manifest = _load_yaml("config/feishu_schema.yaml")
-    assert manifest["base"]["name"] == "STORM | Business Control"
+    assert manifest["base"]["name"] == "STORM Business Control"
     assert [table["name"] for table in manifest["tables"]] == [
         "01 Business Health",
         "02 Core SKU Performance",
@@ -69,13 +69,22 @@ def test_manifest_has_exactly_thirteen_weekly_pilot_views() -> None:
     assert sum(len(table["views"]) for table in tables.values()) == 13
 
 
-def test_v0_1_1_manifest_has_exactly_125_fields_and_live_review_ids() -> None:
+def test_phase2fr_manifest_has_canonical_151_fields_and_dashboard_live_ids() -> None:
     manifest = _load_yaml("config/feishu_schema.yaml")
-    assert manifest["schema_version"] == "0.1.1"
-    assert sum(len(table["fields"]) for table in manifest["tables"]) == 125
+    assert manifest["schema_version"] == "0.3.0"
+    assert sum(len(table["fields"]) for table in manifest["tables"]) == 151
+    assert manifest["legacy_deployment"]["deployment_status"] == "LEGACY_UNRESOLVED"
+    assert manifest["live_identifiers"]["deployment_status"] == "ACTIVE_CANONICAL"
     live_tables = manifest["live_identifiers"]["tables"]
-    assert live_tables["03 Action & Validation"]["fields"]["Human Reviewed"] == "fldEkYL4yI"
-    assert live_tables["04 Signal Register"]["fields"]["Human Reviewed"] == "fldjj5yFif"
+    assert live_tables["01 Business Health"]["table_id"] == "tblrYMjU0V7eMo8F"
+    assert live_tables["01 Business Health"]["fields"]["CM Health"] == "fldNSdSCqu"
+    assert live_tables["01 Business Health"]["fields"]["Data Confidence"] == "fldj9HwTg5"
+    assert live_tables["01 Business Health"]["fields"]["Actual Sales"] == "fldrwpGGTS"
+    assert live_tables["01 Business Health"]["fields"]["Inventory Data Through"] == "fldnDpH78b"
+    assert live_tables["02 Core SKU Performance"]["fields"]["Sales Gap"] == "fldyd7vw1x"
+    assert live_tables["02 Core SKU Performance"]["fields"]["Attributed Sales"] == "fldCoNgA8K"
+    assert live_tables["03 Action & Validation"]["fields"]["Related Signals"] == "fld1sRIAow"
+    assert live_tables["04 Signal Register"]["fields"]["Related Actions"] == "fldEajvOrD"
 
 
 def test_human_reviewed_is_human_only_on_every_table() -> None:
@@ -155,6 +164,7 @@ def test_business_health_grain_and_default_health_visibility_are_converged() -> 
     assert table["ui"]["default_visible_health_fields"] == [
         "Overall Health",
         "Sales Health",
+        "CM Health",
         "Ads Health",
         "Inventory Health",
         "Buyability Health",

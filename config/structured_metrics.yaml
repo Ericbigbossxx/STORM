@@ -1,0 +1,68 @@
+schema_version: 1
+database_path: data/structured_metrics/storm_metrics.sqlite3
+
+platforms:
+  WALMART_MP:
+    display_name: Walmart MP
+    source_values: [Walmart Seller, Walmart]
+    business_model: marketplace
+    primary_sales_basis: sell_out
+  THD:
+    display_name: The Home Depot
+    source_values: [The Home Depot Inc, HomeDepot, "HomeDepot*"]
+    business_model: first_party
+    primary_sales_basis: sell_in
+  LOWES:
+    display_name: Lowe's
+    source_values: ["Lowe's", Lowes]
+    business_model: first_party
+    primary_sales_basis: sell_in
+
+workbook:
+  expected_filename: US E-commerce Actual CM for 2026_vs. BP.xlsx
+  verified_sha256: 89B8BF3EAD9D940833582CA01FC0065C4099E335C30EC9FEAC0D5CB2CBBC1168
+  sheets:
+    sku_mapping: SKU Mapping
+    bp_targets: KPI Rawdata
+    cm_overview: Overview
+  sku_mapping:
+    header_row: 1
+    headers: [SKU, ASIN, Pource Source, Brand, Category]
+    power_source_header: Pource Source
+  bp_targets:
+    header_row: 1
+    month_number_header: Month-INT
+    scoped_customers:
+      The Home Depot Inc: THD
+      "Lowe's": LOWES
+      Walmart Seller: WALMART_MP
+    excluded_known_customers:
+      - The Home Depot Inc DFC
+      - Walmart DSV
+      - AMZ VC
+      - AMZ seller
+      - DTC
+    cm_components: [TTL amount, DDP/ALL, Fixed cost/ALL, MKT-Insite/ALL, MKT-Offsite(种草)/ALL, MKT-Offsite(Channel MKT)/ALL, Return+Warranty/ALL, Funding/ALL]
+  cm_overview:
+    selector_month_cell: B2
+    selector_period_cell: B3
+    actual_rows: {units: 262, sales: 263, cogs: 265, gm: 266, gm_pct: 268, cm: 289, cm_pct: 291}
+    bp_rows: {units: 300, sales: 301, cogs: 302, gm: 303, gm_pct: 304, cm: 319, cm_pct: 320}
+    dimension_rows: {platform: 259, brand: 260, power_source: 261}
+    detail_columns:
+      THD: [J, K, T, U, V]
+      LOWES: [N, O, W, X, Y]
+      WALMART_MP: [P, Q, Z, AA, AB]
+    excluded_dfc_columns: [L, M]
+    platform_summary:
+      actual: {units: 81, sales: 82, cm: 108}
+      bp: {units: 115, sales: 116, cm: 134}
+      columns:
+        THD: [G, M]
+        LOWES: [J, N]
+        WALMART_MP: [K, O]
+
+reconciliation:
+  currency_tolerance: 0.01
+  unit_tolerance: 0.000001
+  ratio_tolerance: 0.000000001

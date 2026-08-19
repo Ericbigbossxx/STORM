@@ -1,0 +1,1330 @@
+{
+  "artifact_version": 1,
+  "artifact_type": "REDACTED_FEISHU_DEPLOYMENT_RECONCILIATION",
+  "captured_at": "2026-08-12T12:20:00+08:00",
+  "deployment_status": "ACTIVE_CANONICAL",
+  "legacy_deployment_status": "LEGACY_UNRESOLVED",
+  "base": {
+    "display_name": "STORM Business Control",
+    "resource_fingerprint": "sha256:35bef9c6ee413887acc5bce28c30ccfc9b0b2e62d4f7493a509f0d19572aeac4",
+    "resource_locator_persisted": false,
+    "authentication_credentials_persisted": false
+  },
+  "authorization": {
+    "user_auth": "PASS",
+    "tenant_auth": "PASS"
+  },
+  "safety_inspection": {
+    "before": {
+      "tables": 1,
+      "table_name": "数据表",
+      "fields": 1,
+      "views": 1,
+      "blank_system_records": 5,
+      "user_business_records": 0
+    },
+    "result": "PASS_EXPECTED_BLANK_DEFAULT_STRUCTURE"
+  },
+  "operations": {
+    "table_create": {
+      "result": "PASS",
+      "created": 4
+    },
+    "default_table_delete": {
+      "result": "PASS",
+      "deleted_table_id": "tbl88pwjLKeFwG44"
+    },
+    "field_create": {
+      "result": "PASS",
+      "canonical_fields": 127
+    },
+    "reciprocal_relation_create": {
+      "result": "PASS"
+    },
+    "view_create_and_patch": {
+      "result": "PASS",
+      "canonical_views": 13
+    },
+    "record_create": {
+      "result": "PASS",
+      "created": 1,
+      "operation": "bitable.v1.appTableRecord.create",
+      "record_id": "recvs3jDMCtjeZ",
+      "record_identity": "HLT-2026W33-US-WMT"
+    }
+  },
+  "live_schema": {
+    "counts": {
+      "tables": 4,
+      "fields": 127,
+      "views": 13,
+      "reciprocal_relations": 1
+    },
+    "tables": {
+      "01 Business Health": {
+        "table_id": "tblrYMjU0V7eMo8F",
+        "fields": [
+          {
+            "field_id": "fldyqFnsd8",
+            "field_name": "Health ID",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldFUfhOc1",
+            "field_name": "Week",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldUwJt9kd",
+            "field_name": "Market",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "US"
+            ]
+          },
+          {
+            "field_id": "fldOl40Ndu",
+            "field_name": "Platform",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "Walmart",
+              "THD",
+              "Lowe's"
+            ]
+          },
+          {
+            "field_id": "fldNrniXDG",
+            "field_name": "Level",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "PLATFORM",
+              "CHANNEL"
+            ]
+          },
+          {
+            "field_id": "fldPYbQcGj",
+            "field_name": "Channel",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "3P",
+              "WFS",
+              "1P",
+              "DSV",
+              "Online",
+              "Drop Ship"
+            ]
+          },
+          {
+            "field_id": "fldJuspxcY",
+            "field_name": "Overall Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldd1238kC",
+            "field_name": "Sales Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldNSdSCqu",
+            "field_name": "CM Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldYdVc1cN",
+            "field_name": "Ads Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldAZCu4Ok",
+            "field_name": "Inventory Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldd8YDTBP",
+            "field_name": "Buyability Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fld50TsV4D",
+            "field_name": "Listing Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "flde2Sw0Oc",
+            "field_name": "Fulfillment Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "flddJR2dZS",
+            "field_name": "Review Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fld9WwG9xe",
+            "field_name": "Project Health",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldf0yNPou",
+            "field_name": "Weekly Summary",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld7f4YfFL",
+            "field_name": "Top Change",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldjfA0ICX",
+            "field_name": "Top Risk",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldo14PqJT",
+            "field_name": "Top Opportunity",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldMi6DJDn",
+            "field_name": "Next Priority",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld6Edi3lD",
+            "field_name": "Data Completeness",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "COMPLETE",
+              "PARTIAL",
+              "MINIMAL",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldj9HwTg5",
+            "field_name": "Data Confidence",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "HIGH",
+              "MEDIUM",
+              "LOW",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldyQLfk2D",
+            "field_name": "Data As Of",
+            "type": 5,
+            "ui_type": "DateTime"
+          },
+          {
+            "field_id": "fldOqtXURt",
+            "field_name": "Source Type",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "MANUAL",
+              "EXPORT",
+              "SYSTEM",
+              "AGENT",
+              "MIXED"
+            ]
+          },
+          {
+            "field_id": "fldC4nf2Fm",
+            "field_name": "Source Ref",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldXuWv4ZJ",
+            "field_name": "Human Reviewed",
+            "type": 7,
+            "ui_type": "Checkbox"
+          },
+          {
+            "field_id": "fldZnD2mQV",
+            "field_name": "Snapshot Locked",
+            "type": 7,
+            "ui_type": "Checkbox"
+          },
+          {
+            "field_id": "fldmcxwbJb",
+            "field_name": "Last Reviewed At",
+            "type": 5,
+            "ui_type": "DateTime"
+          },
+          {
+            "field_id": "fld6j5sJ1O",
+            "field_name": "Created At",
+            "type": 1001,
+            "ui_type": "CreatedTime"
+          },
+          {
+            "field_id": "fld4XjQ3dC",
+            "field_name": "Updated At",
+            "type": 1002,
+            "ui_type": "ModifiedTime"
+          }
+        ],
+        "views": [
+          {
+            "view_id": "vewv8xEPDD",
+            "view_name": "本周总览",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vewBV0eD0c",
+            "view_name": "红黄灯",
+            "view_type": "grid"
+          }
+        ]
+      },
+      "02 Core SKU Performance": {
+        "table_id": "tblIzh0LL7fjUoTu",
+        "fields": [
+          {
+            "field_id": "fld2XGYgLg",
+            "field_name": "SKU Perf ID",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld40HrCyx",
+            "field_name": "Week",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldzuMTMJx",
+            "field_name": "Market",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "US"
+            ]
+          },
+          {
+            "field_id": "fld7Nb84gI",
+            "field_name": "Platform",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "Walmart",
+              "THD",
+              "Lowe's"
+            ]
+          },
+          {
+            "field_id": "fldm6nD6XS",
+            "field_name": "Channel",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "3P",
+              "WFS",
+              "1P",
+              "DSV",
+              "Online",
+              "Drop Ship"
+            ]
+          },
+          {
+            "field_id": "fldhtkgrNW",
+            "field_name": "Product Line",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "Robot",
+              "OPE",
+              "Accessories",
+              "Other"
+            ]
+          },
+          {
+            "field_id": "fldIhiZ26O",
+            "field_name": "SKU",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldlMC8PXE",
+            "field_name": "Model / Product",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldqC60DYO",
+            "field_name": "Sales",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldNfeC5TA",
+            "field_name": "SKU Role",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "HERO",
+              "GROWTH",
+              "PROFIT",
+              "TRAFFIC",
+              "CLEARANCE",
+              "NEW",
+              "WATCH",
+              "OTHER"
+            ]
+          },
+          {
+            "field_id": "fld509X0nL",
+            "field_name": "Orders",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldsGF4Urs",
+            "field_name": "Units",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldKda1A6y",
+            "field_name": "WoW Sales %",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldrracR3d",
+            "field_name": "Target",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldywif86F",
+            "field_name": "Target Gap %",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldImHfL8J",
+            "field_name": "Traffic",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldKHfHQ0B",
+            "field_name": "Conversion Rate",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldxLifBNX",
+            "field_name": "Ad Spend",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldpjBXRGL",
+            "field_name": "ROAS",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldeFIDjhC",
+            "field_name": "Inventory",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldGD3EU9Y",
+            "field_name": "DOS",
+            "type": 2,
+            "ui_type": "Number"
+          },
+          {
+            "field_id": "fldTejgjPA",
+            "field_name": "Buyability",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "YES",
+              "NO",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldCUIdYJh",
+            "field_name": "Listing Status",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "HEALTHY",
+              "ISSUE",
+              "DOWN",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldykWXv2B",
+            "field_name": "Status",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "GREEN",
+              "YELLOW",
+              "RED",
+              "UNKNOWN"
+            ]
+          },
+          {
+            "field_id": "fldmYi5iTg",
+            "field_name": "Main Change",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldyBY1R2T",
+            "field_name": "Diagnosis",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldFa0W2XO",
+            "field_name": "Recommended Action",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldKqsxok0",
+            "field_name": "Data As Of",
+            "type": 5,
+            "ui_type": "DateTime"
+          },
+          {
+            "field_id": "fldO7h22YK",
+            "field_name": "Source Type",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "MANUAL",
+              "EXPORT",
+              "SYSTEM",
+              "AGENT",
+              "MIXED"
+            ]
+          },
+          {
+            "field_id": "fldvbwGMAX",
+            "field_name": "Source Ref",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldihwppG3",
+            "field_name": "Evidence",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldMcjBtTr",
+            "field_name": "Human Reviewed",
+            "type": 7,
+            "ui_type": "Checkbox"
+          },
+          {
+            "field_id": "fld2ifdcDT",
+            "field_name": "Snapshot Locked",
+            "type": 7,
+            "ui_type": "Checkbox"
+          },
+          {
+            "field_id": "fldXkKxV08",
+            "field_name": "Created At",
+            "type": 1001,
+            "ui_type": "CreatedTime"
+          },
+          {
+            "field_id": "fldHVT2UBG",
+            "field_name": "Updated At",
+            "type": 1002,
+            "ui_type": "ModifiedTime"
+          }
+        ],
+        "views": [
+          {
+            "view_id": "vewOwzorz2",
+            "view_name": "本周核心SKU",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vewjAY990T",
+            "view_name": "异常SKU",
+            "view_type": "grid"
+          }
+        ]
+      },
+      "03 Action & Validation": {
+        "table_id": "tblA1WTtIGZ0LFIj",
+        "fields": [
+          {
+            "field_id": "fldBs4lkNL",
+            "field_name": "Action ID",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldc1CYEPo",
+            "field_name": "Week Created",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldVT2QLJy",
+            "field_name": "Market",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "US"
+            ]
+          },
+          {
+            "field_id": "fldA0tAUOw",
+            "field_name": "Platform",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "Walmart",
+              "THD",
+              "Lowe's"
+            ]
+          },
+          {
+            "field_id": "fldv0bnwIJ",
+            "field_name": "Channel",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "3P",
+              "WFS",
+              "1P",
+              "DSV",
+              "Online",
+              "Drop Ship"
+            ]
+          },
+          {
+            "field_id": "fldpoJS4Rq",
+            "field_name": "Product Line",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "Robot",
+              "OPE",
+              "Accessories",
+              "Other"
+            ]
+          },
+          {
+            "field_id": "fldVlczy8l",
+            "field_name": "SKU",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldsHzoSSj",
+            "field_name": "Action Title",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld92vqDEe",
+            "field_name": "Objective",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld2J7gc1y",
+            "field_name": "Why / Problem",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldgGLKdDn",
+            "field_name": "Action Taken",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "flddlAMtmU",
+            "field_name": "Expected Result",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldyJzcug2",
+            "field_name": "Baseline",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldcGwSZTo",
+            "field_name": "Success Criteria",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld2Vam6m2",
+            "field_name": "Owner",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldK3NxI08",
+            "field_name": "Priority",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "P0",
+              "P1",
+              "P2",
+              "P3"
+            ]
+          },
+          {
+            "field_id": "fldjXvnz6u",
+            "field_name": "Status",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "PLANNED",
+              "IN_PROGRESS",
+              "EXECUTED_WAITING_VALIDATION",
+              "VALIDATED_EFFECTIVE",
+              "VALIDATED_INEFFECTIVE",
+              "INCONCLUSIVE",
+              "BLOCKED",
+              "CANCELLED"
+            ]
+          },
+          {
+            "field_id": "fldcQ54T6r",
+            "field_name": "Execution Date",
+            "type": 5,
+            "ui_type": "DateTime"
+          },
+          {
+            "field_id": "fldT3Q3ehA",
+            "field_name": "Validation Date",
+            "type": 5,
+            "ui_type": "DateTime"
+          },
+          {
+            "field_id": "fldshEynOn",
+            "field_name": "Validation Window",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "flddfUWuYG",
+            "field_name": "Actual Result",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld18uVWAR",
+            "field_name": "Conclusion",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldICEcemD",
+            "field_name": "AI Analysis",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldIuuDyNW",
+            "field_name": "AI Suggested Status",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "PLANNED",
+              "IN_PROGRESS",
+              "EXECUTED_WAITING_VALIDATION",
+              "VALIDATED_EFFECTIVE",
+              "VALIDATED_INEFFECTIVE",
+              "INCONCLUSIVE",
+              "BLOCKED",
+              "CANCELLED"
+            ]
+          },
+          {
+            "field_id": "fld7sQO6sn",
+            "field_name": "AI Confidence",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          },
+          {
+            "field_id": "fldTsRdvX5",
+            "field_name": "Human Decision",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld0VvlT5B",
+            "field_name": "Human Reviewed",
+            "type": 7,
+            "ui_type": "Checkbox"
+          },
+          {
+            "field_id": "fldUawWQBB",
+            "field_name": "Evidence",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldNWnHgQD",
+            "field_name": "Last Reviewed At",
+            "type": 5,
+            "ui_type": "DateTime"
+          },
+          {
+            "field_id": "fldIwAJVBr",
+            "field_name": "Created At",
+            "type": 1001,
+            "ui_type": "CreatedTime"
+          },
+          {
+            "field_id": "fldBMOkVw3",
+            "field_name": "Updated At",
+            "type": 1002,
+            "ui_type": "ModifiedTime"
+          },
+          {
+            "field_id": "fld1sRIAow",
+            "field_name": "Related Signals",
+            "type": 21,
+            "ui_type": "DuplexLink",
+            "relation": {
+              "table_id": "tbl7uPALFSsJOthP",
+              "back_field_id": "fldEajvOrD",
+              "back_field_name": "Related Actions",
+              "multiple": true
+            }
+          }
+        ],
+        "views": [
+          {
+            "view_id": "vewJPD05G9",
+            "view_name": "本周动作",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vewmoWWU7o",
+            "view_name": "等待验证",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vewuYaYUUB",
+            "view_name": "逾期",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vewFQwLs9q",
+            "view_name": "P0-P1",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vewTfjCTKy",
+            "view_name": "无效或不确定",
+            "view_type": "grid"
+          }
+        ]
+      },
+      "04 Signal Register": {
+        "table_id": "tbl7uPALFSsJOthP",
+        "fields": [
+          {
+            "field_id": "fldq5hTbF9",
+            "field_name": "Signal ID",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldpqdamm7",
+            "field_name": "Week Opened",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldO8P3Jak",
+            "field_name": "Market",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "US"
+            ]
+          },
+          {
+            "field_id": "fldC41u4kN",
+            "field_name": "Platform",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "Walmart",
+              "THD",
+              "Lowe's"
+            ]
+          },
+          {
+            "field_id": "fldITHtEKu",
+            "field_name": "Channel",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "3P",
+              "WFS",
+              "1P",
+              "DSV",
+              "Online",
+              "Drop Ship"
+            ]
+          },
+          {
+            "field_id": "fldGCL6tub",
+            "field_name": "Product Line",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "Robot",
+              "OPE",
+              "Accessories",
+              "Other"
+            ]
+          },
+          {
+            "field_id": "fldR1e3sg4",
+            "field_name": "SKU",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "flddQ50Z6o",
+            "field_name": "Signal Type",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "ISSUE",
+              "RISK",
+              "OPPORTUNITY"
+            ]
+          },
+          {
+            "field_id": "fldMMpGT21",
+            "field_name": "Category",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "SALES",
+              "TRAFFIC",
+              "CONVERSION",
+              "ADS",
+              "INVENTORY",
+              "BUYABILITY",
+              "LISTING",
+              "FULFILLMENT",
+              "REVIEW",
+              "ACCOUNT",
+              "PROMOTION",
+              "ONBOARDING",
+              "SYSTEM",
+              "OTHER"
+            ]
+          },
+          {
+            "field_id": "fldTNOeXXQ",
+            "field_name": "Title",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldRzIDLiT",
+            "field_name": "Description",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld0Tiz4Wv",
+            "field_name": "Business Impact",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldSvgAV3S",
+            "field_name": "Priority",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "P0",
+              "P1",
+              "P2",
+              "P3"
+            ]
+          },
+          {
+            "field_id": "fldCRUggia",
+            "field_name": "Confidence",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          },
+          {
+            "field_id": "fldT0RBBMa",
+            "field_name": "Root Cause",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldk09l3Sr",
+            "field_name": "Current Status",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "OPEN",
+              "INVESTIGATING",
+              "ACTION_REQUIRED",
+              "WAITING_EXTERNAL",
+              "MONITORING",
+              "RESOLVED",
+              "CLOSED"
+            ]
+          },
+          {
+            "field_id": "fldreIIeWN",
+            "field_name": "Owner",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldGJLvB8d",
+            "field_name": "Next Step",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldGaq7sTE",
+            "field_name": "DDL",
+            "type": 5,
+            "ui_type": "DateTime"
+          },
+          {
+            "field_id": "fldjEqvx60",
+            "field_name": "Evidence",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldD3OlvWV",
+            "field_name": "Source Type",
+            "type": 3,
+            "ui_type": "SingleSelect",
+            "options": [
+              "MANUAL",
+              "EXPORT",
+              "SYSTEM",
+              "AGENT",
+              "MIXED"
+            ]
+          },
+          {
+            "field_id": "fldPx9JM2p",
+            "field_name": "AI Analysis",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldzwCohO1",
+            "field_name": "Source Ref",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fldAGxRCNo",
+            "field_name": "Human Decision",
+            "type": 1,
+            "ui_type": "Text"
+          },
+          {
+            "field_id": "fld25Fykbx",
+            "field_name": "Human Reviewed",
+            "type": 7,
+            "ui_type": "Checkbox"
+          },
+          {
+            "field_id": "fldc1l53lJ",
+            "field_name": "Resolved At",
+            "type": 5,
+            "ui_type": "DateTime"
+          },
+          {
+            "field_id": "fldjotD38Y",
+            "field_name": "Created At",
+            "type": 1001,
+            "ui_type": "CreatedTime"
+          },
+          {
+            "field_id": "fldGJtsIzF",
+            "field_name": "Updated At",
+            "type": 1002,
+            "ui_type": "ModifiedTime"
+          },
+          {
+            "field_id": "fldEajvOrD",
+            "field_name": "Related Actions",
+            "type": 21,
+            "ui_type": "DuplexLink",
+            "relation": {
+              "table_id": "tblA1WTtIGZ0LFIj",
+              "back_field_id": "fld1sRIAow",
+              "back_field_name": "Related Signals",
+              "multiple": true
+            }
+          }
+        ],
+        "views": [
+          {
+            "view_id": "vew3P2qkBv",
+            "view_name": "未决Signal",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vewMwDgieY",
+            "view_name": "P0-P1",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vews5HOqgu",
+            "view_name": "风险",
+            "view_type": "grid"
+          },
+          {
+            "view_id": "vewyUoz9Dm",
+            "view_name": "机会",
+            "view_type": "grid"
+          }
+        ]
+      }
+    }
+  },
+  "view_contract_operation_results": {
+    "01 Business Health|本周总览": {
+      "result": "PASS",
+      "hidden_field_count": 4,
+      "filter_conjunction": "and",
+      "filter_condition_count": 1
+    },
+    "01 Business Health|红黄灯": {
+      "result": "PASS",
+      "hidden_field_count": 4,
+      "filter_conjunction": "and",
+      "filter_condition_count": 2
+    },
+    "02 Core SKU Performance|异常SKU": {
+      "result": "PASS",
+      "hidden_field_count": 0,
+      "filter_conjunction": "or",
+      "filter_condition_count": 5
+    },
+    "03 Action & Validation|本周动作": {
+      "result": "PASS",
+      "hidden_field_count": 3,
+      "filter_conjunction": null,
+      "filter_condition_count": 0
+    },
+    "03 Action & Validation|等待验证": {
+      "result": "PASS",
+      "hidden_field_count": 3,
+      "filter_conjunction": "and",
+      "filter_condition_count": 1
+    },
+    "03 Action & Validation|逾期": {
+      "result": "PASS",
+      "hidden_field_count": 3,
+      "filter_conjunction": null,
+      "filter_condition_count": 0
+    },
+    "03 Action & Validation|P0-P1": {
+      "result": "PASS",
+      "hidden_field_count": 3,
+      "filter_conjunction": "or",
+      "filter_condition_count": 2
+    },
+    "03 Action & Validation|无效或不确定": {
+      "result": "PASS",
+      "hidden_field_count": 3,
+      "filter_conjunction": "or",
+      "filter_condition_count": 2
+    },
+    "04 Signal Register|未决Signal": {
+      "result": "PASS",
+      "hidden_field_count": 1,
+      "filter_conjunction": "and",
+      "filter_condition_count": 2
+    },
+    "04 Signal Register|P0-P1": {
+      "result": "PASS",
+      "hidden_field_count": 1,
+      "filter_conjunction": "or",
+      "filter_condition_count": 2
+    },
+    "04 Signal Register|风险": {
+      "result": "PASS",
+      "hidden_field_count": 1,
+      "filter_conjunction": "and",
+      "filter_condition_count": 1
+    },
+    "04 Signal Register|机会": {
+      "result": "PASS",
+      "hidden_field_count": 1,
+      "filter_conjunction": "and",
+      "filter_condition_count": 1
+    }
+  },
+  "relation": {
+    "action_field_id": "fld1sRIAow",
+    "signal_field_id": "fldEajvOrD",
+    "multiple": true,
+    "mutual_back_reference_verified": true
+  },
+  "reconciliation": {
+    "expected": {
+      "tables": 4,
+      "fields": 127,
+      "views": 13,
+      "records_before_write": 0
+    },
+    "live_before_write": {
+      "tables": 4,
+      "fields": 127,
+      "views": 13,
+      "records": 0
+    },
+    "schema": "PASS",
+    "unique_table_ids": true,
+    "unique_field_ids": true,
+    "unique_view_ids": true,
+    "legacy_ids_reused": [],
+    "schema_fingerprint": "sha256:f7ebfc99fae55083aacb46c53994aaeb085e46eb8bdbb0c52460ee12707c966f"
+  },
+  "first_supervised_write": {
+    "pre_write_identity_matches": 0,
+    "records_created": 1,
+    "records_after": {
+      "01 Business Health": 1,
+      "02 Core SKU Performance": 0,
+      "03 Action & Validation": 0,
+      "04 Signal Register": 0
+    },
+    "post_write_reconciliation": "PASS",
+    "semantic_mismatches": [],
+    "nonsemantic_text_representation_fields": [
+      "Health ID",
+      "Week",
+      "Weekly Summary",
+      "Top Change",
+      "Source Ref"
+    ]
+  }
+}

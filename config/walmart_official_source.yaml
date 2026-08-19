@@ -1,0 +1,139 @@
+schema_version: 1
+source_system: Walmart Operation System
+business_scope: WALMART_MARKETPLACE_3P
+root_path: "C:/Users/admin/Documents/Walmart Operation System"
+release_manifest: outputs/latest/backend_release_manifest.json
+data_contract: config/backend_data_contract.yaml
+schema_registry: config/backend_schema_versions.yaml
+read_policy: READ_ONLY
+expected_contract_version: 1.1.0
+expected_release_status: READY_FOR_PHASE_3
+expected_pipeline_status: SUCCESS
+allowed_dataset_roots: [data/history/marketplace]
+forbidden_source_prefixes: [data/raw, data/processed, tests/fixtures, outputs/failed]
+platform_mapping:
+  Marketplace 3P: WALMART_MP
+datasets:
+  business_current_state:
+    schema_name: business_snapshot
+    returned_fields:
+      - period_scope
+      - business_as_of_date
+      - coverage_start_date
+      - coverage_end_date
+      - metric_scope
+      - net_sales
+      - ad_spend
+      - ad_sales
+      - calculated_roas
+      - inventory_units
+      - source_run_id
+      - snapshot_content_hash
+      - created_at_utc
+  business_weekly_current_state:
+    schema_name: business_snapshot
+    retain_official_history: true
+    returned_fields:
+      - period_scope
+      - business_as_of_date
+      - coverage_start_date
+      - coverage_end_date
+      - metric_scope
+      - net_sales
+      - source_run_id
+      - snapshot_content_hash
+      - created_at_utc
+  sku_current_performance:
+    schema_name: sku_performance_snapshot
+    retain_official_history: true
+    returned_fields:
+      - sku
+      - period_scope
+      - business_as_of_date
+      - coverage_start_date
+      - coverage_end_date
+      - metric_scope
+      - net_sales
+      - orders
+      - units_sold
+      - contribution_profit
+      - contribution_margin
+      - refund_amount
+      - refund_amount_rate
+      - ad_spend
+      - ad_sales
+      - calculated_roas
+      - inventory_units
+      - inventory_status
+      - inventory_data_status
+      - item_status
+      - fulfillment_type
+      - source_run_id
+      - snapshot_content_hash
+      - created_at_utc
+  snapshot_manifest:
+    schema_name: snapshot_manifest
+    retain_official_history: true
+    returned_fields:
+      - snapshot_id
+      - snapshot_type
+      - period_scope
+      - business_as_of_date
+      - snapshot_version
+      - record_count
+      - content_hash
+      - source_run_id
+      - run_status
+      - official_result
+      - published_to_history
+      - superseded_flag
+      - correction_reason
+      - created_at_utc
+required_snapshot_types: [BUSINESS_MTD, BUSINESS_WEEKLY, SKU_MTD, SKU_WEEKLY]
+auxiliary_datasets:
+  sku_weekly_history:
+    canonical_source: data/history/marketplace/sku_weekly_snapshots.parquet
+    snapshot_type: SKU_WEEKLY
+    schema_version: 1.0.0
+    primary_key: [period_scope, business_as_of_date, sku, metric_scope]
+    returned_fields:
+      - sku
+      - period_scope
+      - business_as_of_date
+      - coverage_start_date
+      - coverage_end_date
+      - metric_scope
+      - weekly_sku_net_sales
+      - weekly_sku_contribution_profit
+      - weekly_sku_refund_amount
+      - weekly_sku_margin
+      - weekly_sku_financial_status
+      - weekly_ad_spend
+      - weekly_ad_sales
+      - weekly_impressions
+      - weekly_clicks
+      - weekly_calculated_roas
+      - source_run_id
+      - snapshot_content_hash
+      - created_at_utc
+reference_datasets:
+  sku_business_attributes:
+    canonical_source: config/sku_business_attributes.xlsx
+    sheet_name: SKU_Business_Attributes
+    manifest_hash_key: config/sku_business_attributes.xlsx
+    schema_version: 1.0.0
+    primary_key: [sku]
+    filters: {attribute_record_status: ACTIVE, review_status: CURRENT}
+    returned_fields:
+      - sku
+      - item_id
+      - product_name
+      - product_line
+      - product_subcategory
+      - strategic_role
+      - channel
+      - fulfillment_type
+      - item_status
+      - attribute_record_status
+      - last_review_date
+      - review_status

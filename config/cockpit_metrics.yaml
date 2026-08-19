@@ -1,0 +1,480 @@
+schema_version: 1
+product_goal: North America E-commerce Business Cockpit / Weekly Business Control System
+scope:
+  first_vertical_slice: WALMART_MP
+  market: US
+  currency: USD
+  feishu_schema_change_allowed: true
+  phase2c_approved_feishu_schema_delta: [CM Health, Data Confidence]
+  phase2c_live_record_write_allowed: false
+  business_health_rules_v1_active: true
+  business_health_rule_engine: deterministic_only
+  ui_build_in_phase_2a: false
+
+metric_classifications: [FOUNDATION, OPERATING, DERIVED_CONTROL, DISPLAY_ONLY]
+freshness_states: [CURRENT, LAGGING, STALE, SOURCE_NOT_AVAILABLE, NOT_APPLICABLE]
+
+time_semantics:
+  control_week_field: control_week
+  control_week_definition: management review week; never a source measurement period
+  feishu_control_week_field: Week
+  required: [snapshot_date, data_through_date, period_start, period_end, period_type, import_batch_id]
+  optional: [source_generated_at, source_timezone]
+  week_role: deprecated_generic_name; structured payloads use control_week
+  comparable_period_rule: minimum_data_through_date_across_participating_sources
+  comparison_requires_trimmable_coverage: true
+  comparison_states: [COMPARABLE, NOT_COMPARABLE, INSUFFICIENT_CUTOFF]
+  preserve_native_freshness: true
+  numeric_freshness_thresholds: none_until_source_cadence_is_reviewed
+
+source_authority:
+  walmart_operating:
+    owner: Walmart Operation System
+    release_manifest: outputs/latest/backend_release_manifest.json
+    allowed_roots: [outputs/latest, data/history/marketplace, "outputs/runs/{official_run_id}/run_manifest.json", config]
+    write_policy: READ_ONLY
+  monthly_bp:
+    owner: STORM Structured Metrics
+    authority: KPI Rawdata
+    table: FACT_BP_TARGET_MONTHLY
+  actual_cm:
+    owner: STORM Structured Metrics
+    authority: verified Overview Actual CM detail
+    table: FACT_CM_SNAPSHOT
+    thd_rule: THD Main sell-in; DFC excluded
+  overview_bp:
+    owner: official workbook derived view
+    authority: SECONDARY_CHECK_ONLY
+
+metrics:
+  - metric_name: actual_sales
+    business_definition: Net sales recognized by the platform operating source for the selected native period.
+    business_question: Are sales progressing adequately?
+    source_authority: walmart_operating.business_current_state.net_sales for WALMART_MP
+    grain: week x market x platform
+    period_type: MTD
+    required_source: Walmart official business_current_state
+    calculation_rule: pass through the latest official non-superseded value
+    null_behavior: NULL and SOURCE_NOT_AVAILABLE; never zero-fill
+    freshness_rule: use coverage_end_date from the official snapshot
+    cockpit_destination: 01 Business Health.Weekly Summary and Sales Health context
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: OPERATING
+    phase2a_status: IN_SCOPE
+
+  - metric_name: bp_sales
+    business_definition: Full-month BP sales target aggregated from authoritative monthly SKU BP facts.
+    business_question: What is the approved monthly sales plan?
+    source_authority: monthly_bp
+    grain: month x market x platform
+    period_type: MONTHLY_TARGET
+    required_source: FACT_BP_TARGET_MONTHLY.bp_sales
+    calculation_rule: sum nullable SKU BP sales for the platform and month
+    null_behavior: NULL if any required authoritative component is unavailable
+    freshness_rule: tied to source import batch and plan month, not an operating cutoff
+    cockpit_destination: 01 Business Health.Weekly Summary; 02 Core SKU Performance.Target
+    can_trigger_signal: false
+    can_validate_action: true
+    classification: FOUNDATION
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sales_attainment_pct
+    business_definition: MTD actual sales divided by the full-month BP sales target; progress-to-monthly-plan, not plan-to-date pacing.
+    business_question: How much of the monthly sales plan has been achieved?
+    source_authority: actual_sales plus bp_sales
+    grain: week x market x platform
+    period_type: MTD_VS_MONTHLY_TARGET
+    required_source: [actual_sales, bp_sales]
+    calculation_rule: actual_sales / bp_sales when bp_sales is positive
+    null_behavior: NULL when either input is unavailable or bp_sales is zero
+    freshness_rule: inherit actual_sales data_through_date and disclose target month
+    cockpit_destination: 01 Business Health.Weekly Summary
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: actual_cm
+    business_definition: Contribution Margin amount from the verified official Actual CM source.
+    business_question: Is the business generating contribution margin?
+    source_authority: actual_cm
+    grain: snapshot x period_type x market x platform x brand x power_source; aggregated to platform for cockpit
+    period_type: MTD
+    required_source: FACT_CM_SNAPSHOT.actual_cm
+    calculation_rule: sum nullable verified Brand x Power Source Actual CM; THD excludes DFC
+    null_behavior: NULL if authoritative CM is unavailable
+    freshness_rule: use FACT_CM_SNAPSHOT.data_through_date
+    cockpit_destination: 01 Business Health.Weekly Summary
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: FOUNDATION
+    phase2a_status: IN_SCOPE
+
+  - metric_name: bp_cm
+    business_definition: Full-month BP contribution margin aggregated from authoritative monthly SKU BP facts.
+    business_question: What contribution margin was planned?
+    source_authority: monthly_bp
+    grain: month x market x platform
+    period_type: MONTHLY_TARGET
+    required_source: FACT_BP_TARGET_MONTHLY.bp_cm
+    calculation_rule: sum nullable SKU BP CM for the platform and month
+    null_behavior: NULL if required BP components are unavailable
+    freshness_rule: tied to source import batch and plan month
+    cockpit_destination: 01 Business Health.Weekly Summary
+    can_trigger_signal: false
+    can_validate_action: true
+    classification: FOUNDATION
+    phase2a_status: IN_SCOPE
+
+  - metric_name: cm_attainment_pct
+    business_definition: MTD Actual CM divided by full-month BP CM; progress-to-monthly-plan.
+    business_question: How much of the monthly CM plan has been achieved?
+    source_authority: actual_cm plus bp_cm
+    grain: week x market x platform
+    period_type: MTD_VS_MONTHLY_TARGET
+    required_source: [actual_cm, bp_cm]
+    calculation_rule: actual_cm / bp_cm when bp_cm is nonzero
+    null_behavior: NULL when either input is unavailable or bp_cm is zero
+    freshness_rule: inherit Actual CM data_through_date and disclose target month
+    cockpit_destination: 01 Business Health.Weekly Summary
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: cm_pct
+    business_definition: Actual CM divided by actual sales on the same verified CM source scope.
+    business_question: Is current sales volume economically productive?
+    source_authority: actual_cm workbook snapshot
+    grain: snapshot x period_type x market x platform
+    period_type: MTD
+    required_source: [FACT_CM_SNAPSHOT.actual_cm, FACT_CM_SNAPSHOT.actual_sales]
+    calculation_rule: sum(actual_cm) / sum(actual_sales) using identical rows and cutoff
+    null_behavior: NULL if numerator is unavailable or sales is unavailable/nonpositive
+    freshness_rule: use FACT_CM_SNAPSHOT.data_through_date
+    cockpit_destination: 01 Business Health.Weekly Summary
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sales_comparable_change_pct
+    business_definition: Change versus the prior official comparable sales period when interval status permits comparison.
+    business_question: Is the platform improving or deteriorating?
+    source_authority: walmart_operating.business_weekly_current_state history for WALMART_MP
+    grain: week x market x platform
+    period_type: WEEKLY_COMPARABLE
+    required_source: Walmart official business_weekly_snapshots and snapshot manifest
+    calculation_rule: compare consecutive WEEKLY_OPERATING snapshots only when coverage lengths and interval are comparable; do not use cross-month MTD reset as WoW
+    null_behavior: NULL with explicit insufficient/irregular history state
+    freshness_rule: current and prior snapshot cutoffs must be retained
+    cockpit_destination: 01 Business Health.Top Change
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: ad_spend
+    business_definition: Advertising spend from the official platform operating snapshot.
+    business_question: How much was spent on advertising?
+    source_authority: walmart_operating business or SKU snapshot
+    grain: week x market x platform; optionally week x platform x canonical_sku
+    period_type: NATIVE_SOURCE_PERIOD
+    required_source: Walmart official ad_spend
+    calculation_rule: pass through official aggregate; SKU rollups use sum(min_count=1)
+    null_behavior: NULL when unavailable
+    freshness_rule: retain advertising coverage_end_date independently
+    cockpit_destination: 01 Business Health.Weekly Summary; 02 Core SKU Performance.Ad Spend
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: OPERATING
+    phase2a_status: IN_SCOPE
+
+  - metric_name: attributed_ad_sales
+    business_definition: Sales attributed to advertising under the platform source definition.
+    business_question: Is advertising contributing measurable sales?
+    source_authority: walmart_operating business or SKU snapshot
+    grain: week x market x platform; optionally week x platform x canonical_sku
+    period_type: NATIVE_SOURCE_PERIOD
+    required_source: Walmart official ad_sales
+    calculation_rule: pass through official aggregate; do not mix YTD and recent daily extracts
+    null_behavior: NULL when unavailable; zero only when source explicitly reports zero
+    freshness_rule: retain advertising coverage_end_date independently
+    cockpit_destination: 01 Business Health.Weekly Summary; SKU Evidence
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: OPERATING
+    phase2a_status: IN_SCOPE
+
+  - metric_name: roas
+    business_definition: Attributed advertising sales divided by advertising spend.
+    business_question: Is advertising spend efficient?
+    source_authority: walmart_operating normalized ad inputs
+    grain: week x market x platform; optionally week x platform x canonical_sku
+    period_type: NATIVE_SOURCE_PERIOD
+    required_source: [ad_spend, attributed_ad_sales]
+    calculation_rule: attributed_ad_sales / ad_spend when spend is positive
+    null_behavior: NULL if spend is unavailable or zero; explicit zero if spend is positive and attributed sales is source-reported zero
+    freshness_rule: use comparison_through_date for cross-source use
+    cockpit_destination: 01 Business Health.Ads Health context; 02 Core SKU Performance.ROAS
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: inventory_condition
+    business_definition: "Minimal evidence-backed inventory state: HEALTHY, EXCESS, CONSTRAINED, or SOURCE_NOT_AVAILABLE."
+    business_question: Is inventory constraining sales or creating exposure?
+    source_authority: walmart_operating SKU inventory_status and inventory_units
+    grain: week x market x platform; SKU detail retained separately
+    period_type: SNAPSHOT
+    required_source: Walmart official SKU inventory snapshot
+    calculation_rule: SKU status is pass-through; platform aggregation rule remains contract-only pending approval
+    null_behavior: SOURCE_NOT_AVAILABLE, never zero or HEALTHY by default
+    freshness_rule: retain inventory snapshot business_as_of_date independently
+    cockpit_destination: 01 Business Health.Inventory Health; 02 Core SKU Performance.Inventory
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: OPERATING
+    phase2a_status: CONTRACT_ONLY
+
+  - metric_name: freshness_state
+    business_definition: Coverage state for each metric relative to its reviewed source cadence.
+    business_question: Can management safely rely on this metric now?
+    source_authority: source manifest and metric lineage
+    grain: metric_instance
+    period_type: SNAPSHOT
+    required_source: [snapshot_date, data_through_date, source cadence]
+    calculation_rule: CURRENT/LAGGING/STALE only from reviewed cadence; otherwise SOURCE_NOT_AVAILABLE or NOT_APPLICABLE
+    null_behavior: SOURCE_NOT_AVAILABLE
+    freshness_rule: no invented numeric thresholds
+    cockpit_destination: Data status; Data Completeness; Data As Of
+    can_trigger_signal: true
+    can_validate_action: false
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: comparison_through_date
+    business_definition: Last common valid date shared by all facts participating in a cross-source calculation.
+    business_question: Are compared metrics aligned to the same valid cutoff?
+    source_authority: participating metric lineage
+    grain: derived_metric_instance
+    period_type: COMPARABLE
+    required_source: participating data_through_date values
+    calculation_rule: minimum non-null data_through_date across participating sources
+    null_behavior: NULL when any required participating cutoff is unavailable
+    freshness_rule: native source cutoffs remain visible and are never overwritten
+    cockpit_destination: Data status and Evidence
+    can_trigger_signal: false
+    can_validate_action: true
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: overall_business_status
+    business_definition: Human-reviewed overall business health informed by available Sales, CM, Ads, Inventory, and data-quality evidence.
+    business_question: What requires management attention this week?
+    source_authority: existing STORM rules plus human review
+    grain: week x market x platform
+    period_type: WEEKLY_REVIEW
+    required_source: available control metrics and explicit missingness
+    calculation_rule: no new automatic thresholds in Phase 2A; UNKNOWN until approved deterministic rule or human review
+    null_behavior: UNKNOWN; never GREEN by default
+    freshness_rule: disclose all component cutoffs
+    cockpit_destination: 01 Business Health.Overall Health
+    can_trigger_signal: false
+    can_validate_action: false
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: management_interpretation
+    business_definition: Primary driver, key risk, key opportunity, and required action stated for weekly review.
+    business_question: What happened, why does it matter, and what should be reviewed next?
+    source_authority: deterministic evidence summary plus human review
+    grain: week x market x platform
+    period_type: WEEKLY_REVIEW
+    required_source: cockpit facts and data-status payload
+    calculation_rule: minimal rule-based summary; no autonomous recommendation or action creation
+    null_behavior: blank when evidence is insufficient
+    freshness_rule: cite source cutoffs in Evidence
+    cockpit_destination: 01 Business Health Top Change/Risk/Opportunity/Next Priority
+    can_trigger_signal: false
+    can_validate_action: false
+    classification: DISPLAY_ONLY
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sku_actual_sales
+    business_definition: Official actual sales for a canonical SKU.
+    business_question: Which core SKU is creating or losing sales scale?
+    source_authority: walmart_operating.sku_current_performance.net_sales
+    grain: week x platform x canonical_sku
+    period_type: MTD
+    required_source: Walmart official SKU snapshot
+    calculation_rule: pass through latest official SKU value
+    null_behavior: NULL when unavailable
+    freshness_rule: retain SKU coverage_end_date
+    cockpit_destination: 02 Core SKU Performance.Sales
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: OPERATING
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sku_bp_sales
+    business_definition: Full-month BP sales target for a platform and canonical SKU.
+    business_question: Is a core SKU progressing toward its approved plan?
+    source_authority: monthly_bp
+    grain: month x platform x canonical_sku
+    period_type: MONTHLY_TARGET
+    required_source: FACT_BP_TARGET_MONTHLY.bp_sales
+    calculation_rule: direct fact at verified natural grain
+    null_behavior: NULL when unavailable
+    freshness_rule: tied to import batch and plan month
+    cockpit_destination: 02 Core SKU Performance.Target
+    can_trigger_signal: false
+    can_validate_action: true
+    classification: FOUNDATION
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sku_sales_attainment_pct
+    business_definition: SKU MTD actual sales divided by SKU full-month BP sales target.
+    business_question: Which core SKU is ahead or behind monthly target progress?
+    source_authority: sku_actual_sales plus sku_bp_sales
+    grain: week x platform x canonical_sku
+    period_type: MTD_VS_MONTHLY_TARGET
+    required_source: [sku_actual_sales, sku_bp_sales]
+    calculation_rule: sku_actual_sales / sku_bp_sales when target is positive
+    null_behavior: NULL when either input is unavailable or target is zero
+    freshness_rule: disclose actual cutoff and target month
+    cockpit_destination: 02 Core SKU Performance.Target Gap %
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: DERIVED_CONTROL
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sku_advertising
+    business_definition: SKU Ad Spend and ROAS using official Walmart advertising evidence.
+    business_question: Is advertising helping or wasting spend for this core SKU?
+    source_authority: walmart_operating.sku_current_performance
+    grain: week x platform x canonical_sku
+    period_type: NATIVE_SOURCE_PERIOD
+    required_source: [ad_spend, ad_sales]
+    calculation_rule: retain spend and attributed sales; ROAS uses the platform rule above
+    null_behavior: NULL values remain NULL
+    freshness_rule: retain advertising cutoff independently
+    cockpit_destination: 02 Core SKU Performance.Ad Spend/ROAS
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: OPERATING
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sku_inventory_condition
+    business_definition: Official normalized inventory state and units for a canonical SKU.
+    business_question: Is this SKU constrained, exposed, or unavailable?
+    source_authority: walmart_operating.sku_current_performance
+    grain: week x platform x canonical_sku
+    period_type: SNAPSHOT
+    required_source: [inventory_status, inventory_units]
+    calculation_rule: pass through verified source status; no forecasting or reorder calculation
+    null_behavior: SOURCE_NOT_AVAILABLE
+    freshness_rule: retain inventory snapshot date
+    cockpit_destination: 02 Core SKU Performance.Inventory and Status context
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: OPERATING
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sku_availability
+    business_definition: Whether the SKU is buyable/available from a verified source.
+    business_question: Is availability preventing sales?
+    source_authority: no approved Phase 2A source yet
+    grain: week x platform x canonical_sku
+    period_type: SNAPSHOT
+    required_source: future verified buyability evidence
+    calculation_rule: no inference from inventory alone
+    null_behavior: UNKNOWN
+    freshness_rule: SOURCE_NOT_AVAILABLE until source is approved
+    cockpit_destination: 02 Core SKU Performance.Buyability
+    can_trigger_signal: true
+    can_validate_action: true
+    classification: OPERATING
+    phase2a_status: SOURCE_NOT_AVAILABLE
+
+  - metric_name: sku_business_role
+    business_definition: Human-reviewed current role of the SKU in the portfolio.
+    business_question: How should management interpret this SKU's performance?
+    source_authority: governed Walmart business attributes or STORM human review
+    grain: platform x canonical_sku
+    period_type: CURRENT_STATE
+    required_source: reviewed strategic_role/manual business attribute
+    calculation_rule: adapter mapping only; no AI override
+    null_behavior: OTHER or blank only when contract permits; never inferred from sales alone
+    freshness_rule: retain reviewed-source version/date
+    cockpit_destination: 02 Core SKU Performance.SKU Role
+    can_trigger_signal: false
+    can_validate_action: false
+    classification: OPERATING
+    phase2a_status: IN_SCOPE
+
+  - metric_name: sku_primary_issue
+    business_definition: Evidence-backed main operating issue for a selected core/exception SKU.
+    business_question: What is the primary reason this SKU needs attention?
+    source_authority: approved deterministic status plus human review
+    grain: week x platform x canonical_sku
+    period_type: WEEKLY_REVIEW
+    required_source: SKU facts, statuses, and data-quality evidence
+    calculation_rule: minimal deterministic summary; do not migrate unrelated legacy rules automatically
+    null_behavior: blank when insufficient evidence
+    freshness_rule: cite component cutoffs
+    cockpit_destination: 02 Core SKU Performance.Diagnosis/Main Change
+    can_trigger_signal: true
+    can_validate_action: false
+    classification: DISPLAY_ONLY
+    phase2a_status: CONTRACT_ONLY
+
+  - metric_name: sku_required_action
+    business_definition: Human-approved next action or review request associated with a SKU issue.
+    business_question: What should the owner review or do next?
+    source_authority: 03 Action & Validation or human review
+    grain: action lifecycle record linked to platform/SKU
+    period_type: ACTION_LIFECYCLE
+    required_source: existing governed action record
+    calculation_rule: display/link approved action; never auto-create
+    null_behavior: blank when no approved action exists
+    freshness_rule: retain action update and validation dates
+    cockpit_destination: 02 Core SKU Performance.Recommended Action; 03 Action & Validation
+    can_trigger_signal: false
+    can_validate_action: false
+    classification: DISPLAY_ONLY
+    phase2a_status: CONTRACT_ONLY
+
+  - metric_name: action_validation_delta
+    business_definition: Comparable change between an action's approved baseline metric and actual result.
+    business_question: Did the action produce the intended measurable outcome?
+    source_authority: 03 Action & Validation plus cockpit facts at aligned cutoffs
+    grain: action_instance x validation_window x metric
+    period_type: ACTION_VALIDATION
+    required_source: [Baseline, Success Criteria, Actual Result, comparable cockpit metric]
+    calculation_rule: compare only the approved metric and validation window using comparison_through_date
+    null_behavior: NULL and INCONCLUSIVE when evidence is unavailable or incomparable
+    freshness_rule: validation evidence must be current through the approved window
+    cockpit_destination: 03 Action & Validation.Actual Result/Conclusion
+    can_trigger_signal: false
+    can_validate_action: true
+    classification: DERIVED_CONTROL
+    phase2a_status: CONTRACT_ONLY
+
+  - metric_name: signal_eligibility
+    business_definition: Whether evidence satisfies an explicitly approved signal rule.
+    business_question: Does this issue, risk, or opportunity merit human review in the Signal Register?
+    source_authority: approved STORM signal rules and cockpit facts
+    grain: week x market x platform x optional canonical_sku x rule
+    period_type: WEEKLY_REVIEW
+    required_source: metric value, freshness, rule version, and evidence
+    calculation_rule: evaluate only approved rules; Phase 2A does not create Signal records
+    null_behavior: NOT_ELIGIBLE_WHEN_EVIDENCE_UNAVAILABLE, never GREEN
+    freshness_rule: all rule inputs must expose valid cutoffs
+    cockpit_destination: dry-run candidate for 04 Signal Register
+    can_trigger_signal: true
+    can_validate_action: false
+    classification: DERIVED_CONTROL
+    phase2a_status: CONTRACT_ONLY

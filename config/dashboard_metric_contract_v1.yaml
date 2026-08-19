@@ -1,0 +1,62 @@
+version: "1.0"
+phase: PHASE_2F_R
+target_dashboard: STORM Weekly Cockpit
+scope: {market: US, platform: Walmart, level: PLATFORM}
+calculation_authority: STORM accepted canonical artifacts
+feishu_role: presentation_and_aggregation_only
+
+business_health_fields:
+  currency:
+    [Actual Sales, BP Sales, Sales Gap, Weekly Operating Sales, Weekly Sales Change $, Actual CM, BP CM, CM Gap, Ad Spend, Attributed Sales]
+  percentage: [Sales Attainment, Weekly Sales Change %, CM Attainment, CM %]
+  ratio: [ROAS]
+  integer: [Available Units, OOS SKU Count]
+  date: [Sales Data Through, CM Data Through, Ads Data Through, Inventory Data Through]
+  reused_categorical: [Overall Health, Sales Health, CM Health, Ads Health, Inventory Health, Data Confidence]
+  omitted:
+    YTD Availability/Status: no suitable existing live status field; SOURCE_NOT_AVAILABLE remains in the canonical artifact
+
+core_sku_fields:
+  currency: [Sales Gap, Attributed Sales]
+  percentage: [Sales Attainment]
+  reused: [Week, Platform, SKU, SKU Role, Sales, Target, Ad Spend, ROAS, Inventory, Main Change, Diagnosis, Evidence, Data As Of]
+
+manual_dashboard:
+  filters:
+    - {name: Control Week, source: 01 Business Health.Week, default: 2026-W33, limitation: latest-week automation must be configured manually if supported}
+    - {name: Platform, source: 01 Business Health.Platform, default: Walmart}
+  component_order:
+    - Header / Control Status
+    - Sales Performance
+    - Profitability
+    - Advertising / Inventory
+    - Weekly Trend
+    - Top Sales Detractors
+    - Positive Contributors
+    - Advertising Waste
+    - Availability Attention
+    - Data Coverage
+  components:
+    - {name: Control Status, type: text_and_status, source: 01 Business Health, fields: [Platform, Week, Overall Health, Sales Health, CM Health, Data Confidence], aggregation: none, filter: "Platform = Walmart AND Week = selected", placement: "row 1, full width"}
+    - {name: Actual Sales, type: metric_card, source: 01 Business Health, field: Actual Sales, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: USD, placement: "row 2, 3 columns"}
+    - {name: BP Sales, type: metric_card, source: 01 Business Health, field: BP Sales, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: USD, placement: "row 2, 3 columns"}
+    - {name: Gap to BP, type: metric_card, source: 01 Business Health, field: Sales Gap, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: USD, placement: "row 2, 3 columns"}
+    - {name: Sales Attainment, type: metric_card, source: 01 Business Health, field: Sales Attainment, aggregation: average, filter: "Platform = Walmart AND Week = selected", format: percent_2dp, placement: "row 2, 3 columns"}
+    - {name: Actual CM, type: metric_card, source: 01 Business Health, field: Actual CM, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: USD, placement: "row 3, 3 columns"}
+    - {name: BP CM, type: metric_card, source: 01 Business Health, field: BP CM, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: USD, placement: "row 3, 3 columns"}
+    - {name: CM Gap, type: metric_card, source: 01 Business Health, field: CM Gap, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: USD, placement: "row 3, 3 columns"}
+    - {name: CM Attainment, type: metric_card, source: 01 Business Health, field: CM Attainment, aggregation: average, filter: "Platform = Walmart AND Week = selected", format: percent_2dp, placement: "row 3, 3 columns"}
+    - {name: CM %, type: metric_card, source: 01 Business Health, field: CM %, aggregation: average, filter: "Platform = Walmart AND Week = selected", format: percent_2dp, placement: "row 3, 3 columns"}
+    - {name: Ad Spend, type: metric_card, source: 01 Business Health, field: Ad Spend, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: USD, placement: "row 4, compact"}
+    - {name: Attributed Sales, type: metric_card, source: 01 Business Health, field: Attributed Sales, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: USD, placement: "row 4, compact"}
+    - {name: ROAS, type: metric_card, source: 01 Business Health, field: ROAS, aggregation: average, filter: "Platform = Walmart AND Week = selected", format: ratio_2dp, placement: "row 4, compact"}
+    - {name: Available Units, type: metric_card, source: 01 Business Health, field: Available Units, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: integer, placement: "row 4, compact"}
+    - {name: OOS SKU Count, type: metric_card, source: 01 Business Health, field: OOS SKU Count, aggregation: sum, filter: "Platform = Walmart AND Week = selected", format: integer, placement: "row 4, compact"}
+    - {name: Weekly Operating Sales, type: line_chart, source: 01 Business Health, dimension: Week, field: Weekly Operating Sales, aggregation: sum, filter: "Platform = Walmart", sort: "Week ascending", format: USD, placement: "row 5, 8 columns", note: "one live point currently; future weekly records populate automatically"}
+    - {name: Weekly Change Context, type: metric_pair, source: 01 Business Health, fields: [Weekly Sales Change $, Weekly Sales Change %], aggregation: [sum, average], filter: "Platform = Walmart AND Week = selected", format: [USD, percent_2dp], placement: "row 5, 4 columns"}
+    - {name: Top Sales Detractors, type: ranking_table, source: 02 Core SKU Performance, fields: [SKU, SKU Role, Sales, Target, Sales Gap, Sales Attainment, Evidence], aggregation: none, filter: "Platform = Walmart AND Week = selected AND Sales Gap is not blank", sort: "Sales Gap ascending", top_n: 5, placement: "row 6, full width"}
+    - {name: Positive Contributors, type: ranking_table, source: 02 Core SKU Performance, fields: [SKU, SKU Role, Sales Gap], aggregation: none, filter: "Platform = Walmart AND Week = selected AND Sales Gap > 0", sort: "Sales Gap descending", top_n: 3, placement: "row 7, 4 columns"}
+    - {name: Advertising Waste, type: ranking_table, source: 02 Core SKU Performance, fields: [SKU, Ad Spend, Attributed Sales, ROAS], aggregation: none, filter: "Platform = Walmart AND Week = selected AND Ad Spend > 0 AND Attributed Sales = 0", sort: "Ad Spend descending", top_n: 3, placement: "row 7, 4 columns"}
+    - {name: Availability Attention, type: ranking_table, source: 02 Core SKU Performance, fields: [SKU, SKU Role, Inventory, Target, Evidence], aggregation: none, filter: "Platform = Walmart AND Week = selected AND Inventory = 0 AND Target > 0", sort: "Target descending", top_n: 3, placement: "row 7, 4 columns"}
+    - {name: Data Coverage, type: date_cards, source: 01 Business Health, fields: [Sales Data Through, CM Data Through, Ads Data Through, Inventory Data Through], aggregation: max, filter: "Platform = Walmart AND Week = selected", format: yyyy-MM-dd, placement: "row 8, full width, visually secondary", note: "YTD = SOURCE_NOT_AVAILABLE; show as static annotation"}
+
