@@ -152,9 +152,11 @@ function getP(){return DATA.periods[currentPeriod];}
 function renderAll(){
   var P=getP();var ex=P.executive;
   // KPIs
+  var dailyPts=P.daily_trend.length||1;
   var kpis=[
     {l:'REVENUE',v:fmt$(ex.total_revenue),s:fmtN(ex.total_units)+' units',c:''},
     {l:'WOW (7-DAY)',v:(ex.wow_display>=0?'+':'')+ex.wow_display+'%',s:fmt$(ex.w1)+' → '+fmt$(ex.w2),c:ex.wow_display>=0?'green':'red'},
+    {l:'AVG DAILY',v:fmt$(ex.total_revenue/dailyPts),s:dailyPts+' days',c:''},
     {l:'GROSS MARGIN%',v:ex.gm_display+'%',s:fmt$(ex.total_revenue*ex.gm_pct),c:'green'},
     {l:'CM%',v:ex.cm_display+'%',s:'Target: 5%',c:ex.overall_cm_pct>=0.05?'green':'red'},
     {l:'DFC AUG GMV',v:fmt$(DATA.shared.dfc.aug_gmv),s:DATA.shared.dfc.monthly_summary['2026-08'].units+' units',c:''}
