@@ -1,0 +1,71 @@
+schema_version: 1
+contract_name: Business Health Rules v1
+status: ACTIVE_APPROVED_PHASE_2C
+active: true
+implementation: deterministic_only
+llm_judgment_allowed: false
+autonomous_recommendation_allowed: false
+external_record_write_allowed: false
+outputs: [GREEN, YELLOW, RED, UNKNOWN]
+
+sales_health:
+  eligibility: authoritative_actual_sales_and_compatible_bp_sales_required
+  rules_in_order:
+    - {when: "actual_sales < 0", result: RED}
+    - {when: "sales_attainment_pct >= 0.95", result: GREEN}
+    - {when: "sales_attainment_pct >= 0.80", result: YELLOW}
+    - {when: otherwise, result: RED}
+  weekly_downgrade:
+    eligibility: consecutive_equal_length_weekly_operating_same_definition
+    threshold: "weekly_sales_change_pct <= -0.25"
+    mapping: {GREEN: YELLOW, YELLOW: RED, RED: RED}
+    positive_trend_may_upgrade: false
+    mtd_month_boundary_allowed: false
+
+cm_health:
+  eligibility: authoritative_period_compatible_reconciled_actual_and_bp_cm_required
+  rules_in_order:
+    - {when: "actual_cm < 0", result: RED}
+    - {when: "actual_cm_pct < 0", result: RED}
+    - {when: "cm_attainment_pct >= 0.95", result: GREEN}
+    - {when: "cm_attainment_pct >= 0.80", result: YELLOW}
+    - {when: otherwise, result: RED}
+  walmart_only: true
+  thd_main_dfc_executed: false
+
+advertising_health:
+  unavailable_result: UNKNOWN
+  hard_rule: {when: "ad_spend > 0 and attributed_ad_sales == 0", result: RED}
+  otherwise: UNKNOWN
+  green_yellow_roas_thresholds_allowed: false
+
+inventory_health:
+  phase2c_result: UNKNOWN
+  reason: raw_oos_counts_are_not_an_approved_materiality_rule
+
+data_confidence:
+  states: [HIGH, MEDIUM, LOW, UNKNOWN]
+  core_domains: [sales, cm_actual, bp_plan]
+  high: authoritative_reconciled_current_core_evidence_without_limitations
+  medium: trustworthy_core_evidence_with_non_blocking_lag_cutoff_mismatch_optional_gap_or_warning
+  low: stale_unavailable_unreconciled_semantically_unresolved_or_invalid_core_evidence
+  unknown: confidence_evidence_cannot_be_determined
+  business_health_override_allowed: false
+
+overall_health:
+  inputs: [sales_health, cm_health]
+  rules_in_order:
+    - {when: either_red, result: RED}
+    - {when: either_yellow, result: YELLOW}
+    - {when: both_green, result: GREEN}
+    - {when: otherwise, result: UNKNOWN}
+  weighting_allowed: false
+  advertising_override_allowed: false
+  inventory_override_allowed: false
+
+management_interpretation:
+  llm_narrative_allowed: false
+  deterministic_fact_or_rule_evidence_allowed: true
+  approved_existing_action_or_signal_allowed: true
+  human_management_input_allowed: true
+  unresolved_when_no_approved_source: true

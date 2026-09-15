@@ -1,0 +1,793 @@
+schema_version: "0.3.0"
+base:
+  name: "STORM Business Control"
+  live_base_id: null
+  status: ACTIVE_CANONICAL
+  live_identifier_storage: session_runtime
+  default_table_id: null
+
+deployment:
+  phase: PHASE_2F_R
+  deployment_status: ACTIVE_CANONICAL
+  deployed_at: "2026-08-12T12:11:23+08:00"
+  reconciliation: PASS
+  schema_fingerprint: sha256:f7ebfc99fae55083aacb46c53994aaeb085e46eb8bdbb0c52460ee12707c966f
+  schema_counts: {tables: 4, fields: 151, views: 13, reciprocal_relations: 1}
+  records_before_first_supervised_write: 0
+  base_display_name_source: user_approved_runtime_identity
+  base_resource_fingerprint: sha256:35bef9c6ee413887acc5bce28c30ccfc9b0b2e62d4f7493a509f0d19572aeac4
+  base_resource_locator_storage: session_runtime_only
+  authentication_credentials_persisted: false
+  first_supervised_write:
+    status: VERIFIED
+    written_at: "2026-08-12T12:20:00+08:00"
+    operation: bitable.v1.appTableRecord.create
+    table_id: tblrYMjU0V7eMo8F
+    record_id: recvs3jDMCtjeZ
+    record_identity: HLT-2026W33-US-WMT
+    pre_write_identity_matches: 0
+    records_created: 1
+    post_write_reconciliation: PASS
+    records_after: {business_health: 1, core_sku: 0, action: 0, signal: 0}
+
+phase2fr:
+  status: DATA_READY_MANUAL_DASHBOARD_LAYOUT_REQUIRED
+  dashboard_name: "STORM Weekly Cockpit"
+  dashboard_automation_capability: NOT_SUPPORTED
+  business_health_fields_added: 21
+  core_sku_fields_added: 3
+  records_after: {business_health: 1, core_sku: 14, action: 0, signal: 0}
+  backfill_reconciliation: PASS
+  core_dashboard_source_reconciliation: PASS
+
+phase2_attempt:
+  writes_stopped: false
+  blocker: null
+  default_table:
+    name: 数据表
+    table_id: tblDCLNsvifgWLEJ
+    active: false
+    deleted: true
+    deletion_verified: true
+    fields:
+      文本: fld52IZQr5
+      单选: fldXYyR3ac
+      日期: fld09HjqBO
+      附件: fld38NkJ9A
+    default_view:
+      name: 表格
+      view_id: vewX74mwjG
+    system_blank_records: 10
+    objects_remaining: 0
+  intended_tables_created: 4
+  intended_fields_created: 123
+  intended_views_created: 13
+  business_records_inserted: 0
+  phase2r:
+    registry_version: "0.5.1"
+    delete_tool: bitable.v1.appTable.batchDelete
+    user_tool_scope_updated: true
+    mcp_restart_required: false
+    completed: true
+    delete_succeeded: true
+    final_status: READY_FOR_PHASE_3
+
+baseline:
+  name: "STORM v0.1.1 Weekly Pilot Hardened Baseline"
+  status: hardened
+  prior_baseline: "STORM v0.1 Weekly Pilot Baseline"
+  phase2_completed_at: "2026-08-10T16:27:47+08:00"
+  phase3_frozen_at: "2026-08-10T16:37:05+08:00"
+  phase4d_hardened_at: "2026-08-11T09:55:41+08:00"
+  base_identifier_storage: session_runtime_not_persisted
+  live_counts:
+    tables: 4
+    fields: 125
+    views: 13
+    reciprocal_relations: 1
+  business_records_at_v0_1_freeze: 0
+  business_records_at_hardening: 26
+  view_usability:
+    business_health_level_filter: PLATFORM
+    specialized_filters_repaired: true
+    overdue_view_status: DEFERRED_NOT_RELIABLY_FILTERABLE
+    ai_fields_default_hidden: true
+    optional_health_fields_default_hidden: true
+    persistent_sorting_required: false
+  known_mcp_limitations:
+    - "lark-mcp 0.5.1 does not support persistent view sorting; this is non-blocking for the weekly pilot."
+  pilot_input_method: MANUAL_ASSISTED
+  automatic_ingestion_enabled: false
+
+phase4d:
+  status: complete
+  pre_change_checkpoint: storm-v0.1.0-pre-4d
+  human_reviewed_fields_added: 2
+  approved_pilot_records_updated: 15
+  live_counts_verified: {tables: 4, fields: 125, views: 13, records: 26}
+  pilot_reciprocal_links_verified: 5
+  quantitative_metrics_changed: false
+  weekly_close_executed: false
+
+legacy_identifiers:
+  deployment_status: LEGACY_UNRESOLVED
+  base_token_persisted: false
+  tables:
+    "01 Business Health":
+      table_id: tblCw58AnpOBjQOZ
+      fields:
+        "Health ID": fldkZBt9or
+        Week: fld5YfoyHl
+        Market: fldsr7peSt
+        Platform: fldkRMmRQi
+        Level: fldeFZyzNP
+        Channel: fldtiS8hKG
+        "Overall Health": fldowH02iV
+        "Sales Health": fldHjvdbm8
+        "Ads Health": fldA4BbnNc
+        "Inventory Health": fldyzn03VP
+        "Buyability Health": fldRl5Nv5n
+        "Listing Health": fldGKvzPvb
+        "Fulfillment Health": fldUyCXWjL
+        "Review Health": flduSqs5vP
+        "Project Health": fldg1ln4Jp
+        "Weekly Summary": fldjpBYyqy
+        "Top Change": fldo2Tj2Nu
+        "Top Risk": fldySeabAq
+        "Top Opportunity": fldW50aWNB
+        "Next Priority": fld87eMtRi
+        "Data Completeness": fldU3QY2Vf
+        "Data As Of": fldSIh0szV
+        "Source Type": fldZRvDYuR
+        "Source Ref": fldWMIpePz
+        "Human Reviewed": fld45xTHqO
+        "Snapshot Locked": fldF72BWgQ
+        "Last Reviewed At": fldEOdyJ8l
+        "Created At": fld3PZ20qg
+        "Updated At": fldJBpQCE8
+      views:
+        本周总览: vewixmNybV
+        红黄灯: vewa4QEaNs
+    "02 Core SKU Performance":
+      table_id: tblCXQDjYYieW5O2
+      fields:
+        "SKU Perf ID": fldMm8hNV5
+        Week: fldvxKLc4G
+        Market: fldREIiGQy
+        Platform: fldbWbY8SX
+        Channel: fldqw7SR0P
+        "Product Line": flduwRG9w0
+        SKU: fldNfMc77e
+        "Model / Product": fldrOSQtbY
+        "SKU Role": fldAEdST3J
+        Sales: fldVdDr9n1
+        Orders: fldgDWcbx2
+        Units: fld1703Zui
+        "WoW Sales %": fldZ7ryOQh
+        Target: fldooIwBxf
+        "Target Gap %": fldw2QVzZG
+        Traffic: fldzDOF4dy
+        "Conversion Rate": fldRHaXcdG
+        "Ad Spend": fldZONQhfL
+        ROAS: fld4o8ZSfm
+        Inventory: fldz05Frsa
+        DOS: fldI9XgPHB
+        Buyability: fldk05oWBy
+        "Listing Status": fld7kiumow
+        Status: fldN0nneRH
+        "Main Change": flde68faJ2
+        Diagnosis: fldRfIxhv8
+        "Recommended Action": fldbpJDv2p
+        "Data As Of": fldeqnjVTB
+        "Source Type": fldCtjKjEg
+        "Source Ref": fldk0U7kZN
+        Evidence: fldqmu0YwI
+        "Human Reviewed": fldIThfRFq
+        "Snapshot Locked": fldDSKCzj0
+        "Created At": fldXKPk4MM
+        "Updated At": fld11xkMbQ
+      views:
+        本周核心SKU: vewVodWqXt
+        异常SKU: vewOEx7622
+    "03 Action & Validation":
+      table_id: tblzXdci4FSe97hL
+      fields:
+        "Action ID": fldUq99fiX
+        "Week Created": fld5TJ3vbc
+        Market: fldSsgjch0
+        Platform: fldpcfrvvR
+        Channel: fldl5h8zVi
+        "Product Line": fldPRw5Z5F
+        SKU: fldX5FCtIz
+        "Action Title": fldyPUa7da
+        Objective: fldmIKgnLt
+        "Why / Problem": fldJulkfM6
+        "Action Taken": fldIb59f6q
+        "Expected Result": fldCRMSDUX
+        Baseline: fldYEB4U2i
+        "Success Criteria": fldemyKJnK
+        Owner: fldBcLqn6M
+        Priority: fldcSU5eWD
+        Status: fldX0yUhaD
+        "Execution Date": fldc90V7yT
+        "Validation Date": fldS99zkDS
+        "Validation Window": fldlNTrshs
+        "Actual Result": fldZZaubJb
+        Conclusion: flds0UKCqj
+        "AI Analysis": fldEoCz6kF
+        "AI Suggested Status": fldIBIyMTv
+        "AI Confidence": fldR0WutGI
+        "Human Decision": fldGU4fas5
+        "Human Reviewed": fldEkYL4yI
+        "Related Signals": fldWcLAewz
+        Evidence: fldjBdcHYi
+        "Last Reviewed At": fld9eqvQov
+        "Created At": fldLBg4Kxa
+        "Updated At": fldmIVWQe0
+      views:
+        本周动作: vewMmwE2dt
+        等待验证: vewnEKVSnr
+        逾期: vewso81iFt
+        P0-P1: vewpd0mmMe
+        无效或不确定: vewIukpmog
+    "04 Signal Register":
+      table_id: tblbBnQQmLWN6nUh
+      fields:
+        "Signal ID": fld0gkDxbB
+        "Week Opened": fldQINXG6Z
+        Market: fld7j3gwiB
+        Platform: fld0QZLDZg
+        Channel: fldjG5sIYY
+        "Product Line": fldp5BueVG
+        SKU: fldA1meWHA
+        "Signal Type": fldE8hbsbN
+        Category: fldLxD8MMR
+        Title: flde7rg1ow
+        Description: fldi3xCmM8
+        "Business Impact": fldGQyko0u
+        Priority: fldr5JXCa9
+        Confidence: fldURdRFxr
+        "Root Cause": fldiRMb00B
+        "Current Status": fldggmojDX
+        Owner: flde7Ro4jF
+        "Next Step": fldC0gGrX5
+        DDL: fldciFVt3N
+        "Related Actions": fldAIm1rSq
+        Evidence: fldHLwUGqA
+        "Source Type": fldM8AUMUo
+        "Source Ref": fldDO1GkVt
+        "AI Analysis": fldCeyOycM
+        "Human Decision": flddwrpdOq
+        "Human Reviewed": fldjj5yFif
+        "Resolved At": fldcmML1c0
+        "Created At": fldntLFFwI
+        "Updated At": fldiyvMohN
+      views:
+        未决Signal: vew2HUcsGN
+        P0-P1: vewW2l4nKO
+        风险: vewOtD4bgA
+        机会: vewJloQH3G
+  relation:
+    action_field_id: fldWcLAewz
+    signal_field_id: fldAIm1rSq
+    multiple: true
+
+legacy_deployment:
+  deployment_status: LEGACY_UNRESOLVED
+  provenance: PROVENANCE_INCOMPLETE
+  historical_table_ids:
+    - tblCw58AnpOBjQOZ
+    - tblCXQDjYYieW5O2
+    - tblzXdci4FSe97hL
+    - tblbBnQQmLWN6nUh
+  historical_relation_field_ids: [fldWcLAewz, fldAIm1rSq]
+  source_checkpoint: "git:a71cebf and git:85f8d19 config/feishu_schema.yaml"
+
+live_identifiers:
+  deployment_status: ACTIVE_CANONICAL
+  base_resource_fingerprint: sha256:35bef9c6ee413887acc5bce28c30ccfc9b0b2e62d4f7493a509f0d19572aeac4
+  base_resource_locator_storage: session_runtime_only
+  authentication_credentials_persisted: false
+  tables:
+    "01 Business Health":
+      table_id: tblrYMjU0V7eMo8F
+      fields:
+        "Health ID": fldyqFnsd8
+        "Week": fldFUfhOc1
+        "Market": fldUwJt9kd
+        "Platform": fldOl40Ndu
+        "Level": fldNrniXDG
+        "Channel": fldPYbQcGj
+        "Overall Health": fldJuspxcY
+        "Sales Health": fldd1238kC
+        "CM Health": fldNSdSCqu
+        "Ads Health": fldYdVc1cN
+        "Inventory Health": fldAZCu4Ok
+        "Buyability Health": fldd8YDTBP
+        "Listing Health": fld50TsV4D
+        "Fulfillment Health": flde2Sw0Oc
+        "Review Health": flddJR2dZS
+        "Project Health": fld9WwG9xe
+        "Weekly Summary": fldf0yNPou
+        "Top Change": fld7f4YfFL
+        "Top Risk": fldjfA0ICX
+        "Top Opportunity": fldo14PqJT
+        "Next Priority": fldMi6DJDn
+        "Data Completeness": fld6Edi3lD
+        "Data Confidence": fldj9HwTg5
+        "Actual Sales": fldrwpGGTS
+        "BP Sales": fldlRkrLk6
+        "Sales Gap": fld4yeb119
+        "Sales Attainment": fldwdQcH3H
+        "Weekly Operating Sales": fldtfqDcm9
+        "Weekly Sales Change $": fldb1AmHQI
+        "Weekly Sales Change %": fldtQoaatu
+        "Actual CM": fld9djsmp5
+        "BP CM": fldOmO3plQ
+        "CM Gap": fldZjZKl6w
+        "CM Attainment": fldNANMnt5
+        "CM %": fldC3mBSo3
+        "Ad Spend": fldrDUSopv
+        "Attributed Sales": fldbqdSL0m
+        "ROAS": fldymvKF68
+        "Available Units": fldCTNbKIE
+        "OOS SKU Count": fldbNAstka
+        "Sales Data Through": fldgKYSwT4
+        "CM Data Through": fldrQH9475
+        "Ads Data Through": fldYOTtHdX
+        "Inventory Data Through": fldnDpH78b
+        "Data As Of": fldyQLfk2D
+        "Source Type": fldOqtXURt
+        "Source Ref": fldC4nf2Fm
+        "Human Reviewed": fldXuWv4ZJ
+        "Snapshot Locked": fldZnD2mQV
+        "Last Reviewed At": fldmcxwbJb
+        "Created At": fld6j5sJ1O
+        "Updated At": fld4XjQ3dC
+      views:
+        "本周总览": vewv8xEPDD
+        "红黄灯": vewBV0eD0c
+    "02 Core SKU Performance":
+      table_id: tblIzh0LL7fjUoTu
+      fields:
+        "SKU Perf ID": fld2XGYgLg
+        "Week": fld40HrCyx
+        "Market": fldzuMTMJx
+        "Platform": fld7Nb84gI
+        "Channel": fldm6nD6XS
+        "Product Line": fldhtkgrNW
+        "SKU": fldIhiZ26O
+        "Model / Product": fldlMC8PXE
+        "Sales": fldqC60DYO
+        "SKU Role": fldNfeC5TA
+        "Orders": fld509X0nL
+        "Units": fldsGF4Urs
+        "WoW Sales %": fldKda1A6y
+        "Target": fldrracR3d
+        "Target Gap %": fldywif86F
+        "Sales Gap": fldyd7vw1x
+        "Sales Attainment": fldpphnZa6
+        "Traffic": fldImHfL8J
+        "Conversion Rate": fldKHfHQ0B
+        "Ad Spend": fldxLifBNX
+        "Attributed Sales": fldCoNgA8K
+        "ROAS": fldpjBXRGL
+        "Inventory": fldeFIDjhC
+        "DOS": fldGD3EU9Y
+        "Buyability": fldTejgjPA
+        "Listing Status": fldCUIdYJh
+        "Status": fldykWXv2B
+        "Main Change": fldmYi5iTg
+        "Diagnosis": fldyBY1R2T
+        "Recommended Action": fldFa0W2XO
+        "Data As Of": fldKqsxok0
+        "Source Type": fldO7h22YK
+        "Source Ref": fldvbwGMAX
+        "Evidence": fldihwppG3
+        "Human Reviewed": fldMcjBtTr
+        "Snapshot Locked": fld2ifdcDT
+        "Created At": fldXkKxV08
+        "Updated At": fldHVT2UBG
+      views:
+        "本周核心SKU": vewOwzorz2
+        "异常SKU": vewjAY990T
+    "03 Action & Validation":
+      table_id: tblA1WTtIGZ0LFIj
+      fields:
+        "Action ID": fldBs4lkNL
+        "Week Created": fldc1CYEPo
+        "Market": fldVT2QLJy
+        "Platform": fldA0tAUOw
+        "Channel": fldv0bnwIJ
+        "Product Line": fldpoJS4Rq
+        "SKU": fldVlczy8l
+        "Action Title": fldsHzoSSj
+        "Objective": fld92vqDEe
+        "Why / Problem": fld2J7gc1y
+        "Action Taken": fldgGLKdDn
+        "Expected Result": flddlAMtmU
+        "Baseline": fldyJzcug2
+        "Success Criteria": fldcGwSZTo
+        "Owner": fld2Vam6m2
+        "Priority": fldK3NxI08
+        "Status": fldjXvnz6u
+        "Execution Date": fldcQ54T6r
+        "Validation Date": fldT3Q3ehA
+        "Validation Window": fldshEynOn
+        "Actual Result": flddfUWuYG
+        "Conclusion": fld18uVWAR
+        "AI Analysis": fldICEcemD
+        "AI Suggested Status": fldIuuDyNW
+        "AI Confidence": fld7sQO6sn
+        "Human Decision": fldTsRdvX5
+        "Human Reviewed": fld0VvlT5B
+        "Evidence": fldUawWQBB
+        "Last Reviewed At": fldNWnHgQD
+        "Created At": fldIwAJVBr
+        "Updated At": fldBMOkVw3
+        "Related Signals": fld1sRIAow
+      views:
+        "本周动作": vewJPD05G9
+        "等待验证": vewmoWWU7o
+        "逾期": vewuYaYUUB
+        "P0-P1": vewFQwLs9q
+        "无效或不确定": vewTfjCTKy
+    "04 Signal Register":
+      table_id: tbl7uPALFSsJOthP
+      fields:
+        "Signal ID": fldq5hTbF9
+        "Week Opened": fldpqdamm7
+        "Market": fldO8P3Jak
+        "Platform": fldC41u4kN
+        "Channel": fldITHtEKu
+        "Product Line": fldGCL6tub
+        "SKU": fldR1e3sg4
+        "Signal Type": flddQ50Z6o
+        "Category": fldMMpGT21
+        "Title": fldTNOeXXQ
+        "Description": fldRzIDLiT
+        "Business Impact": fld0Tiz4Wv
+        "Priority": fldSvgAV3S
+        "Confidence": fldCRUggia
+        "Root Cause": fldT0RBBMa
+        "Current Status": fldk09l3Sr
+        "Owner": fldreIIeWN
+        "Next Step": fldGJLvB8d
+        "DDL": fldGaq7sTE
+        "Evidence": fldjEqvx60
+        "Source Type": fldD3OlvWV
+        "AI Analysis": fldPx9JM2p
+        "Source Ref": fldzwCohO1
+        "Human Decision": fldAGxRCNo
+        "Human Reviewed": fld25Fykbx
+        "Resolved At": fldc1l53lJ
+        "Created At": fldjotD38Y
+        "Updated At": fldGJtsIzF
+        "Related Actions": fldEajvOrD
+      views:
+        "未决Signal": vew3P2qkBv
+        "P0-P1": vewMwDgieY
+        "风险": vews5HOqgu
+        "机会": vewyUoz9Dm
+  relation:
+    action_field_id: fld1sRIAow
+    signal_field_id: fldEajvOrD
+    multiple: true
+
+field_types:
+  text: Feishu text
+  multiline_text: Feishu multiline text
+  number: Feishu number
+  single_select: Feishu single select
+  checkbox: Feishu checkbox
+  date: Feishu date
+  datetime: Feishu date-time
+  created_time: Feishu created-time system field
+  modified_time: Feishu modified-time system field
+  link_record: Feishu bidirectional record link
+
+storm_ids:
+  immutable: true
+  machine_minted: true
+  human_read_only: true
+  feishu_record_id_is_domain_id: false
+  formats:
+    business_health: "HLT-{YYYYWww}-{MARKET}-{PLATFORM_CODE}"
+    core_sku: "SKU-{YYYYWww}-{MARKET}-{PLATFORM_CODE}-{NORMALIZED_SKU}"
+    action: "ACT-{YYYYWww}-{sequence}"
+    signal: "SIG-{YYYYWww}-{sequence}"
+  platform_codes:
+    Walmart: WMT
+    THD: THD
+    "Lowe's": LOWES
+  sequence:
+    allocator: STORM service
+    user_maintained: false
+
+tables:
+  - name: "01 Business Health"
+    live_table_id: null
+    grain: "week x market x platform x level=PLATFORM"
+    uniqueness: [Week, Market, Platform, Level]
+    v0_1_level: PLATFORM
+    fields:
+      - {name: "Health ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, feishu_record_id_substitute: forbidden}
+      - {name: "Week", type: text, required: true, format: "YYYY-Www"}
+      - {name: "Market", type: single_select, required: true, options: [US]}
+      - {name: "Platform", type: single_select, required: true, options: [Walmart, THD, "Lowe's"]}
+      - {name: "Level", type: single_select, required: true, default: PLATFORM, options: [PLATFORM, CHANNEL], v0_1_allowed: [PLATFORM]}
+      - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"], must_be_blank_when: {Level: PLATFORM}}
+      - {name: "Overall Health", type: single_select, required: true, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Sales Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "CM Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Ads Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Inventory Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Buyability Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: false}
+      - {name: "Listing Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: true}
+      - {name: "Fulfillment Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: true}
+      - {name: "Review Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: true}
+      - {name: "Project Health", type: single_select, required: false, options: [GREEN, YELLOW, RED, UNKNOWN], default_hidden: true, core_health_input: false}
+      - {name: "Weekly Summary", type: multiline_text, required: false}
+      - {name: "Top Change", type: multiline_text, required: false}
+      - {name: "Top Risk", type: multiline_text, required: false}
+      - {name: "Top Opportunity", type: multiline_text, required: false}
+      - {name: "Next Priority", type: multiline_text, required: false}
+      - {name: "Data Completeness", type: single_select, required: true, options: [COMPLETE, PARTIAL, MINIMAL, UNKNOWN]}
+      - {name: "Data Confidence", type: single_select, required: true, options: [HIGH, MEDIUM, LOW, UNKNOWN]}
+      - {name: "Actual Sales", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "BP Sales", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Sales Gap", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Sales Attainment", type: number, required: false, format: percent}
+      - {name: "Weekly Operating Sales", type: number, ui_type: Currency, currency: USD, required: false, period_type: WEEKLY_OPERATING}
+      - {name: "Weekly Sales Change $", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Weekly Sales Change %", type: number, required: false, format: percent}
+      - {name: "Actual CM", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "BP CM", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "CM Gap", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "CM Attainment", type: number, required: false, format: percent}
+      - {name: "CM %", type: number, required: false, format: percent}
+      - {name: "Ad Spend", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Attributed Sales", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "ROAS", type: number, required: false}
+      - {name: "Available Units", type: number, required: false, format: integer}
+      - {name: "OOS SKU Count", type: number, required: false, format: integer}
+      - {name: "Sales Data Through", type: date, required: false}
+      - {name: "CM Data Through", type: date, required: false}
+      - {name: "Ads Data Through", type: date, required: false}
+      - {name: "Inventory Data Through", type: date, required: false}
+      - {name: "Data As Of", type: date, required: false}
+      - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
+      - {name: "Source Ref", type: text, required: false}
+      - {name: "Human Reviewed", type: checkbox, required: true, default: false, purpose: record_level_human_approval, authority: human_only, ai_may_set_true: false}
+      - {name: "Snapshot Locked", type: checkbox, required: true, default: false, workflow_control: true}
+      - {name: "Last Reviewed At", type: datetime, required: false}
+      - {name: "Created At", type: created_time, required: false, system_managed: true}
+      - {name: "Updated At", type: modified_time, required: false, system_managed: true}
+    ui:
+      platform_switch: filter
+      default_visible_health_fields: [Overall Health, Sales Health, CM Health, Ads Health, Inventory Health, Buyability Health]
+      default_hidden_health_fields: [Listing Health, Fulfillment Health, Review Health, Project Health]
+    views:
+      - 本周总览
+      - 红黄灯
+    view_filter_contracts:
+      本周总览: {status: GENERAL_WEEKLY_VIEW, week_scope: current_week_context}
+      红黄灯:
+        status: ACTIVE
+        week_scope: current_week_context
+        conjunction: and
+        conditions:
+          - {field: Level, operator: is, values: [PLATFORM]}
+          - {field: "Overall Health", operator: is_not, values: [GREEN]}
+
+  - name: "02 Core SKU Performance"
+    live_table_id: null
+    grain: "week x market x platform x optional channel x sku"
+    fields:
+      - {name: "SKU Perf ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, feishu_record_id_substitute: forbidden}
+      - {name: "Week", type: text, required: true, format: "YYYY-Www"}
+      - {name: "Market", type: single_select, required: true, options: [US]}
+      - {name: "Platform", type: single_select, required: true, options: [Walmart, THD, "Lowe's"]}
+      - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"]}
+      - {name: "Product Line", type: single_select, required: true, options: [Robot, OPE, Accessories, Other]}
+      - {name: "SKU", type: text, required: true}
+      - {name: "Model / Product", type: text, required: false}
+      - {name: "SKU Role", type: single_select, required: true, options: [HERO, GROWTH, PROFIT, TRAFFIC, CLEARANCE, NEW, WATCH, OTHER, CORE, SUPPORT_ACCESSORY]}
+      - {name: "Sales", type: number, required: false}
+      - {name: "Orders", type: number, required: false}
+      - {name: "Units", type: number, required: false}
+      - {name: "WoW Sales %", type: number, required: false, format: percent}
+      - {name: "Target", type: number, required: false}
+      - {name: "Target Gap %", type: number, required: false, format: percent}
+      - {name: "Sales Gap", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "Sales Attainment", type: number, required: false, format: percent}
+      - {name: "Traffic", type: number, required: false}
+      - {name: "Conversion Rate", type: number, required: false, format: percent}
+      - {name: "Ad Spend", type: number, required: false}
+      - {name: "Attributed Sales", type: number, ui_type: Currency, currency: USD, required: false}
+      - {name: "ROAS", type: number, required: false}
+      - {name: "Inventory", type: number, required: false}
+      - {name: "DOS", type: number, required: false}
+      - {name: "Buyability", type: single_select, required: true, options: [YES, NO, UNKNOWN]}
+      - {name: "Listing Status", type: single_select, required: true, options: [HEALTHY, ISSUE, DOWN, UNKNOWN]}
+      - {name: "Status", type: single_select, required: true, options: [GREEN, YELLOW, RED, UNKNOWN]}
+      - {name: "Main Change", type: multiline_text, required: false}
+      - {name: "Diagnosis", type: multiline_text, required: false}
+      - {name: "Recommended Action", type: multiline_text, required: false}
+      - {name: "Data As Of", type: date, required: false}
+      - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
+      - {name: "Source Ref", type: text, required: false}
+      - {name: "Evidence", type: multiline_text, required: false}
+      - {name: "Human Reviewed", type: checkbox, required: true, default: false, purpose: record_level_human_approval, authority: human_only, ai_may_set_true: false}
+      - {name: "Snapshot Locked", type: checkbox, required: true, default: false, workflow_control: true}
+      - {name: "Created At", type: created_time, required: false, system_managed: true}
+      - {name: "Updated At", type: modified_time, required: false, system_managed: true}
+    ui:
+      platform_switch: filter
+    views:
+      - 本周核心SKU
+      - 异常SKU
+    view_filter_contracts:
+      本周核心SKU: {status: GENERAL_WEEKLY_VIEW, week_scope: current_week_context}
+      异常SKU:
+        status: ACTIVE
+        week_scope: current_week_context
+        conjunction: or
+        conditions:
+          - {field: Status, operator: is, values: [YELLOW]}
+          - {field: Status, operator: is, values: [RED]}
+          - {field: Buyability, operator: is, values: ["NO"]}
+          - {field: "Listing Status", operator: is, values: [ISSUE]}
+          - {field: "Listing Status", operator: is, values: [DOWN]}
+        unknown_is_anomaly: false
+
+  - name: "03 Action & Validation"
+    live_table_id: null
+    grain: "one business action and its validation lifecycle"
+    fields:
+      - {name: "Action ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, sequence_user_maintained: false, feishu_record_id_substitute: forbidden}
+      - {name: "Week Created", type: text, required: true, format: "YYYY-Www"}
+      - {name: "Market", type: single_select, required: true, options: [US]}
+      - {name: "Platform", type: single_select, required: true, options: [Walmart, THD, "Lowe's"]}
+      - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"]}
+      - {name: "Product Line", type: single_select, required: false, options: [Robot, OPE, Accessories, Other]}
+      - {name: "SKU", type: text, required: false}
+      - {name: "Action Title", type: text, required: true}
+      - {name: "Objective", type: multiline_text, required: true}
+      - {name: "Why / Problem", type: multiline_text, required: false}
+      - {name: "Action Taken", type: multiline_text, required: false}
+      - {name: "Expected Result", type: multiline_text, required: false}
+      - {name: "Baseline", type: multiline_text, required: false}
+      - {name: "Success Criteria", type: multiline_text, required: true}
+      - {name: "Owner", type: text, required: true}
+      - {name: "Priority", type: single_select, required: true, options: [P0, P1, P2, P3]}
+      - {name: "Status", type: single_select, required: true, options: [PLANNED, IN_PROGRESS, EXECUTED_WAITING_VALIDATION, VALIDATED_EFFECTIVE, VALIDATED_INEFFECTIVE, INCONCLUSIVE, BLOCKED, CANCELLED]}
+      - {name: "Execution Date", type: date, required: false}
+      - {name: "Validation Date", type: date, required: false}
+      - {name: "Validation Window", type: text, required: false}
+      - {name: "Actual Result", type: multiline_text, required: false}
+      - {name: "Conclusion", type: multiline_text, required: false}
+      - {name: "AI Analysis", type: multiline_text, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2"}
+      - {name: "AI Suggested Status", type: single_select, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2", options: [PLANNED, IN_PROGRESS, EXECUTED_WAITING_VALIDATION, VALIDATED_EFFECTIVE, VALIDATED_INEFFECTIVE, INCONCLUSIVE, BLOCKED, CANCELLED]}
+      - {name: "AI Confidence", type: single_select, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2", options: [HIGH, MEDIUM, LOW]}
+      - {name: "Human Decision", type: multiline_text, required: false, authority: final}
+      - {name: "Human Reviewed", type: checkbox, required: false, default: false, purpose: record_level_human_approval, authority: human_only, ai_may_set_true: false}
+      - {name: "Related Signals", type: link_record, required: false, related_table: "04 Signal Register", cardinality: many, reciprocal_field: "Related Actions"}
+      - {name: "Evidence", type: multiline_text, required: false}
+      - {name: "Last Reviewed At", type: datetime, required: false}
+      - {name: "Created At", type: created_time, required: false, system_managed: true}
+      - {name: "Updated At", type: modified_time, required: false, system_managed: true}
+    ui:
+      platform_switch: filter
+    views:
+      - 本周动作
+      - 等待验证
+      - 逾期
+      - P0-P1
+      - 无效或不确定
+    view_filter_contracts:
+      本周动作: {status: GENERAL_WEEKLY_VIEW, week_scope: current_week_context}
+      等待验证:
+        status: ACTIVE
+        conditions:
+          - {field: Status, operator: is, values: [EXECUTED_WAITING_VALIDATION]}
+      逾期:
+        status: DEFERRED_NOT_RELIABLY_FILTERABLE
+        reason: "Action has no general due-date field; Validation Date is not a reliable substitute."
+        requires_human_date_confirmation: true
+      P0-P1:
+        status: ACTIVE
+        conditions:
+          - {field: Priority, operator: is, values: [P0, P1]}
+      无效或不确定:
+        status: ACTIVE
+        conditions:
+          - {field: Status, operator: is, values: [VALIDATED_INEFFECTIVE, INCONCLUSIVE]}
+
+  - name: "04 Signal Register"
+    live_table_id: null
+    grain: "one issue, risk, or opportunity lifecycle"
+    fields:
+      - {name: "Signal ID", type: text, required: true, immutable: true, machine_minted: true, human_read_only: true, sequence_user_maintained: false, feishu_record_id_substitute: forbidden}
+      - {name: "Week Opened", type: text, required: true, format: "YYYY-Www"}
+      - {name: "Market", type: single_select, required: true, options: [US]}
+      - {name: "Platform", type: single_select, required: true, options: [Walmart, THD, "Lowe's"]}
+      - {name: "Channel", type: single_select, required: false, options: [3P, WFS, 1P, DSV, Online, "Drop Ship"]}
+      - {name: "Product Line", type: single_select, required: false, options: [Robot, OPE, Accessories, Other]}
+      - {name: "SKU", type: text, required: false}
+      - {name: "Signal Type", type: single_select, required: true, options: [ISSUE, RISK, OPPORTUNITY]}
+      - {name: "Category", type: single_select, required: true, options: [SALES, TRAFFIC, CONVERSION, ADS, INVENTORY, BUYABILITY, LISTING, FULFILLMENT, REVIEW, ACCOUNT, PROMOTION, ONBOARDING, SYSTEM, OTHER]}
+      - {name: "Title", type: text, required: true}
+      - {name: "Description", type: multiline_text, required: true}
+      - {name: "Business Impact", type: multiline_text, required: false}
+      - {name: "Priority", type: single_select, required: true, options: [P0, P1, P2, P3]}
+      - {name: "Confidence", type: single_select, required: true, options: [HIGH, MEDIUM, LOW]}
+      - {name: "Root Cause", type: multiline_text, required: false}
+      - {name: "Current Status", type: single_select, required: true, options: [OPEN, INVESTIGATING, ACTION_REQUIRED, WAITING_EXTERNAL, MONITORING, RESOLVED, CLOSED]}
+      - {name: "Owner", type: text, required: false}
+      - {name: "Next Step", type: multiline_text, required: false}
+      - {name: "DDL", type: date, required: false}
+      - {name: "Related Actions", type: link_record, required: false, related_table: "03 Action & Validation", cardinality: many, reciprocal_field: "Related Signals"}
+      - {name: "Evidence", type: multiline_text, required: false}
+      - {name: "Source Type", type: single_select, required: true, options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]}
+      - {name: "Source Ref", type: text, required: false}
+      - {name: "AI Analysis", type: multiline_text, required: false, authority: advisory, default_hidden: true, manual_entry: false, reserved_for: "Hermes v0.2"}
+      - {name: "Human Decision", type: multiline_text, required: false, authority: final}
+      - {name: "Human Reviewed", type: checkbox, required: false, default: false, purpose: record_level_human_approval, authority: human_only, ai_may_set_true: false}
+      - {name: "Resolved At", type: datetime, required: false}
+      - {name: "Created At", type: created_time, required: false, system_managed: true}
+      - {name: "Updated At", type: modified_time, required: false, system_managed: true}
+    ui:
+      platform_switch: filter
+    views:
+      - 未决Signal
+      - P0-P1
+      - 风险
+      - 机会
+    view_filter_contracts:
+      未决Signal:
+        status: ACTIVE
+        conditions:
+          - {field: "Current Status", operator: is_not, values: [RESOLVED, CLOSED]}
+      P0-P1:
+        status: ACTIVE
+        conditions:
+          - {field: Priority, operator: is, values: [P0, P1]}
+      风险:
+        status: ACTIVE
+        conditions:
+          - {field: "Signal Type", operator: is, values: [RISK]}
+      机会:
+        status: ACTIVE
+        conditions:
+          - {field: "Signal Type", operator: is, values: [OPPORTUNITY]}
+
+governance:
+  existing_bases_may_be_modified: false
+  missing_metrics: blank_or_unknown
+  unknown_to_green: forbidden
+  ai_authority: advisory
+  human_decision_authority: final
+  human_reviewed:
+    field_name: "Human Reviewed"
+    tables: ["01 Business Health", "02 Core SKU Performance", "03 Action & Validation", "04 Signal Register"]
+    default: false
+    true_authority: human_review_workflow_only
+    ai_may_set_true: false
+  ai_fields:
+    names: [AI Analysis, AI Suggested Status, AI Confidence]
+    required: false
+    default_hidden: true
+    manual_entry: false
+    reserved_for: "Hermes v0.2"
+  platform_switch: view_filter
+  persistent_view_sorting:
+    supported_by_lark_mcp_0_5_1: false
+    impact: non_blocking
+    runtime_record_sorting_allowed: true
+  weekly_snapshot:
+    lock_field_tables: ["01 Business Health", "02 Core SKU Performance"]
+    export_all_tables: true
+    local_path: "data/snapshots/{week_id}/"
+    local_snapshot_is_audit_record: true
+  live_schema_must_match_manifest: true

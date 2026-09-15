@@ -1,0 +1,82 @@
+schema_version: 1
+
+identity_order:
+  - market
+  - platform
+  - channel
+  - product_line
+  - sku
+
+markets:
+  - id: US
+    name: United States
+    active: true
+    currency: USD
+
+platforms:
+  - id: walmart
+    name: Walmart
+    storm_code: WMT
+    active_markets: [US]
+  - id: thd
+    name: THD
+    storm_code: THD
+    active_markets: [US]
+  - id: lowes
+    name: "Lowe's"
+    storm_code: LOWES
+    active_markets: [US]
+  - id: cross_platform
+    name: Cross-platform
+    storm_code: null
+    active_markets: []
+    reserved: true
+
+channels:
+  walmart:
+    - 3P
+    - WFS
+    - 1P
+    - DSV
+  thd:
+    - Online
+  lowes:
+    - Drop Ship
+  cross_platform: []
+
+product_lines:
+  - Robot
+  - OPE
+  - Accessories
+  - Other
+
+business_health_levels:
+  options: [PLATFORM, CHANNEL]
+  v0_1_active: [PLATFORM]
+  channel_rule: "must be blank when Level is PLATFORM"
+
+currency:
+  v0_1_market: US
+  v0_1_currency: USD
+  active_input_field: false
+  future_dimension_gate:
+    required_before_markets: [CA, MX]
+    note: "Enable Currency as an active dimension before onboarding CA, MX, or any non-USD market."
+
+shared_dimensions:
+  week_id:
+    format: "YYYY-Www"
+    example: "2026-W32"
+  channel:
+    required: false
+  data_as_of:
+    type: date
+  source_type:
+    options: [MANUAL, EXPORT, SYSTEM, AGENT, MIXED]
+  source_ref:
+    type: text
+
+extension_policy:
+  registry_is_authoritative: true
+  hardcode_new_markets_or_platforms_in_domain: false
+  allow_sparse_platform_metrics: true

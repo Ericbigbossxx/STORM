@@ -1,0 +1,117 @@
+schema_version: 1
+contract_name: Business Health Rules v1
+status: PROPOSAL_ONLY_PENDING_APPROVAL
+active: false
+external_write_allowed: false
+current_color_assignment_allowed: false
+outputs: [GREEN, YELLOW, RED, UNKNOWN]
+pending_display_state: PENDING_RULE_APPROVAL
+
+control_time:
+  field: control_week
+  meaning: management review bucket only
+  feishu_field: Week
+measurement_time:
+  required_per_metric: [period_type, period_start, period_end, data_through_date, snapshot_date]
+
+domain_rules:
+  sales_health:
+    management_meaning: Is net sales progressing toward the approved monthly sales plan?
+    required_metrics: [actual_sales, bp_sales, sales_attainment_pct, weekly_sales_change]
+    eligibility:
+      - actual_sales and bp_sales are AVAILABLE
+      - actual_sales and bp_sales use a reviewed compatible sell-out sales basis
+      - actual MTD period belongs to the BP target month
+      - weekly trend is used only when equal-length consecutive official windows are AVAILABLE
+      - required operating evidence is not STALE
+    decision_boundary:
+      green: attainment meets an approved time-phased pacing floor and no material adverse trend rule fires
+      yellow: attainment is inside an approved review band or trend is adverse without a critical miss
+      red: attainment breaches an approved critical floor or an approved material decline rule fires
+      unknown: eligibility fails or required evidence is unavailable
+    threshold_source: PENDING_MANAGEMENT_APPROVAL; requires a reviewed pacing curve or historical operating bands
+    unavailable_behavior: UNKNOWN
+    activation_blocker: no approved plan-to-date pacing curve or tolerance bands
+
+  cm_health:
+    management_meaning: Is contribution margin amount and rate progressing acceptably?
+    required_metrics: [actual_cm, bp_cm, cm_attainment_pct, actual_cm_pct]
+    eligibility:
+      - actual CM and CM-basis sales come from the same accepted batch
+      - BP CM is the authoritative full-month target for the same platform and month
+      - required evidence is not STALE
+    decision_boundary:
+      green: CM progress meets an approved pacing boundary and CM percent meets its approved target
+      yellow: one approved amount or rate boundary is missed without a critical loss condition
+      red: an approved critical loss or material margin boundary is breached
+      unknown: eligibility fails or required evidence is unavailable
+    threshold_source: BP CM and BP CM percent may anchor targets; pacing and critical-loss boundaries require management approval
+    unavailable_behavior: UNKNOWN
+    activation_blocker: amount pacing and critical-loss boundaries are not approved
+
+  advertising_health:
+    management_meaning: Is spend producing sufficient attributed sales at an approved efficiency level?
+    required_metrics: [ad_spend, attributed_ad_sales, roas]
+    eligibility:
+      - spend and attributed sales are from the same official advertising period
+      - attribution evidence is AVAILABLE and the source period is explicit
+      - required evidence is not STALE
+    decision_boundary:
+      green: ROAS meets an approved target and attribution coverage is sufficient
+      yellow: ROAS is inside an approved review band or attribution is incomplete but usable
+      red: ROAS breaches an approved critical floor with material spend
+      unknown: attribution is unavailable, period semantics are incompatible, or eligibility fails
+    threshold_source: PENDING_BUSINESS_TARGET; use an approved break-even or platform advertising target, not an arbitrary constant
+    unavailable_behavior: UNKNOWN
+    activation_blocker: no approved ROAS target, spend-materiality floor, or attribution-completeness rule
+
+  inventory_health:
+    management_meaning: Is inventory availability creating material sales risk or exposure?
+    required_metrics: [inventory_units, inventory_condition]
+    eligibility:
+      - inventory status is AVAILABLE for the assessed SKU population
+      - OOS exposure can be tied to an approved materiality basis such as core SKU role or sales weight
+      - required evidence is not STALE
+    decision_boundary:
+      green: no approved material OOS or excess-exposure rule fires
+      yellow: an approved review-level OOS or exposure rule fires
+      red: an approved critical OOS or exposure rule fires
+      unknown: status coverage or materiality evidence is unavailable
+    threshold_source: PENDING_MANAGEMENT_APPROVAL; raw OOS count alone is not a materiality rule
+    unavailable_behavior: UNKNOWN
+    activation_blocker: no approved core-SKU/OOS materiality rule and no excess or aging evidence in this slice
+
+overall_health:
+  method: precedence_and_eligibility_not_average
+  business_health:
+    - an approved material RED may dominate the platform result
+    - Sales and CM are primary controls; Ads and Inventory are contextual controls
+    - unavailable data never becomes GREEN
+    - no numeric averaging of domain colors is allowed
+    - result remains UNKNOWN until domain rules and dominance policy are approved
+  data_confidence:
+    states: [HIGH, MEDIUM, LOW, UNKNOWN]
+    inputs: [lineage_validation, availability, freshness, cutoff_compatibility, schema_validation]
+    behavior:
+      - evaluate separately from business performance
+      - missing or stale evidence lowers confidence but does not imply bad business performance
+      - poor business results with strong evidence may still have HIGH data confidence
+  activation_blocker: dominance policy, required-domain set, and confidence gates are not approved
+
+interpretation_contract:
+  primary_driver:
+    authority: HYBRID
+    machine_role: cite the largest approved deterministic rule deviation with evidence
+    human_role: confirm or override with reviewed rationale
+  key_risk:
+    authority: HYBRID
+    machine_role: surface an approved deterministic risk or linked approved Signal
+    human_role: select and finalize management wording
+  key_opportunity:
+    authority: HYBRID
+    machine_role: surface an approved deterministic opportunity or linked approved Signal
+    human_role: select and finalize management wording
+  required_action:
+    authority: HUMAN_OR_EXISTING_APPROVED_ACTION_ONLY
+    machine_role: link evidence or request review; never create or prescribe an autonomous action
+    human_role: enter or approve the action and ownership

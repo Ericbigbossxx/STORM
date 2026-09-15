@@ -1,0 +1,32 @@
+project:
+  name: STORM
+  expansion: Strategic Tracking, Operations, Risks & Metrics
+  version: "0.1.1"
+  purpose: North America Business Control System
+  phase: Weekly Business Control MVP
+
+operating_scope:
+  markets: [US]
+  platforms: [walmart, thd, lowes]
+  live_ledger: feishu
+  base_name: "STORM | Business Control"
+  tables:
+    - "01 Business Health"
+    - "02 Core SKU Performance"
+    - "03 Action & Validation"
+    - "04 Signal Register"
+
+authority:
+  ai_output: advisory
+  final_decision: human
+  unknown_policy: preserve
+  missing_numeric_policy: blank
+
+boundaries:
+  local_repository: schema_rules_docs_and_adapter_contracts
+  live_database: false
+  feishu_credentials_in_repository: forbidden
+  platform_writeback: forbidden
+  automated_ingestion: future
+  dashboard: future
+  hermes_hard_dependency: false
