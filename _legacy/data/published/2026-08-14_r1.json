@@ -1,0 +1,58 @@
+{
+  "snapshot_id": "2026-08-14_r1",
+  "week_key": "2026-W33",
+  "snapshot_date": "2026-08-14",
+  "revision": 1,
+  "created_at": "2026-08-14T07:38:28.616922+00:00",
+  "sales_cutoff": "2026-08-10",
+  "dfc_cutoff": "2026-08-10",
+  "cm_period": "Aug MTD",
+  "operating_cost_period": "Aug MTD",
+  "source_hashes": {
+    "phase5r_package": "3FE91A85DE2B9B8CDC4B5920255E139F5F469F5C1D0BFE4C9A66BEB5F22FC812",
+    "actual_sales_and_dfc": "445D3D769CEA27EC70A93F7FEABE78AA2EB8F25CF6083C4B10E621F5D8F7B18B",
+    "bp_and_cm": "89B8BF3EAD9D940833582CA01FC0065C4099E335C30EC9FEAC0D5CB2CBBC1168"
+  },
+  "source_archive": [
+    {
+      "source_type": "phase5r_package",
+      "original_filename": "phase5r_package.json",
+      "sha256": "3FE91A85DE2B9B8CDC4B5920255E139F5F469F5C1D0BFE4C9A66BEB5F22FC812",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-14_r1\\3FE91A85DE2B_phase5r_package.json"
+    },
+    {
+      "source_type": "actual_sales_and_dfc",
+      "original_filename": "STORM V2 RAW DATA.xlsx",
+      "sha256": "445D3D769CEA27EC70A93F7FEABE78AA2EB8F25CF6083C4B10E621F5D8F7B18B",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-14_r1\\445D3D769CEA_STORM V2 RAW DATA.xlsx"
+    },
+    {
+      "source_type": "bp_and_cm",
+      "original_filename": "US E-commerce Actual CM for 2026_vs. BP.xlsx",
+      "sha256": "89B8BF3EAD9D940833582CA01FC0065C4099E335C30EC9FEAC0D5CB2CBBC1168",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-14_r1\\89B8BF3EAD9D_US E-commerce Actual CM for 2026_vs. BP.xlsx"
+    }
+  ],
+  "engine_version": "phase5r_frozen_package",
+  "status": "PUBLISHED",
+  "reconciliation": {
+    "actual_sales": 84090.87,
+    "bp_sales": 1090122.8451659728,
+    "sales_gap": -1006031.9751659728,
+    "attainment": 0.07713889344938646,
+    "sku_bp_control": {
+      "expected": 11112.4,
+      "actual": 11112.4,
+      "status": "PASS"
+    },
+    "status": "PASS"
+  },
+  "datasets": {
+    "sku_metrics": "sku_metrics.parquet",
+    "channel_health": "channel_health.parquet",
+    "driver_metrics": "driver_metrics.parquet",
+    "thd_dfc_daily": "thd_dfc_daily.parquet",
+    "thd_dfc_sku": "thd_dfc_sku.parquet",
+    "findings": "findings.parquet"
+  }
+}

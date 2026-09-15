@@ -1,0 +1,83 @@
+{
+  "contract_version": "2.0.0-sales",
+  "created_at": "2026-08-18T07:09:09.051883+00:00",
+  "dfc_sellout_data_through": "2026-08-16",
+  "file_sha256": {
+    "canonical_records.csv": "D3C347CFB4B62644C8FB950AE4AA6D76C624DBE19BBF09A2BBEBD236653A986B",
+    "reference_baseline.csv": "EDEE404CE6059F4E54D9D4C7C27C862BE592EBC47D3478EC1B645AA04C444231",
+    "sales_facts.csv": "42714A361A084BB229370EF832E63A31B95491D2C68605C8FFB7E9F56CA3ABBB",
+    "thd_dfc_sellout_facts.csv": "AFA8181CF815F36D23FC7F0964227CFFDACD8A0A30C684EE3AB727272E5F9A79"
+  },
+  "mapping_coverage": {
+    "reference_baseline": {
+      "mapped_pct": 1.0,
+      "mapped_rows": 270,
+      "source_rows": 270,
+      "unmapped_rows": 0
+    },
+    "sales": {
+      "mapped_pct": 0.9976498237367802,
+      "mapped_rows": 849,
+      "source_rows": 851,
+      "unmapped_rows": 2
+    },
+    "thd_dfc": {
+      "mapped_pct": 1.0,
+      "mapped_rows": 1170,
+      "source_rows": 1170,
+      "unmapped_rows": 0
+    }
+  },
+  "parser_version": "2.0.0-sales",
+  "record_counts": {
+    "canonical_records": 6922,
+    "dfc_facts": 4680,
+    "dfc_source_rows": 1170,
+    "reference_baseline": 540,
+    "sales_facts": 1702,
+    "sales_source_rows": 851
+  },
+  "sales_data_through": "2026-08-17",
+  "snapshot_id": "2026-08-24_65d8677cc785",
+  "source_file": "STORM V2 RAW DATA 8.18.xlsx",
+  "source_roles": [
+    {
+      "role": "FACT",
+      "section": "weekly order rows",
+      "sheet": "actual order"
+    },
+    {
+      "role": "FACT",
+      "section": "A:G consumer daily sell-out",
+      "sheet": "THD- robot Sell out"
+    },
+    {
+      "role": "REFERENCE",
+      "section": "monthly baseline",
+      "sheet": "KPI Rawdata"
+    },
+    {
+      "role": "REFERENCE",
+      "section": "mapping baseline",
+      "sheet": "SKU MAP"
+    },
+    {
+      "role": "RECONCILIATION_ONLY",
+      "section": "management summary",
+      "sheet": "over view"
+    },
+    {
+      "role": "EXCLUDED",
+      "section": "cost and CM",
+      "sheet": "2026 acutal cost"
+    },
+    {
+      "role": "EXCLUDED",
+      "section": "J:W inventory/month blocks",
+      "sheet": "THD- robot Sell out"
+    }
+  ],
+  "source_sha256": "65D8677CC785CBB81573245EB30ED4A5EA835616D10854149B98953CEDBBD711",
+  "source_size": 1138182,
+  "warning_count": 7
+}

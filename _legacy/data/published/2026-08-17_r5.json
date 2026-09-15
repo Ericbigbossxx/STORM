@@ -1,0 +1,589 @@
+{
+  "snapshot_id": "2026-08-17_r5",
+  "week_key": "2026-W34",
+  "snapshot_date": "2026-08-17",
+  "revision": 5,
+  "created_at": "2026-08-14T09:36:24.946192+00:00",
+  "sales_cutoff": "2026-08-10",
+  "dfc_cutoff": "2026-08-10",
+  "cm_period": "Aug MTD",
+  "operating_cost_period": "Aug MTD",
+  "source_hashes": {
+    "phase6r_engine_package": "07FDFEFD543AE1EA5D276B4297BF3DBDEA50E700F09F630F5998AC3F5A4EFED7",
+    "frozen_normalized_snapshot_manifest": "7A5DD94EAE2827C2AF32D41854433607EE454AC1B404D76A4D20A5D9B3DBCC56",
+    "frozen_normalized_actual_and_dfc": "E5BF31CF95852609D3670CDB98F80667BCB3C454E68B25CD043C0922BE4E6EA6",
+    "bp_and_cm": "89B8BF3EAD9D940833582CA01FC0065C4099E335C30EC9FEAC0D5CB2CBBC1168",
+    "weekly_source_1": "445D3D769CEA27EC70A93F7FEABE78AA2EB8F25CF6083C4B10E621F5D8F7B18B",
+    "weekly_source_2": "89B8BF3EAD9D940833582CA01FC0065C4099E335C30EC9FEAC0D5CB2CBBC1168"
+  },
+  "authoritative_actual_source_sha256": "445D3D769CEA27EC70A93F7FEABE78AA2EB8F25CF6083C4B10E621F5D8F7B18B",
+  "actual_source_provenance": "FROZEN_NORMALIZED_PHASE2_SNAPSHOT",
+  "source_exception": "Current STORM V2 RAW DATA.xlsx hash differs from the frozen Phase 5R source hash; this snapshot consumes the matching frozen normalized output and does not claim the current workbook as its source.",
+  "source_archive": [
+    {
+      "source_type": "phase6r_engine_package",
+      "original_filename": "phase5r_package.json",
+      "sha256": "07FDFEFD543AE1EA5D276B4297BF3DBDEA50E700F09F630F5998AC3F5A4EFED7",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-17_r5\\07FDFEFD543A_phase5r_package.json"
+    },
+    {
+      "source_type": "frozen_normalized_snapshot_manifest",
+      "original_filename": "manifest.json",
+      "sha256": "7A5DD94EAE2827C2AF32D41854433607EE454AC1B404D76A4D20A5D9B3DBCC56",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-17_r5\\7A5DD94EAE28_manifest.json"
+    },
+    {
+      "source_type": "frozen_normalized_actual_and_dfc",
+      "original_filename": "canonical_records.csv",
+      "sha256": "E5BF31CF95852609D3670CDB98F80667BCB3C454E68B25CD043C0922BE4E6EA6",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-17_r5\\E5BF31CF9585_canonical_records.csv"
+    },
+    {
+      "source_type": "bp_and_cm",
+      "original_filename": "weekly_cm_bp.xlsx",
+      "sha256": "89B8BF3EAD9D940833582CA01FC0065C4099E335C30EC9FEAC0D5CB2CBBC1168",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-17_r5\\89B8BF3EAD9D_weekly_cm_bp.xlsx"
+    },
+    {
+      "source_type": "weekly_source_1",
+      "original_filename": "weekly_raw_sales_dfc.xlsx",
+      "sha256": "445D3D769CEA27EC70A93F7FEABE78AA2EB8F25CF6083C4B10E621F5D8F7B18B",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-17_r5\\445D3D769CEA_weekly_raw_sales_dfc.xlsx"
+    },
+    {
+      "source_type": "weekly_source_2",
+      "original_filename": "weekly_cm_bp.xlsx",
+      "sha256": "89B8BF3EAD9D940833582CA01FC0065C4099E335C30EC9FEAC0D5CB2CBBC1168",
+      "archive_path": "C:\\Users\\admin\\Documents\\STORM V2\\data\\source_archive\\2026-08-17_r5\\89B8BF3EAD9D_weekly_cm_bp.xlsx"
+    }
+  ],
+  "engine_version": "phase6r_bp_scope_reconciliation",
+  "status": "PUBLISHED",
+  "supersedes": null,
+  "supersession_reasons": [],
+  "reconciliation": {
+    "actual_sales": 84090.87,
+    "bp_sales": 963087.8451659728,
+    "sales_gap": -878996.9751659728,
+    "attainment": 0.0873138109073615,
+    "sku_bp_control": {
+      "expected": 11112.4,
+      "actual": 11112.4,
+      "status": "PASS"
+    },
+    "bp_hierarchy": {
+      "status": "PASS",
+      "level_1_sku_to_brand_power": [
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "ACC",
+          "sku_rollup": 7586.373676,
+          "raw_parent": 7586.373676000002,
+          "difference": -1.8189894035458565e-12
+        },
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "Gas",
+          "sku_rollup": 120092.97130599999,
+          "raw_parent": 120092.97130599998,
+          "difference": 1.4551915228366852e-11
+        },
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "Lithium",
+          "sku_rollup": 57554.106586999995,
+          "raw_parent": 57554.10658699999,
+          "difference": 7.275957614183426e-12
+        },
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand": "Sunseeker",
+          "power_source": "Robot",
+          "sku_rollup": 139750.01169611717,
+          "raw_parent": 139750.01169611717,
+          "difference": 0.0
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "ACC",
+          "sku_rollup": 15468.3819615,
+          "raw_parent": 15468.3819615,
+          "difference": 0.0
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "Gas",
+          "sku_rollup": 129254.74119072499,
+          "raw_parent": 129254.74119072496,
+          "difference": 2.9103830456733704e-11
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "brand": "Sunseeker",
+          "power_source": "Robot",
+          "sku_rollup": 380034.43874863064,
+          "raw_parent": 380034.43874863064,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "DSV",
+          "brand": "Badger",
+          "power_source": "Gas",
+          "sku_rollup": 26690.120000000003,
+          "raw_parent": 26690.120000000003,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "DSV",
+          "brand": "Badger",
+          "power_source": "Lithium",
+          "sku_rollup": 6180.0,
+          "raw_parent": 6180.0,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "MP",
+          "brand": "Badger",
+          "power_source": "Gas",
+          "sku_rollup": 11112.400000000001,
+          "raw_parent": 11112.4,
+          "difference": 1.8189894035458565e-12
+        },
+        {
+          "platform": "Walmart",
+          "channel": "MP",
+          "brand": "Badger",
+          "power_source": "Lithium",
+          "sku_rollup": 69364.3,
+          "raw_parent": 69364.29999999999,
+          "difference": 1.4551915228366852e-11
+        }
+      ],
+      "level_2_brand_power_to_channel": [
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand_power_rollup": 324983.46326511714,
+          "sku_rollup": 324983.46326511726,
+          "difference": -1.1641532182693481e-10
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "brand_power_rollup": 524757.5619008556,
+          "sku_rollup": 524757.5619008556,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "DSV",
+          "brand_power_rollup": 32870.12,
+          "sku_rollup": 32870.12,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "MP",
+          "brand_power_rollup": 80476.70000000001,
+          "sku_rollup": 80476.70000000001,
+          "difference": 0.0
+        }
+      ],
+      "level_3_channel_to_kpi_parent": [
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "derived_parent": 324983.46326511726,
+          "raw_parent": 324983.4632651172,
+          "difference": 5.820766091346741e-11
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "derived_parent": 524757.5619008556,
+          "raw_parent": 524757.5619008557,
+          "difference": -1.1641532182693481e-10
+        },
+        {
+          "platform": "Walmart",
+          "channel": "DSV",
+          "derived_parent": 32870.12,
+          "raw_parent": 32870.12,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "MP",
+          "derived_parent": 80476.70000000001,
+          "raw_parent": 80476.7,
+          "difference": 1.4551915228366852e-11
+        }
+      ],
+      "level_4_channel_to_platform": [
+        {
+          "platform": "Lowe's",
+          "channel_rollup": 324983.46326511726,
+          "platform_rollup": 324983.46326511726,
+          "difference": 0.0
+        },
+        {
+          "platform": "THD",
+          "channel_rollup": 524757.5619008556,
+          "platform_rollup": 524757.5619008556,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel_rollup": 113346.82,
+          "platform_rollup": 113346.82000000002,
+          "difference": -1.4551915228366852e-11
+        }
+      ],
+      "level_5_platform_to_total": {
+        "platform_rollup": 963087.845165973,
+        "sku_rollup": 963087.8451659728,
+        "difference": 1.1641532182693481e-10
+      },
+      "walmart_badger_gas_control": {
+        "expected": 11112.4,
+        "actual": 11112.4,
+        "status": "PASS"
+      },
+      "scope_exclusion_control": {
+        "expected": 127035.0,
+        "actual": 127035.0,
+        "status": "PASS",
+        "record_count": 9,
+        "rule": "Walmart Seller KPI Rawdata is admitted only when SKU appears in the official Walmart Seller-WBP roster"
+      }
+    },
+    "status": "PASS"
+  },
+  "datasets": {
+    "sku_metrics": "sku_metrics.parquet",
+    "channel_health": "channel_health.parquet",
+    "driver_metrics": "driver_metrics.parquet",
+    "thd_dfc_daily": "thd_dfc_daily.parquet",
+    "thd_dfc_sku": "thd_dfc_sku.parquet",
+    "findings": "findings.parquet",
+    "scope_exclusions": "scope_exclusions.parquet",
+    "ytd_metrics": "ytd_metrics.parquet"
+  },
+  "production_status": "PASS",
+  "production_validation": {
+    "status": "PASS",
+    "raw_profile": {
+      "actual_cutoff": "2026-08-10",
+      "dfc_cutoff": "2026-08-10",
+      "warning_count": 7,
+      "source_sha256": "445D3D769CEA27EC70A93F7FEABE78AA2EB8F25CF6083C4B10E621F5D8F7B18B"
+    },
+    "cm_period": "Aug MTD",
+    "bp_reconciliation": {
+      "status": "PASS",
+      "level_1_sku_to_brand_power": [
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "ACC",
+          "sku_rollup": 7586.373676,
+          "raw_parent": 7586.373676000002,
+          "difference": -1.8189894035458565e-12
+        },
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "Gas",
+          "sku_rollup": 120092.97130599999,
+          "raw_parent": 120092.97130599998,
+          "difference": 1.4551915228366852e-11
+        },
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "Lithium",
+          "sku_rollup": 57554.106586999995,
+          "raw_parent": 57554.10658699999,
+          "difference": 7.275957614183426e-12
+        },
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand": "Sunseeker",
+          "power_source": "Robot",
+          "sku_rollup": 139750.01169611717,
+          "raw_parent": 139750.01169611717,
+          "difference": 0.0
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "ACC",
+          "sku_rollup": 15468.3819615,
+          "raw_parent": 15468.3819615,
+          "difference": 0.0
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "brand": "Badger",
+          "power_source": "Gas",
+          "sku_rollup": 129254.74119072499,
+          "raw_parent": 129254.74119072496,
+          "difference": 2.9103830456733704e-11
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "brand": "Sunseeker",
+          "power_source": "Robot",
+          "sku_rollup": 380034.43874863064,
+          "raw_parent": 380034.43874863064,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "DSV",
+          "brand": "Badger",
+          "power_source": "Gas",
+          "sku_rollup": 26690.120000000003,
+          "raw_parent": 26690.120000000003,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "DSV",
+          "brand": "Badger",
+          "power_source": "Lithium",
+          "sku_rollup": 6180.0,
+          "raw_parent": 6180.0,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "MP",
+          "brand": "Badger",
+          "power_source": "Gas",
+          "sku_rollup": 11112.400000000001,
+          "raw_parent": 11112.4,
+          "difference": 1.8189894035458565e-12
+        },
+        {
+          "platform": "Walmart",
+          "channel": "MP",
+          "brand": "Badger",
+          "power_source": "Lithium",
+          "sku_rollup": 69364.3,
+          "raw_parent": 69364.29999999999,
+          "difference": 1.4551915228366852e-11
+        }
+      ],
+      "level_2_brand_power_to_channel": [
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "brand_power_rollup": 324983.46326511714,
+          "sku_rollup": 324983.46326511726,
+          "difference": -1.1641532182693481e-10
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "brand_power_rollup": 524757.5619008556,
+          "sku_rollup": 524757.5619008556,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "DSV",
+          "brand_power_rollup": 32870.12,
+          "sku_rollup": 32870.12,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "MP",
+          "brand_power_rollup": 80476.70000000001,
+          "sku_rollup": 80476.70000000001,
+          "difference": 0.0
+        }
+      ],
+      "level_3_channel_to_kpi_parent": [
+        {
+          "platform": "Lowe's",
+          "channel": "DS",
+          "derived_parent": 324983.46326511726,
+          "raw_parent": 324983.4632651172,
+          "difference": 5.820766091346741e-11
+        },
+        {
+          "platform": "THD",
+          "channel": "DS",
+          "derived_parent": 524757.5619008556,
+          "raw_parent": 524757.5619008557,
+          "difference": -1.1641532182693481e-10
+        },
+        {
+          "platform": "Walmart",
+          "channel": "DSV",
+          "derived_parent": 32870.12,
+          "raw_parent": 32870.12,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel": "MP",
+          "derived_parent": 80476.70000000001,
+          "raw_parent": 80476.7,
+          "difference": 1.4551915228366852e-11
+        }
+      ],
+      "level_4_channel_to_platform": [
+        {
+          "platform": "Lowe's",
+          "channel_rollup": 324983.46326511726,
+          "platform_rollup": 324983.46326511726,
+          "difference": 0.0
+        },
+        {
+          "platform": "THD",
+          "channel_rollup": 524757.5619008556,
+          "platform_rollup": 524757.5619008556,
+          "difference": 0.0
+        },
+        {
+          "platform": "Walmart",
+          "channel_rollup": 113346.82,
+          "platform_rollup": 113346.82000000002,
+          "difference": -1.4551915228366852e-11
+        }
+      ],
+      "level_5_platform_to_total": {
+        "platform_rollup": 963087.845165973,
+        "sku_rollup": 963087.8451659728,
+        "difference": 1.1641532182693481e-10
+      },
+      "walmart_badger_gas_control": {
+        "expected": 11112.4,
+        "actual": 11112.4,
+        "status": "PASS"
+      },
+      "scope_exclusion_control": {
+        "expected": 127035.0,
+        "actual": 127035.0,
+        "status": "PASS",
+        "record_count": 9,
+        "rule": "Walmart Seller KPI Rawdata is admitted only when SKU appears in the official Walmart Seller-WBP roster"
+      }
+    },
+    "source_compatibility": {
+      "RAW_SALES_DFC": true,
+      "CM_BP": true
+    }
+  },
+  "wow": {
+    "availability": "AVAILABLE",
+    "previous_snapshot_id": "2026-08-14_r3",
+    "actual_delta": 0.0,
+    "gap_delta": 0.0,
+    "attainment_delta_pp": 0.0,
+    "cm_pct_delta_pp": null
+  },
+  "ytd": {
+    "period": "YTD",
+    "year": 2026,
+    "through_month": 8,
+    "source": "AUTHORITATIVE_CM_BP_WORKBOOK",
+    "actual_sales": 10151868.035637656,
+    "bp_sales": 4987007.98208966,
+    "sales_gap": 5164860.053547996,
+    "attainment": 2.0356630813700467,
+    "actual_cm": null,
+    "bp_cm": null,
+    "cm_gap": null,
+    "actual_cm_pct": null,
+    "bp_cm_pct": null,
+    "availability": {
+      "actual_sales": {
+        "status": "AVAILABLE",
+        "sheet": "KPI Trend",
+        "row": 4,
+        "month_columns": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "bp_sales": {
+        "status": "AVAILABLE",
+        "sheet": "KPI Rawdata",
+        "months": [
+          {
+            "month": 1,
+            "source_row_count": 297
+          },
+          {
+            "month": 2,
+            "source_row_count": 261
+          },
+          {
+            "month": 3,
+            "source_row_count": 261
+          },
+          {
+            "month": 4,
+            "source_row_count": 261
+          },
+          {
+            "month": 5,
+            "source_row_count": 261
+          },
+          {
+            "month": 6,
+            "source_row_count": 261
+          },
+          {
+            "month": 7,
+            "source_row_count": 261
+          },
+          {
+            "month": 8,
+            "source_row_count": 261
+          }
+        ]
+      },
+      "actual_cm": {
+        "status": "N/A",
+        "reason": "KPI Trend CM contains source error/unavailable month"
+      },
+      "bp_cm": {
+        "status": "N/A",
+        "reason": "No comparable direct YTD BP CM source row verified"
+      }
+    }
+  }
+}

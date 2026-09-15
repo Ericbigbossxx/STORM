@@ -1,0 +1,5 @@
+{
+  "week_key": "2026-W35",
+  "status": "FAILED",
+  "reason": "DISCOVER BLOCKED: CM_BP: expected exactly one compatible candidate, found 0 ([])"
+}

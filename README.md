@@ -1,62 +1,84 @@
-# STORM V2
+# STORM V2 — Weekly Local Business Cockpit
 
-Weekly Business Control / Review Dashboard for North America E-commerce.
+NA E-commerce 周会数据看板，基于 Amazon Quick AI + GitHub Pages 自动化方案。
 
-STORM V2 analyzes the governed hierarchy:
+## 工作流程
 
-`Platform → Channel/Subchannel → Brand → Power Source → SKU`
-
-Supported operating channels are Walmart MP, Walmart DSV, THD DS, THD DFC, and Lowe's.
-
-## Production-data policy
-
-This repository contains code, contracts, configuration, and tests only. Real production Sales, CM, BP, DFC, inventory, weekly snapshots, workbooks, and credentials are intentionally excluded from GitHub. Keep approved production data in the local `data/` directories listed in `.gitignore`.
-
-## Architecture
-
-The local production workflow uses RAW Sales / DFC and CM / BP workbooks, weekly production intake, source-contract validation, immutable snapshot revisions, a latest pointer, reconciliation gates, WoW, and direct workbook-sourced YTD.
-
-## Setup
-
-Use Python 3.11+ and install the project plus web dependencies:
-
-```bash
-python -m pip install -e .
-python -m pip install -r requirements-web.txt
+```
+每周更新 xlsx → Amazon Quick 生成 dashboard → 预览确认 → push 到 GitHub Pages
 ```
 
-Run the test suite:
+### 1. 数据准备
+- 更新 `STORM V2 RAW DATA  {date}.xlsx`（actual order 当月全量 + 其他sheets）
+- 更新 `cost detail {date}.xlsx`（per-order 成本明细）
 
-```bash
-PYTHONPATH=src python -m unittest discover -s tests -v
-```
+### 2. 生成看板
+在 Amazon Quick 中说：**"storm dashboard"** 或 **"refresh weekly data"**
 
-Tests that require approved local production workbooks or snapshots are explicitly skipped when those inputs are absent; pure logic and no-data bootstrap tests remain runnable from a fresh clone.
+Skill 自动：
+- 读取 xlsx 数据（当月从新文件，历史月份从上周文件）
+- 计算 6 个时间维度（Aug MTD / Jul / Q3 / Q2 / Q1 / YTD）
+- 生成 Highcharts 交互式 HTML 看板
+- 保存快照到 `snapshots/`
 
-On Windows PowerShell:
-
+### 3. 部署
 ```powershell
-$env:PYTHONPATH = 'src;.'
+.\push_w35.ps1   # 推送到 GitHub Pages
 ```
 
-## Dashboard
+**线上地址**：https://ericbigbossxx.github.io/STORM/dashboard/
 
-Launch the local dashboard with:
+---
 
-```bash
-streamlit run app/app.py
+## 目录结构
+
+```
+STORM V2/
+├── README.md                          ← 本文件
+├── STORM V2 RAW DATA  8.25.xlsx       ← 本周数据（actual order 仅当月）
+├── STORM V2 RAW DATA  8.19.xlsx       ← 上周数据（含历史月份）
+├── cost detail 8.19.xlsx              ← 成本明细（per-order）
+├── push_w35.ps1                       ← GitHub Pages 推送脚本
+├── snapshots/                         ← 每周 dashboard HTML 快照
+├── THD_Data/                          ← THD DataConnection 导出数据
+├── rithum_data/                       ← Rithum 渠道数据
+└── _legacy/                           ← 旧 Python web app（已废弃，仅存档）
 ```
 
-Without a local published production snapshot, the dashboard intentionally shows `NO PRODUCTION DATA / DATA REQUIRED` instead of attempting to infer or generate data.
+## 看板功能
 
-## Weekly production
+| Tab | 内容 |
+|-----|------|
+| Overview | 日营收趋势、渠道占比、WoW 7天对比 |
+| Platform BP | 平台/品牌 BP 达成率（红绿灯） |
+| Profit Waterfall | GMV → COGS → GM → 费用 → CM 瀑布图 |
+| Brand & Power | 品牌/动力源 CM% vs 5% target |
+| SKU Analysis | Top 10 SKU + WoW 涨跌榜 |
+| THD DFC | DFC 消费者销售 + 库存 |
+| Conclusions | 各平台 Risk / Opportunity / Track |
 
-Place exactly one compatible RAW Sales / DFC workbook and one compatible CM / BP workbook in `data/inbox/YYYY-WXX/`, then run:
+**全局时间筛选器**（右上角）：Aug MTD / Jul / Q3 / Q2 / Q1 / YTD
 
-```bash
-python scripts/build_weekly_snapshot.py --week YYYY-WXX --inbox data/inbox/YYYY-WXX
+## 技术架构
+
+- **生成引擎**：Amazon Quick skill (`storm-weekly-local-business-cockpit`)
+- **前端**：单文件 HTML + Highcharts CDN，数据以 JSON 内嵌
+- **部署**：GitHub Pages（静态托管，无需服务器）
+- **仓库**：https://github.com/Ericbigbossxx/STORM
+
+## 数据规则
+
+- **渠道**：仅 NA E-commerce（THD, Lowe's, Walmart），排除 AMZ/DTC/COSTCO
+- **WoW**：严格 7 天 vs 7 天等长窗口
+- **BP Pacing**：部分月 = actual × (月天数 / 已过天数)
+- **CM%**：基于 cost detail per-order 明细计算
+- **品牌**：Badger / Sunseeker
+- **动力源**：Robot / Gas / Lithium / ACC
+
+## Git 配置
+
 ```
-
-The workflow validates source contracts and reconciliation gates before it publishes. Each successful rerun creates an immutable revision; only the local latest pointer changes. SHA-256 is recorded for traceability; compatibility and business controls decide publication.
-
-Do not copy production data into this repository or commit it.
+user.email = eric.lv@sunseekerpower.cn
+user.name  = Ericbigbossxx
+remote     = https://github.com/Ericbigbossxx/STORM.git
+```

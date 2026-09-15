@@ -1,0 +1,1682 @@
+[
+  {
+    "internal_sku": "WB26TS",
+    "upc": "850060195808",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "26cc Gas String Trimmer Kit",
+    "lowes_product_description": "2-cycle 17-in Straight Shaft Attachment Capable Gas String Trimmer Edger Conversion Capable",
+    "lowes": {
+      "item_number": "6424127",
+      "legacy_item_number": "3674326",
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3674326",
+      "thd_partner_sku": "1015770862"
+    }
+  },
+  {
+    "internal_sku": "WBPMT26TS",
+    "upc": "850060195839",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "26cc Gas Multi-Tool Trimmer",
+    "lowes_product_description": "2-cycle 17-in Straight Shaft Attachment Capable Gas String Trimmer",
+    "lowes": {
+      "item_number": "6424125",
+      "legacy_item_number": "3674328",
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3674328",
+      "thd_partner_sku": "1015770864"
+    }
+  },
+  {
+    "internal_sku": "WBP31TS",
+    "upc": "850060195815",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "31cc 4-Cycle String Trimmer",
+    "lowes_product_description": "2-cycle 17-in Straight Shaft Gas String Trimmer Edger Conversion Capable",
+    "lowes": {
+      "item_number": "6424126",
+      "legacy_item_number": "4131597",
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "4131597",
+      "thd_partner_sku": "1015770861"
+    }
+  },
+  {
+    "internal_sku": "WBP52TS",
+    "upc": "850060195822",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "52cc Gas String Trimmer Kit",
+    "lowes_product_description": "2-cycle 18-in Split Shaft Attachment Capable Gas String Trimmer Edger Conversion Capable",
+    "lowes": {
+      "item_number": "6424124",
+      "legacy_item_number": "3674329",
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3674329",
+      "thd_partner_sku": "1015770860"
+    }
+  },
+  {
+    "internal_sku": "KB53BPBL",
+    "upc": "850083369378",
+    "brand": "Kobalt",
+    "product_category": "Leaf Blowers",
+    "item_description": "Kobalt 53-CC Backpack Blower",
+    "lowes_product_description": "2-cycle 855-CFM 175-MPH Gas Backpack Leaf Blower Charger Not Included",
+    "lowes": {
+      "item_number": "9392069",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": null,
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "KB26HHBL",
+    "upc": "850083369385",
+    "brand": "Kobalt",
+    "product_category": "Leaf Blowers",
+    "item_description": "Kobalt 26-CC Handheld Blower",
+    "lowes_product_description": "2-cycle 475-CFM 165-MPH Gas Handheld Leaf Blower Charger Not Included",
+    "lowes": {
+      "item_number": "9392070",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": null,
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40VSNOWBL",
+    "upc": "850046351464",
+    "brand": "Wild Badger Power",
+    "product_category": "Snow Blowers",
+    "item_description": "40V Snow Blower",
+    "lowes_product_description": "Cordless 40-volt 20-in Single-stage Push Battery Snow Blower (Battery Not Included) (Charger Included)",
+    "lowes": {
+      "item_number": "5394452",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394452",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "KB2618STR",
+    "upc": "850060195761",
+    "brand": "Kobalt",
+    "product_category": "String Trimmers",
+    "item_description": "Kobalt 26cc String Trimmer",
+    "lowes_product_description": "26-cc 2-cycle 18-in Straight Shaft Attachment Capable Gas String Trimmer Edger Conversion Capable",
+    "lowes": {
+      "item_number": "9017422",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "9819470",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "SKRMS4",
+    "upc": "850060195723",
+    "brand": "Sunseeker",
+    "product_category": "Robotic Lawn Mowers",
+    "item_description": "S4 LiDAR Robot Lawn Mower",
+    "lowes_product_description": "Robotic Lawn Mower with GPS Assisted Navigation (1/8 to 1/4 acre)",
+    "lowes": {
+      "item_number": "9714238",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "6335082",
+      "thd_partner_sku": "1015887800"
+    }
+  },
+  {
+    "internal_sku": "SKRMX5",
+    "upc": "850060195266",
+    "brand": "Sunseeker",
+    "product_category": "Robotic Lawn Mowers",
+    "item_description": "X5 AWD Robot Lawn Mower",
+    "lowes_product_description": "Robotic Lawn Mower with GPS Assisted Navigation (1/2 to 1 acre)",
+    "lowes": {
+      "item_number": "9714237",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "6335081",
+      "thd_partner_sku": "1014005426"
+    }
+  },
+  {
+    "internal_sku": "SKRMX3PLUS",
+    "upc": "850060195280",
+    "brand": "Sunseeker",
+    "product_category": "Robotic Lawn Mowers",
+    "item_description": "Sunseeker X3 Plus Robotic Mower",
+    "lowes_product_description": "X3 PLUS Robotic Lawn Mower with GPS Assisted Navigation (1/4 to 1/2 acre)",
+    "lowes": {
+      "item_number": "7196961",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "7196961",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "SKRMV3",
+    "upc": "850060195211",
+    "brand": "Sunseeker",
+    "product_category": "Robotic Lawn Mowers",
+    "item_description": "Sunseeker V3 Robotic Mower",
+    "lowes_product_description": "V3 Robotic Lawn Mower with GPS Assisted Navigation (Up to 1/8 acre)",
+    "lowes": {
+      "item_number": "7196962",
+      "legacy_item_number": null,
+      "criteo_product_id": "5016678667"
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "7196962",
+      "thd_partner_sku": "1014381200"
+    }
+  },
+  {
+    "internal_sku": "ORIONX7",
+    "upc": "850060195105",
+    "brand": "Sunseeker",
+    "product_category": "Robotic Lawn Mowers",
+    "item_description": "Sunseeker X7 Robotic Mower",
+    "lowes_product_description": "X7 Robotic Lawn Mower with GPS Assisted Navigation (1/2 to 1 acre)",
+    "lowes": {
+      "item_number": "7196963",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "7196963",
+      "thd_partner_sku": "1014365972"
+    }
+  },
+  {
+    "internal_sku": "WB52CCBPB",
+    "upc": "854641007542",
+    "brand": "Wild Badger Power",
+    "product_category": "Leaf Blowers",
+    "item_description": "53cc Backpack Blower",
+    "lowes_product_description": "Gas Backpack Blower 53-cc 2-cycle 855-CFM 175-MPH Gas Backpack Leaf Blower Battery Not Included",
+    "lowes": {
+      "item_number": "5394463",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394463",
+      "thd_partner_sku": "1013971388"
+    }
+  },
+  {
+    "internal_sku": "WB20VHTB",
+    "upc": "854641007719",
+    "brand": "Wild Badger Power",
+    "product_category": "Hedge Trimmers",
+    "item_description": "20V Hedge Trimmer BT",
+    "lowes_product_description": "20 Volt 20-volt 22-in Battery Hedge Trimmer",
+    "lowes": {
+      "item_number": "5377445",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": null,
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40VSNBL2",
+    "upc": "850046351891",
+    "brand": "Wild Badger Power",
+    "product_category": "Snow Blowers",
+    "item_description": "40V 20IN Snow Blower (2) 4Ah Kit",
+    "lowes_product_description": "Cordless 40-volt 20-in Single-stage Push Battery Snow Blower (Battery Included) (Charger Included)",
+    "lowes": {
+      "item_number": "6595294",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "6595294",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WBBPBL43",
+    "upc": "854641007382",
+    "brand": "Wild Badger Power",
+    "product_category": "Leaf Blowers",
+    "item_description": "43CC 550CFM BACKPACK BLOWER",
+    "lowes_product_description": "Gas Backpack Blower 43-cc 2-cycle 650-CFM 152-MPH Gas Backpack Leaf Blower",
+    "lowes": {
+      "item_number": "3674321",
+      "legacy_item_number": null,
+      "criteo_product_id": "5001743637"
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3674321",
+      "thd_partner_sku": "1005781482"
+    }
+  },
+  {
+    "internal_sku": "WB26CCHHBL",
+    "upc": "850046351112",
+    "brand": "Wild Badger Power",
+    "product_category": "Leaf Blowers",
+    "item_description": "26cc Hand Blower",
+    "lowes_product_description": "Gas Backpack Blower 26-cc 2-cycle 475-CFM 165-MPH Gas Handheld Leaf Blower",
+    "lowes": {
+      "item_number": "5377437",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5377437",
+      "thd_partner_sku": "1013971237"
+    }
+  },
+  {
+    "internal_sku": "RMA2002L20VU",
+    "upc": "850046351402",
+    "brand": "Sunseeker",
+    "product_category": "Robotic Lawn Mowers",
+    "item_description": "L Robotic Mower",
+    "lowes_product_description": "L22 Plus Robotic Lawn Mower (1/4 to 1/2 acre)",
+    "lowes": {
+      "item_number": "5394453",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394453",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "RMA1202L20VU",
+    "upc": "850046351006",
+    "brand": "Sunseeker",
+    "product_category": "Robotic Lawn Mowers",
+    "item_description": "L22 Robotic Mower",
+    "lowes_product_description": "L22 Robotic Lawn Mower (1/8 to 1/4 acre)",
+    "lowes": {
+      "item_number": "5453693",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5453693",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB20V4AHB",
+    "upc": "854641007870",
+    "brand": "Badger",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "20V 4AH BATTERY",
+    "lowes_product_description": "20 -Volt, 1 -Pack Lithium Ion (Li-ion) Battery",
+    "lowes": {
+      "item_number": "3808313",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808313",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40V5.1AC",
+    "upc": "854641007696",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "40V FAST CHARGER",
+    "lowes_product_description": "40.0 -Volt, 1 Ah 2 Ah Lithium Ion (Li-ion) Battery Charger",
+    "lowes": {
+      "item_number": "3808320",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808320",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40V2.1AC",
+    "upc": "854641007900",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "40V STANDARD CHARGER 40V",
+    "lowes_product_description": "40.0 -Volt, Lithium Ion (Li-ion) Battery Charger",
+    "lowes": {
+      "item_number": "3808319",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808319",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB20V2AHB",
+    "upc": "854641007733",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "20V 2AH BATTERY",
+    "lowes_product_description": "20 -Volt, 2 Ah 1 -Pack Lithium Ion (Li-ion) Battery",
+    "lowes": {
+      "item_number": "3808312",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808312",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB20V1HC",
+    "upc": "850046351099",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "20V Clip-on Charger",
+    "lowes_product_description": "20 -Volt, Battery Charger",
+    "lowes": {
+      "item_number": "5377432",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5377432",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB20V2AC",
+    "upc": "854641007740",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "20V 2A CHARGER",
+    "lowes_product_description": "20 -Volt, Lithium Ion (Li-ion) Battery Charger",
+    "lowes": {
+      "item_number": "3808314",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808314",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40VCH",
+    "upc": "850046351341",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "40V Clip-on Charger",
+    "lowes_product_description": "40 -Volt, Lithium Ion (Li-ion) Battery Charger",
+    "lowes": {
+      "item_number": "5377444",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5377444",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB26MTSE",
+    "upc": "850046351129",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "Gas Multitool",
+    "lowes_product_description": "4 In 1 Multi Tool 26-cc 2-cycle 17-in Straight Shaft Attachment Capable Gas String Trimmer Edger Conversion Capable",
+    "lowes": {
+      "item_number": "5377439",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5377439",
+      "thd_partner_sku": "1013971222"
+    }
+  },
+  {
+    "internal_sku": "WB26BCI",
+    "upc": "854641007597",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "26CC 2-CYCLE BRUSH CUTTER",
+    "lowes_product_description": "Gas 26-cc 2-cycle 17-in Straight Shaft Attachment Capable Gas String Trimmer",
+    "lowes": {
+      "item_number": "3674326",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3674326",
+      "thd_partner_sku": "1004325542"
+    }
+  },
+  {
+    "internal_sku": "WBPMT26P",
+    "upc": "854641007641",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "26CC MULTI TOOL KIT WITH POLE SAW",
+    "lowes_product_description": "4 In 1 Multi Tool 26-cc 2-cycle 17-in Straight Shaft Attachment Capable Gas String Trimmer",
+    "lowes": {
+      "item_number": "3674328",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3674328",
+      "thd_partner_sku": "1004757246"
+    }
+  },
+  {
+    "internal_sku": "WB20VTAB",
+    "upc": "854641007603",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "20V 2 PC KIT TRIMMER AXIAL BLOWER",
+    "lowes_product_description": "20-volt 12-in Straight Shaft Battery String Trimmer Edger Conversion Capable 2 Ah (Battery Included) (Charger Included)",
+    "lowes": {
+      "item_number": "3674324",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3674324",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40VSNOWSH",
+    "upc": "850046351877",
+    "brand": "Wild Badger Power",
+    "product_category": "Snow Shovels",
+    "item_description": "40V 12IN Snow Shovel 4Ah Kit",
+    "lowes_product_description": "12-in Poly Blade Shovel/Pusher Snow Shovel with 56-in Poly Handle",
+    "lowes": {
+      "item_number": "6595297",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "6595297",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40VPSBBAR",
+    "upc": "850046351242",
+    "brand": "Wild Badger Power",
+    "product_category": "Pole Saws",
+    "item_description": "Badger 40V Pole Saw",
+    "lowes_product_description": "Pole Saw 40-volt 8-in 2 -Amp 2 Ah Battery Pole Saw Battery Included , Charger Included",
+    "lowes": {
+      "item_number": "5394455",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394455",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40VTBCC",
+    "upc": "850046351396",
+    "brand": "Wild Badger Power",
+    "product_category": "Power Equipment Combo Kits",
+    "item_description": "40V Trimmer Blower",
+    "lowes_product_description": "Trimmer Edger Blower 40-volt Cordless Battery String Trimmer and Leaf Blower and Combo Kit 2 Ah (Battery Included) (Charger Included)",
+    "lowes": {
+      "item_number": "5394459",
+      "legacy_item_number": null,
+      "criteo_product_id": "5014467653"
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394459",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40VHT24",
+    "upc": "850046351358",
+    "brand": "Wild Badger Power",
+    "product_category": "Hedge Trimmers",
+    "item_description": "40V Hedge Trimmer",
+    "lowes_product_description": "40 Volt 40-volt 24-in Battery Hedge Trimmer 2 Ah Battery Included , Charger Included",
+    "lowes": {
+      "item_number": "5377443",
+      "legacy_item_number": null,
+      "criteo_product_id": "5014391677"
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5377443",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "MFT26I-PS-FA",
+    "upc": "854641007184",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmer Attachments",
+    "item_description": "10IN FIXED POLE SAW",
+    "lowes_product_description": "LinkOn Pole saw attachment",
+    "lowes": {
+      "item_number": "3808306",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808306",
+      "thd_partner_sku": "1003819670"
+    }
+  },
+  {
+    "internal_sku": "MFT26I-HEDGE-A",
+    "upc": "854641007207",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmer Attachments",
+    "item_description": "15IN ARTICULATING HEDGE TRIMMER",
+    "lowes_product_description": "LinkOn Hedge trimmer attachment",
+    "lowes": {
+      "item_number": "3808308",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808308",
+      "thd_partner_sku": "1003819664"
+    }
+  },
+  {
+    "internal_sku": "WB40VTR",
+    "upc": "854641007795",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "40V STRING TRIMMER AND EDGER",
+    "lowes_product_description": "40-volt 13-in Straight Shaft Battery String Trimmer Edger Conversion Capable 2 Ah (Battery Included) (Charger Included)",
+    "lowes": {
+      "item_number": "3674330",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": null,
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WBABATT",
+    "upc": "854641007535",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmer Attachments",
+    "item_description": "Axial Blower Attachment",
+    "lowes_product_description": "LinkOn Leaf blower attachment",
+    "lowes": {
+      "item_number": "5377436",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": null,
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB20VCOMBO",
+    "upc": "850046351440",
+    "brand": "Wild Badger Power",
+    "product_category": "Power Equipment Combo Kits",
+    "item_description": "20V MultiTool Combo",
+    "lowes_product_description": "LinkOn 20-volt Cordless Battery String Trimmer and Hedge Trimmer and Chainsaw and and Pole Saw Combo Kit 2 Ah (Battery Included) (Charger Included)",
+    "lowes": {
+      "item_number": "6268910",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": null,
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB52CCEA",
+    "upc": "850046351075",
+    "brand": "Wild Badger Power",
+    "product_category": "Auger Powerheads",
+    "item_description": "53cc Earth Auger",
+    "lowes_product_description": "53-cc 1- or 2-man 53cc Auger Powerhead with 8-in Bit Battery Not Included and Charger Not Included",
+    "lowes": {
+      "item_number": "5394462",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394462",
+      "thd_partner_sku": "1014419717"
+    }
+  },
+  {
+    "internal_sku": "WB40VCSBB",
+    "upc": "850046351372",
+    "brand": "Wild Badger Power",
+    "product_category": "Chainsaws",
+    "item_description": "40V Badger Chainsaw",
+    "lowes_product_description": "Cordless 40-volt 16-in Battery 4 Ah Chainsaw Battery Included Charger Included",
+    "lowes": {
+      "item_number": "5377440",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5377440",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB20VTRSBL",
+    "upc": "850046351433",
+    "brand": "Wild Badger Power",
+    "product_category": "Power Equipment Combo Kits",
+    "item_description": "40V Trimmer, Sweeper Blower",
+    "lowes_product_description": "20 Volt 20-volt Cordless Battery String Trimmer and Leaf Blower and Combo Kit 2 Ah (Battery Included) (Charger Included)",
+    "lowes": {
+      "item_number": "5395238",
+      "legacy_item_number": null,
+      "criteo_product_id": "5014472275"
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5395238",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB31CCED",
+    "upc": "850046351051",
+    "brand": "Wild Badger Power",
+    "product_category": "Lawn Edgers",
+    "item_description": "31cc Walk Behind Edger",
+    "lowes_product_description": "9-in Push walk behind Gas Lawn Edger",
+    "lowes": {
+      "item_number": "5394457",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394457",
+      "thd_partner_sku": "1009594879"
+    }
+  },
+  {
+    "internal_sku": "WB20VCS2AH",
+    "upc": "850046351167",
+    "brand": "Wild Badger Power",
+    "product_category": "Chainsaws",
+    "item_description": "20V Chainsaw",
+    "lowes_product_description": "Cordless 20-volt 10-in Battery 4 Ah Chainsaw Battery Included Charger Included",
+    "lowes": {
+      "item_number": "5394456",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394456",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WBEDGERATT",
+    "upc": "854641007559",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmer Attachments",
+    "item_description": "Edger Attachment",
+    "lowes_product_description": "LinkOn Edger attachment",
+    "lowes": {
+      "item_number": "5377434",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5377434",
+      "thd_partner_sku": "1015236944"
+    }
+  },
+  {
+    "internal_sku": "WBP31BCF",
+    "upc": "854641007627",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "31CC 4 STROKE BRUSH CUTTER",
+    "lowes_product_description": "31-cc 4-cycle 17-in Straight Shaft Gas String Trimmer",
+    "lowes": {
+      "item_number": "4131597",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "4131597",
+      "thd_partner_sku": "1004757245"
+    }
+  },
+  {
+    "internal_sku": "WB20VPS",
+    "upc": "854641007726",
+    "brand": "Wild Badger Power",
+    "product_category": "Pole Saws",
+    "item_description": "20V POLE SAW",
+    "lowes_product_description": "20 Volt 20-volt 8.0-in 2.0 Ah Battery Pole Saw Battery Included , Charger Included",
+    "lowes": {
+      "item_number": "3808310",
+      "legacy_item_number": null,
+      "criteo_product_id": "5001889319"
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808310",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WBP40VHTB",
+    "upc": "854641007856",
+    "brand": "Wild Badger Power",
+    "product_category": "Hedge Trimmers",
+    "item_description": "40V 22in Hedge Trimmer Bare",
+    "lowes_product_description": "40 Volt 40-volt 22-in Battery Hedge Trimmer 2 Ah",
+    "lowes": {
+      "item_number": "4834562",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": null,
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "MFT26I-PS-AA",
+    "upc": "854641007191",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmer Attachments",
+    "item_description": "10 IN. ARTICULATING POLE SAW",
+    "lowes_product_description": "LinkOn Pole saw attachment",
+    "lowes": {
+      "item_number": "3674331",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": null,
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WBP52BCI",
+    "upc": "854641007665",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmers",
+    "item_description": "52CC BRUSH CUTTER",
+    "lowes_product_description": "Gas 52-cc 2-cycle 17-in Straight Shaft Gas String Trimmer",
+    "lowes": {
+      "item_number": "3674329",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3674329",
+      "thd_partner_sku": "1004757243"
+    }
+  },
+  {
+    "internal_sku": "WB40V2.0AHB",
+    "upc": "854641007993",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "40V 2.0 AH BATTERY",
+    "lowes_product_description": "40 -Volt, 2 Ah 1 -Pack Lithium Ion (Li-ion) Battery",
+    "lowes": {
+      "item_number": "3808316",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808316",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40V4.0AHB",
+    "upc": "854641007894",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Power Equipment Batteries & Chargers",
+    "item_description": "40V 4.0 AH BATTERY",
+    "lowes_product_description": "40.0 -Volt, 1.0 -Pack Lithium Ion (Li-ion) Battery",
+    "lowes": {
+      "item_number": "3808318",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "3808318",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40V14PLM",
+    "upc": "850046351860",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Electric Push Lawn Mowers",
+    "item_description": "40V 14IN Mower 4Ah Kit",
+    "lowes_product_description": "Cordless 40-volt, 14-in Push Battery Walk Mower with  (1) 4 Ah Battery Included",
+    "lowes": {
+      "item_number": "6595295",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "6595295",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40VSP21LM",
+    "upc": "850046351778",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Electric Push Lawn Mowers",
+    "item_description": "40V 21IN SP Mower (2) 4Ah Kit",
+    "lowes_product_description": "Cordless 40-volt, 21-in Self Propelled Battery Walk Mower with  (2) 4 Ah Batteries Included",
+    "lowes": {
+      "item_number": "6595296",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "6595296",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB40V18PLM",
+    "upc": "850046351457",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Electric Push Lawn Mowers",
+    "item_description": "40V 18in Lawn Mower",
+    "lowes_product_description": "Brushless 40-volt, 18-in Push Battery Walk Mower with  (1) 4 Ah Battery Included",
+    "lowes": {
+      "item_number": "5394451",
+      "legacy_item_number": null,
+      "criteo_product_id": "5014466573"
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5394451",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WB20V16LM",
+    "upc": "850046351198",
+    "brand": "Wild Badger Power",
+    "product_category": "Cordless Electric Push Lawn Mowers",
+    "item_description": "20V 16IN MOWER 4AH KIT",
+    "lowes_product_description": "20 Volt, 16-in Push Battery Walk Mower with  (2) 4 Ah Batteries Included",
+    "lowes": {
+      "item_number": "5378633",
+      "legacy_item_number": null,
+      "criteo_product_id": "5014394923"
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5378633",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "MTA-BC-BLADE",
+    "upc": "854641007245",
+    "brand": "Sunseeker",
+    "product_category": "String Trimmer Attachments",
+    "item_description": "Brush Cutter Blade",
+    "lowes_product_description": "Brush Cutter Brush cutter attachment",
+    "lowes": {
+      "item_number": "4834556",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "4834556",
+      "thd_partner_sku": "1004120898"
+    }
+  },
+  {
+    "internal_sku": "WB20V3PKSPOOLS",
+    "upc": "854641007610",
+    "brand": "Wild Badger Power",
+    "product_category": "String Trimmer Line",
+    "item_description": "Auto Feed 20V Replacement Spool",
+    "lowes_product_description": "20 Volt Spool Line 3 -Pack 13-ft Spooled Trimmer Line",
+    "lowes": {
+      "item_number": "4834554",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "4834554",
+      "thd_partner_sku": null
+    }
+  },
+  {
+    "internal_sku": "WBHBVATTACH",
+    "upc": "854641007757",
+    "brand": "Wild Badger Power",
+    "product_category": "Leaf Blower Accessories",
+    "item_description": "26cc Vac Kit",
+    "lowes_product_description": "26cc Vacuum kit",
+    "lowes": {
+      "item_number": "5377433",
+      "legacy_item_number": null,
+      "criteo_product_id": null
+    },
+    "thd": {
+      "sku": null,
+      "item_number": null
+    },
+    "walmart": {
+      "item_id": null,
+      "gtin": null
+    },
+    "amazon": {
+      "asin": null
+    },
+    "rithum": {
+      "lowes_partner_sku": "5377433",
+      "thd_partner_sku": null
+    }
+  }
+]
