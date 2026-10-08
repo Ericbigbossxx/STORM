@@ -1,0 +1,68 @@
+<style>
+.dot-n {background:var(--text3)}
+.scope-note{font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 16px}
+.review-intro{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin:6px 0 18px}
+.review-intro h2{font-size:18px;letter-spacing:-.4px}
+.review-intro p{font-size:12px;color:var(--text2)}
+.platform-module{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;border-top:3px solid var(--platform)}
+.platform-heading{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border)}
+.platform-heading h3{font-size:18px;color:var(--platform);letter-spacing:-.3px}
+.platform-heading p{font-size:12px;color:var(--text2)}
+.brand-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.brand-column{padding:22px 24px 24px;min-width:0}
+.brand-column+.brand-column{border-left:1px solid var(--border)}
+.brand-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.brand-heading h4{font-size:16px;letter-spacing:-.3px}
+.status-label{font-size:10px;padding:4px 8px;border-radius:5px;background:#f2f2f7;color:var(--text2);font-weight:600}
+.status-label.loss{background:#fff0ee;color:#bc342b}
+.brand-metrics{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;margin-bottom:17px}
+.brand-metrics dt,.bridge-cell span{color:var(--text2);font-size:10px;font-weight:600;display:block;margin-bottom:6px}
+.brand-metrics dd{font-size:21px;font-weight:750;letter-spacing:-.6px}
+.brand-metrics small{display:block;color:var(--text2);font-size:10px;font-weight:500;margin-top:4px;letter-spacing:0}
+.brand-secondary{display:flex;flex-wrap:wrap;gap:7px 22px;padding:12px 0;border-top:1px solid #f0f0f3;border-bottom:1px solid #f0f0f3;color:var(--text2);font-size:12px;line-height:1.6}
+.brand-secondary b{color:var(--text);font-weight:650}
+.brand-copy{font-size:12px;line-height:1.85;margin-top:14px;color:var(--text2)}
+.brand-copy strong{color:var(--text);font-weight:650}
+.brand-action{margin-top:12px;padding:11px 13px;background:var(--bg);border-radius:8px;font-size:12px;line-height:1.75}
+.brand-action span{display:block;font-size:10px;color:var(--text2);font-weight:650;margin-bottom:3px}
+.bridge-header{display:flex;justify-content:space-between;align-items:baseline;gap:18px;margin-bottom:15px}
+.bridge-header h3{font-size:13px;font-weight:700}
+.bridge-header span{font-size:11px;color:var(--text2)}
+.bridge-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.bridge-cell{padding:4px 12px;border-left:1px solid var(--border)}
+.bridge-cell:first-child{border-left:none;padding-left:0}
+.bridge-cell b{font-size:20px;font-weight:750;letter-spacing:-.6px}
+.bridge-cell small{display:block;font-size:10px;color:var(--text2);margin-top:4px}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:20px}
+.method-card p,#p-source-notes p{font-size:13px;line-height:1.8;color:var(--text2);margin:10px 0}
+.method-card h3{font-size:13px;margin-top:12px;color:var(--text)}
+#p-source-notes h3{font-size:15px;margin-bottom:10px}
+#p-source-notes details{margin-top:16px;font-size:12px;color:var(--text2);overflow:auto}
+#p-source-notes summary{cursor:pointer;font-weight:600;padding:8px 0}
+#p-source-notes table td{font-size:12px}
+@media(max-width:850px){.brand-columns,.method-grid{grid-template-columns:1fr}.brand-column+.brand-column{border-left:none;border-top:1px solid var(--border)}.platform-heading,.review-intro,.bridge-header{align-items:flex-start;flex-direction:column;gap:7px}.bridge-grid{grid-template-columns:repeat(3,1fr);row-gap:18px}.kpi-strip{grid-template-columns:repeat(3,1fr)}.nav{flex-wrap:wrap}.header{flex-wrap:wrap;gap:12px}}
+</style>
+<script>
+function safeText(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function moneyExact(value){return (value<0?'−':'')+'$'+Math.abs(value).toLocaleString('en-US',{maximumFractionDigits:0});}
+function rate(value,base){return base?(value/base*100).toFixed(1)+'%':'—';}
+function renderWeeklyReview(P){
+  var wf=P.waterfalls.Overall;
+  var marketing=wf.mkt_insite+wf.mkt_offsite_seed+wf.mkt_channel;
+  var cells=[['GM · 商品毛利',wf.gm,'start'],['− 固定费用',wf.fixed_cost,'cost'],['− 营销',marketing,'cost'],['− 退货 / 质保',wf.return_warranty,'cost'],['− Funding',wf.funding,'cost'],['= CM · 贡献利润',wf.cm,'end']];
+  $('margin-bridge').innerHTML='<div class="bridge-header"><h3>GM → CM <span> · '+safeText(P.meta.label)+'</span></h3><span>分项独立舍入 · 差额 '+((wf.gm-wf.cm)/wf.gmv*100).toFixed(1)+' 个百分点 · 口径及复核见「数据口径」</span></div><div class="bridge-grid">'+cells.map(function(c){return '<div class="bridge-cell"><span>'+c[0]+'</span><b>'+rate(c[1],wf.gmv)+'</b><small>'+moneyExact(c[1])+'</small></div>';}).join('')+'</div>';
+  var colors={'THD':'#F96302',"Lowe's":'#004990','Walmart':'#0071CE'};
+  var paced=P.meta.months.length===1&&P.meta.label.indexOf('MTD')>=0;
+  $('p-conclusions').innerHTML='<div class="review-intro"><h2>Platform Review <span style="color:var(--text2);font-weight:500">· '+safeText(P.meta.label)+'</span></h2><p>WoW: '+safeText(P.reproduction.w1)+' / '+safeText(P.reproduction.w2)+'</p></div>'+['THD',"Lowe's",'Walmart'].map(function(pl){
+    var block=P.conclusions[pl];
+    return '<section class="platform-module" style="--platform:'+colors[pl]+'"><header class="platform-heading"><h3>'+safeText(pl)+'</h3><p>Revenue '+moneyExact(block.revenue)+' <span style="padding:0 8px">·</span> CM '+moneyExact(block.cm)+'</p></header><div class="brand-columns">'+block.brands.map(function(b){
+      var w=b.waterfall,bp=b.bp;
+      if(!b.has_data)return '<article class="brand-column"><div class="brand-heading"><h4>'+b.brand+'</h4></div><p class="scope-note">本期无订单明细，无法评价经营表现。</p></article>';
+      var budget=bp&&bp.bp>0?'BP '+moneyExact(bp.bp)+' · '+(paced?'月末外推':'实际')+' <b>'+bp.att_display.toFixed(1)+'%</b>':'BP <b>未设目标</b> · 达成率不适用';
+      var change=b.wow===null?'不适用（前期为零）':(b.wow>0?'+':'')+b.wow.toFixed(1)+'%';
+      var movement=b.decline?'<p class="brand-copy"><strong>主要下滑 SKU</strong> '+safeText(b.decline.sku)+' · 较前 7 天减少 '+moneyExact(Math.abs(b.decline.change))+'。原因待运营核查。</p>':'';
+      return '<article class="brand-column"><div class="brand-heading"><h4>'+b.brand+'</h4><span class="status-label '+(w.cm<0?'loss':'')+'">'+(w.cm<0?'贡献利润为负':'贡献利润为正')+'</span></div><dl class="brand-metrics"><div><dt>Revenue</dt><dd>'+moneyExact(w.gmv)+'</dd></div><div><dt>GM · 商品毛利</dt><dd>'+rate(w.gm,w.gmv)+'<small>'+moneyExact(w.gm)+'</small></dd></div><div><dt>CM · 贡献利润</dt><dd class="'+(w.cm<0?'neg':'')+'">'+rate(w.cm,w.gmv)+'<small>'+moneyExact(w.cm)+'</small></dd></div></dl><div class="brand-secondary"><span>WoW <b>'+change+'</b></span><span>'+budget+'</span></div><p class="brand-copy"><strong>利润观察</strong> '+safeText(b.finding)+'</p>'+movement+'<div class="brand-action"><span>建议关注 · 待业务 Owner 排期</span>'+safeText(b.action)+'</div></article>';
+    }).join('')+'</div></section>';
+  }).join('')+'<p class="scope-note">依据当期源表生成。建议为分析判断，未执行平台操作；费用归属与销售变化原因需结合运营记录核查。GM 仅扣 COGS，CM 再扣源表列明费用。</p>';
+}
+</script>
