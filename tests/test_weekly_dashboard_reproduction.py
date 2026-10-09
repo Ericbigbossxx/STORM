@@ -128,4 +128,39 @@ class ReconstructionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'rollover'):
             r.weekly_definitions(date(2027,1,20))
 
+    def test_october_weekly_windows_include_previous_month(self):
+        previous=dict(row(30,80),date=date(2026,9,30))
+        current=dict(row(7,20),date=date(2026,10,7),month=10)
+        p=r.make_period([previous,current],[],[10],'Oct MTD',(9,10),date(2026,10,7),weekly=True)
+        r.prepare_weekly_period(p,[previous,current],date(2026,10,7))
+        self.assertEqual(p['executive']['total_revenue'],20)
+        self.assertEqual((p['executive']['w1'],p['executive']['w2']),(80,20))
+        self.assertEqual(p['executive']['wow_display'],-75)
+        sun=p['conclusions']['Walmart']['brands'][1]
+        self.assertEqual((sun['w1'],sun['w2'],sun['wow']),(80,20,-75))
+
+    def test_monthly_expense_without_orders_is_not_fabricated_as_an_order(self):
+        current=dict(row(7,100),date=date(2026,10,7),month=10)
+        adjustment={'month':10,'platform':"Lowe's",'channel':"Lowe's / DS",'brand':'Sunseeker','power':'Robot','metric':'mkt_insite','amount':15}
+        p=r.make_period([current],[],[10],'Oct MTD',(9,10),date(2026,10,7),weekly=True,cost_adjustments=[adjustment])
+        r.prepare_weekly_period(p,[current],date(2026,10,7),[adjustment])
+        self.assertEqual((p['executive']['total_revenue'],p['executive']['total_orders'],p['executive']['total_units']),(100,1,1))
+        self.assertEqual(p['waterfalls']['Overall']['cm'],35)
+        self.assertEqual(p['waterfalls']["Lowe's / Sunseeker"]['cm'],-15)
+        self.assertIsNone(p['waterfalls']["Lowe's / Sunseeker"]['cm_pct_display'])
+        self.assertEqual(p['brand_performance'][0]['cm_display'],35)
+        self.assertEqual(p['power_source'][0]['cm_display'],35)
+        self.assertTrue(p['conclusions']["Lowe's"]['brands'][1]['has_data'])
+        self.assertEqual(p['conclusions']["Lowe's"]['cm'],-15)
+        self.assertEqual(r.waterfall([current])['cm'],50)
+        prior=r.make_period([row(30,100)],[],[9],'Sep',(8,9),date(2026,10,7),cost_adjustments=[adjustment])
+        self.assertEqual(prior['waterfalls']['Overall']['cm'],50)
+
+    def test_october_period_definitions(self):
+        definitions=r.weekly_definitions(date(2026,10,7))
+        self.assertEqual([v[0] for v in definitions],['Oct MTD','Sep','Q4','Q3','Q2','YTD'])
+        self.assertEqual(definitions[2][1],[10])
+        self.assertEqual(definitions[3][1],[7,8,9])
+        self.assertEqual(definitions[3][2],(8,9))
+
 if __name__=='__main__':unittest.main()

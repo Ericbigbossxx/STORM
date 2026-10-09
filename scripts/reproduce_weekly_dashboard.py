@@ -57,13 +57,24 @@ def ratio(a,b,places=4):
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
-def read_source(path, *, strict=False, na_cost_zero=False):
+def read_source(path, *, strict=False, na_cost_zero=False, review_policy=None):
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     actual = list(wb['actual order'].values)
+    review_policy = review_policy or {}
+    if review_policy and review_policy.get('source_sha256') != digest(path):
+        raise ValueError('Reviewed source policy does not match workbook digest')
+    for cell, value in review_policy.get('approved_cell_corrections', {}).items():
+        col, row = openpyxl.utils.cell.coordinate_from_string(cell)
+        values = list(actual[row-1])
+        values[openpyxl.utils.column_index_from_string(col)-1] = value
+        actual[row-1] = tuple(values)
+    excluded_rows = set(review_policy.get('superseded_source_rows', []))
     headers = [clean(x) for x in actual[0]]
     assert headers[17:24] == ['Date','Country','Channel','SKU','Ordered Revenue','Ordered Units','Order Number']
     buckets = defaultdict(list)
     for rownum, raw in enumerate(actual[1:],2):
+        if rownum in excluded_rows:
+            continue
         if raw[19] not in CHANNELS:
             continue
         r = tuple(clean(x) for x in raw)
@@ -85,7 +96,7 @@ def read_source(path, *, strict=False, na_cost_zero=False):
     last_rows=[]
     for entries in buckets.values():
         rownum,r=entries[0]
-        differing=[i for i in range(24) if len({v[i] for _,v in entries})>1]
+        differing=[i for i in range(1,24) if len({v[i] for _,v in entries})>1]
         if len(entries)>1:
             duplicates.append({'source_rows':[n for n,_ in entries], 'date':parse_date(r[17]).isoformat(), 'sku':r[20], 'channel':r[19], 'revenue':num(r[21]), 'units':num(r[22]), 'extra_rows':len(entries)-1, 'fully_identical':not differing})
         if differing:
@@ -132,17 +143,26 @@ def read_source(path, *, strict=False, na_cost_zero=False):
     for month in sorted({r['month'] for r in rows}):
         first=[r for r in rows if r['month']==month];last=[r for r in last_rows if r['month']==month]
         audit['cost_sensitivity'].append({'month':month,'first_cm':total(first,'cm'),'last_cm':total(last,'cm'),'delta_last_minus_first':round(total(last,'cm')-total(first,'cm'),2)})
+    if review_policy:
+        audit['source_review'] = review_policy
+        audit['superseded_rows_removed'] = len(excluded_rows)
     if strict and conflicts:
         raise ValueError(f'{len(conflicts)} duplicate keys have conflicting values; weekly build requires review')
     return rows,bp,dfc,inventory,audit
 
-def waterfall(rows):
+def scoped_adjustments(adjustments, months=None, **scope):
+    return [v for v in adjustments if (months is None or v['month'] in months) and all(v.get(k)==value for k,value in scope.items())]
+
+
+def waterfall(rows, adjustments=()):
     v={'gmv':total(rows,'revenue')}
-    v.update({k:total(rows,k) for k in COSTS})
+    v.update({k:round(total(rows,k)+sum(a['amount'] for a in adjustments if a['metric']==k),2) for k in COSTS})
     v['gm']=round(v['gmv']-v['cogs'],2)
-    v['cm']=total(rows,'cm')
+    v['cm']=round(v['gmv']-sum(v[k] for k in COSTS),2)
     v['cm_pct']=ratio(v['cm'],v['gmv'])
     v['cm_pct_display']=round(v['cm']/v['gmv']*100,1) if v['gmv'] else 0.0
+    if adjustments and not v['gmv']:
+        v['cm_pct']=v['cm_pct_display']=None
     return v
 
 def sku_changes(first,second,names,count):
@@ -156,18 +176,21 @@ def sku_changes(first,second,names,count):
 def heatmap(rows):
     return [{'category':k[0],'brand':k[1],'revenue':total(v,'revenue')} for k,v in groups(rows,'category','brand').items()]
 
-def make_period(rows,bp,months,label,mom_months,cutoff):
+def make_period(rows,bp,months,label,mom_months,cutoff, *, weekly=False, cost_adjustments=()):
     r=[v for v in rows if v['month'] in months];plan=[v for v in bp if v['month'] in months]
     start=min(v['date'] for v in r);end=max(v['date'] for v in r)
-    w2=[v for v in r if end-timedelta(days=6)<=v['date']<=end]
-    w1=[v for v in r if end-timedelta(days=13)<=v['date']<=end-timedelta(days=7)]
-    wf=waterfall(r);rev=wf['gmv'];a,b=total(w1,'revenue'),total(w2,'revenue');wow=ratio(b-a,a)
+    week_rows=rows if weekly else r
+    w2=[v for v in week_rows if end-timedelta(days=6)<=v['date']<=end]
+    w1=[v for v in week_rows if end-timedelta(days=13)<=v['date']<=end-timedelta(days=7)]
+    adjustments=scoped_adjustments(cost_adjustments,months)
+    wf=waterfall(r,adjustments);rev=wf['gmv'];a,b=total(w1,'revenue'),total(w2,'revenue');wow=ratio(b-a,a)
     cm=wf['cm_pct'];gm=ratio(wf['gm'],rev)
     ex={'total_revenue':rev,'total_units':int(total(r,'units')),'total_orders':len({v['order'] for v in r if v['order'] is not None}), 'wow_change':wow,'wow_display':round(wow*100,1),'w1':a,'w2':b,'cm_pct':cm,'cm_pct_display':round(cm*100,1),'cm_display':round(cm*100,1),'overall_cm_pct':cm,'gm_pct':gm,'gm_pct_display':round(gm*100,1),'gm_display':round(gm*100,1),'avg_daily':round(rev/((end-start).days+1),2)}
     p={'meta':{'label':label,'months':months},'executive':ex}
     p['daily_trend']=[{'date':k[0].isoformat(),'revenue':total(v,'revenue'),'units':int(total(v,'units'))} for k,v in groups(r,'date').items()]
     p['channel_overview']=[{'label':ch,'revenue':total([v for v in r if v['channel']==ch],'revenue'),'share':ratio(total([v for v in r if v['channel']==ch],'revenue'),rev),'w1':total([v for v in w1 if v['channel']==ch],'revenue'),'w2':total([v for v in w2 if v['channel']==ch],'revenue')} for _,ch in CHANNELS.values()]
-    p['waterfalls']={'Overall':wf, **{f'{k[0]} / {k[1]}':waterfall(v) for k,v in groups(r,'platform','brand').items()}}
+    waterfall_keys=set(groups(r,'platform','brand'))|{(v['platform'],v['brand']) for v in adjustments}
+    p['waterfalls']={'Overall':wf, **{f'{pl} / {brand}':waterfall([v for v in r if v['platform']==pl and v['brand']==brand],scoped_adjustments(adjustments,platform=pl,brand=brand)) for pl,brand in sorted(waterfall_keys)}}
     sw=sku_changes(w1,w2,('w1','w2'),5);p['sku_wow_growth']=sw['growth'];p['sku_wow_decline']=sw['decline']
     p['platform_sku_wow']={pl:sku_changes([v for v in w1 if v['platform']==pl],[v for v in w2 if v['platform']==pl],('w1','w2'),5) for pl in ['THD',"Lowe's",'Walmart']}
     m1=[v for v in rows if v['month']==mom_months[0]];m2=[v for v in rows if v['month']==mom_months[1]]
@@ -177,8 +200,8 @@ def make_period(rows,bp,months,label,mom_months,cutoff):
     for target,key,name in [('brand_performance','brand','brand'),('power_source','power','source')]:
         p[target]=[]
         for k,v in groups(r,key).items():
-            amount=total(v,'revenue');rate=ratio(total(v,'cm'),amount)
-            p[target].append({name:k[0],'revenue':amount,'cm_pct':rate,'cm_display':round(total(v,'cm')/amount*100,1) if amount else 0.0})
+            amount=total(v,'revenue');margin=waterfall(v,scoped_adjustments(adjustments,**{key:k[0]}))['cm'];rate=ratio(margin,amount)
+            p[target].append({name:k[0],'revenue':amount,'cm_pct':rate,'cm_display':round(margin/amount*100,1) if amount else 0.0})
     p['brand_cm']={v['brand']:v['cm_display'] for v in p['brand_performance']}
     p['category_brand_heatmap']=heatmap(r)
     p['category_brand_by_platform']={'All':heatmap(r),**{pl:heatmap([v for v in r if v['platform']==pl]) for pl in ['THD',"Lowe's",'Walmart']}}
@@ -188,7 +211,8 @@ def make_period(rows,bp,months,label,mom_months,cutoff):
         p['top_skus'].append({'sku':sku,'revenue':total(v,'revenue'),'units':int(total(v,'units')),'brand':v[0]['brand'],'power_source':v[0]['power'],'contribution':ratio(total(v,'revenue'),rev),'platform_breakdown':[{'channel':k[0],'revenue':total(g,'revenue')} for k,g in groups(v,'channel').items()],'wow_change':ratio(y-x,x) if x else (1.0 if y else 0.0),'w1':x,'w2':y})
     p['platform_brand_bp']=[]
     pacing=calendar.monthrange(cutoff.year,cutoff.month)[1]/cutoff.day if months==[cutoff.month] else 1
-    for (pl,brand),v in groups(r,'platform','brand').items():
+    for pl,brand in sorted(waterfall_keys):
+        v=[x for x in r if x['platform']==pl and x['brand']==brand]
         actual=total(v,'revenue');budget=total([q for q in plan if q['platform']==pl and q['brand']==brand],'revenue');projected=round(actual*pacing,2);att=ratio(projected,budget)
         p['platform_brand_bp'].append({'platform':pl,'brand':brand,'label':f'{pl} / {brand}','actual':actual,'revenue':actual,'bp':budget,'projected':projected,'attainment':att,'att_display':round(projected/budget*100,1) if budget else 0.0})
     def lookup(actual,budget):
@@ -303,8 +327,10 @@ def apply_weekly_sku_bp_scope(p,rows,bp):
     p['bp_att_lookup']={'by_sku_all':att_lookup(actual,plan),'by_platform':{pl:att_lookup([v for v in actual if v['platform']==pl],[v for v in plan if v['platform']==pl]) for pl in ['THD',"Lowe's",'Walmart']}}
 
 
-def review_monthly_source(path,rows,cutoff):
+def review_monthly_source(path,rows,cutoff, review_policy=None):
     """Cross-check detail against separately saved summaries; retain disagreements."""
+    review_policy=review_policy or {}
+    adjustments=review_policy.get('monthly_cost_adjustments',[])
     wb=openpyxl.load_workbook(path,read_only=True,data_only=True)
     actual=list(wb['actual order'].values)
     current=[v for v in rows if v['month']==cutoff.month]
@@ -323,10 +349,13 @@ def review_monthly_source(path,rows,cutoff):
         detail=[v for v in current if v['channel']==CHANNELS[raw[1]][1] and v['brand']==raw[2]]
         value=raw[cutoff.month+4]
         if not isinstance(value,(int,float)):raise ValueError('Missing monthly cost summary')
-        amount=total(detail,mapping[raw[0]]);delta=round(amount-value,2)
+        amount=round(total(detail,mapping[raw[0]])+sum(v['amount'] for v in scoped_adjustments(adjustments,[cutoff.month],channel=CHANNELS[raw[1]][1],brand=raw[2]) if v['metric']==mapping[raw[0]]),2);delta=round(amount-value,2)
         tolerance=.5+.005*len(detail)  # whole-dollar summary vs cent-rounded order allocations
         comparisons.append({'cell':f"{openpyxl.utils.get_column_letter(cutoff.month+5)}{n}",'channel':raw[1],'brand':raw[2],'metric':mapping[raw[0]],'summary':value,'detail':amount,'delta':delta,'rounding_tolerance':round(tolerance,3),'within_rounding':abs(delta)<=tolerance})
-    if any(not v['within_rounding'] for v in comparisons):
+    for check in comparisons:
+        exception=review_policy.get('known_monthly_source_differences',{}).get(check['cell'])
+        check['reviewed_source_difference']=bool(exception and exception['summary']==check['summary'] and abs(exception['detail']-check['detail'])<.01)
+    if any(not v['within_rounding'] and not v['reviewed_source_difference'] for v in comparisons):
         raise ValueError('Monthly cost summary differs beyond order allocation rounding')
     warehouse=[r[cutoff.month+4] for r in wb['2026 acutal cost'].values if r[0]=='Warehouse+Shipping' and r[1] in CHANNELS]
     if not warehouse or any(v!=0 for v in warehouse):
@@ -364,7 +393,7 @@ def weekly_definitions(cutoff):
     defs.append(('YTD',list(range(1,m+1)),(m-1,m)))
     return defs
 
-def prepare_weekly_period(p,rows,cutoff):
+def prepare_weekly_period(p,rows,cutoff,cost_adjustments=()):
     """Weekly prose and chart dates use this source only; no old narrative is reused."""
     end=date.fromisoformat(p['daily_trend'][-1]['date'])
     wf=p['waterfalls']['Overall'];ex=p['executive']
@@ -385,13 +414,15 @@ def prepare_weekly_period(p,rows,cutoff):
             v['decline']=[x for x in v['decline'] if x['change']<0]
     p['conclusions']={}
     scoped=[v for v in rows if v['month'] in p['meta']['months']]
+    adjustments=scoped_adjustments(cost_adjustments,p['meta']['months'])
     for pl in ['THD',"Lowe's",'Walmart']:
         pr=[v for v in scoped if v['platform']==pl]
-        block={'revenue':total(pr,'revenue'),'cm':total(pr,'cm'),'brands':[]}
+        block={'revenue':total(pr,'revenue'),'cm':waterfall(pr,scoped_adjustments(adjustments,platform=pl))['cm'],'brands':[]}
         for brand in ['Badger','Sunseeker']:
-            r=[v for v in pr if v['brand']==brand];w=waterfall(r)
-            first=[v for v in r if end-timedelta(days=13)<=v['date']<=end-timedelta(days=7)]
-            second=[v for v in r if end-timedelta(days=6)<=v['date']<=end]
+            r=[v for v in pr if v['brand']==brand];brand_adjustments=scoped_adjustments(adjustments,platform=pl,brand=brand);w=waterfall(r,brand_adjustments)
+            week_rows=[v for v in rows if v['platform']==pl and v['brand']==brand]
+            first=[v for v in week_rows if end-timedelta(days=13)<=v['date']<=end-timedelta(days=7)]
+            second=[v for v in week_rows if end-timedelta(days=6)<=v['date']<=end]
             x=total(first,'revenue');y=total(second,'revenue')
             budget=next((v for v in p['platform_brand_bp'] if v['platform']==pl and v['brand']==brand),None)
             if budget:
@@ -403,7 +434,10 @@ def prepare_weekly_period(p,rows,cutoff):
             if w['cm']<0:
                 finding=f"贡献利润为负；{fee}是 GM 到 CM 的最大扣减项（${fees[fee]:,.0f}）。"
                 action=f"优先核查{fee}的明细与归属期间，再评估当前销售的贡献利润。"
-            else:
+            if brand_adjustments and not r:
+                finding='本期无订单收入；已确认发生的月度费用仍扣入贡献利润。'
+                action='复核营销投放效果及无销售期间的费用支出。'
+            elif w['cm']>=0:
                 finding=f"贡献利润为正；{fee}扣减 ${fees[fee]:,.0f}。"
                 action='优先复盘本周收入下降的 SKU，核查销量、价格与库存变化。' if x and y<x else '跟踪重点 SKU 的销售及费用变化，保持贡献利润。'
             zero=total([v for v in r if v['cogs']==0],'revenue')
@@ -411,7 +445,7 @@ def prepare_weekly_period(p,rows,cutoff):
             if pl=='Walmart' and brand=='Sunseeker':action='未设 BP，不评价目标达成；优先核查退货 / 质保对贡献利润的影响。'
             movers=sku_changes(first,second,('w1','w2'),1)
             decline=next((v for v in movers['decline'] if v['change']<0),None)
-            block['brands'].append({'brand':brand,'has_data':bool(r),'waterfall':w,'w1':x,'w2':y,'wow':round((y/x-1)*100,1) if x else None,'bp':budget,'finding':finding,'action':action,'decline':decline})
+            block['brands'].append({'brand':brand,'has_data':bool(r) or bool(brand_adjustments),'waterfall':w,'w1':x,'w2':y,'wow':round((y/x-1)*100,1) if x else None,'bp':budget,'finding':finding,'action':action,'decline':decline})
         p['conclusions'][pl]=block
 
 
@@ -422,7 +456,7 @@ def write_weekly_preview(template,data,audit,output):
     prior=audit.get('previous_source_comparison')
     revision=''
     if prior:
-        revision=f"<p>与上期源文件的相同截止日（{prior['through']}）比较：本月收入从 ${prior['old_revenue']:,.2f} 修订为 ${prior['current_revenue']:,.2f}，差额 ${prior['revenue_revision']:,.2f}。本周 WoW 使用新版文件内的两段 7 天数据，不用两版累计数相减。</p>"
+        revision=f"<p>与上期源文件的相同截止日（{prior['through']}）比较：该截止月份收入从 ${prior['old_revenue']:,.2f} 修订为 ${prior['current_revenue']:,.2f}，差额 ${prior['revenue_revision']:,.2f}。本周 WoW 使用新版文件内的两段 7 天数据，不用两版累计数相减。</p>"
     current_duplicates=sum(d['extra_rows'] for d in audit['duplicates'] if date.fromisoformat(d['date']).month==cutoff.month)
     zero_count=sum(v['value']=='#N/A' for v in audit['nonnumeric_costs'])
     bp_note='Walmart / Sunseeker 未设 BP（用户确认；over view!K115 为 0）。KPI Rawdata 的相关计划明细不作为有效目标，销售仍计入经营结果；平台、品牌与 SKU 均不计算该组合达成率。'
@@ -434,13 +468,13 @@ def write_weekly_preview(template,data,audit,output):
 <p><b>成本：</b>按用户 2026-09-29 确认，成本 #N/A 按 0，原因是这些 SKU 计入销售但不承担成本。本期 #N/A 成本单元格 {zero_count} 个。“-”沿用零费用标记；其他错误值将阻止生成。</p>
 <p><b>BP：</b>{bp_note} 部分月的平台/品牌达成率使用“实际收入 × 月天数 ÷ 已过天数”；SKU 达成率使用实际收入，不外推；跨平台汇总只纳入有目标的平台 / 品牌 / SKU，确保分子分母范围一致。</p>
 <p><b>库存：</b>读取 THD- robot Sell out 的 Inventory 列，按用户确认沿用。该列是本文件提供的库存快照，切换历史销售月份不会重建历史库存。</p>
-<p><b>时间：</b>WoW 为 {cutoff-timedelta(days=13)}—{cutoff-timedelta(days=7)} 与 {cutoff-timedelta(days=6)}—{cutoff}。MoM 的 MTD 与整月比较已在表头注明；Q3 延续前两个完整月比较。Profit Waterfall 包括 Funding 扣减。</p>{revision}</div>
+<p><b>时间：</b>WoW 为 {cutoff-timedelta(days=13)}—{cutoff-timedelta(days=7)} 与 {cutoff-timedelta(days=6)}—{cutoff}。MoM 的 MTD 与整月比较已在表头注明；已完成季度比较最后两个完整月；当前季度不足整月时表头注明 MTD。Profit Waterfall 包括 Funding 扣减。</p>{revision}</div>
 <div class="card"><h3>actual order 的重复行说明</h3>
-<p>匹配键为日期、SKU、订单号、渠道、成本版本。同一键下内容完全相同的记录保留首条，避免重复计入销售与成本。本期范围内 {audit['raw_scope_rows']:,} 行，{audit['duplicate_groups']} 组完全重复，排除 {audit['removed_rows']} 条多余行，剩 {audit['retained_rows']:,} 行。排除的重复收入合计 ${audit['duplicate_revenue_removed']:,.2f}；其中本月排除 {current_duplicates} 条重复行。</p>
+<p>匹配键为日期、SKU、订单号、渠道、成本版本。同一键下内容完全相同的记录保留首条，避免重复计入销售与成本。费用旧副本排除后，本期范围内 {audit['raw_scope_rows']:,} 行，{audit['duplicate_groups']} 组业务字段重复（Filter 标记不参与业务去重），排除 {audit['removed_rows']} 条多余行，剩 {audit['retained_rows']:,} 行。排除的重复收入合计 ${audit['duplicate_revenue_removed']:,.2f}；其中本月排除 {current_duplicates} 条重复行。</p>
 <p>本期费用冲突 {audit['conflicting_groups']} 组。下方行号可直接在原 Excel 的 actual order 中核对；原 Excel 未被删除或修改。以后若同一键下金额不同，更新会停止，等待确认。</p>
 <details><summary>查看重复行明细</summary><div style="overflow-x:auto"><table><thead><tr><th>Excel 行号</th><th>日期</th><th>渠道</th><th>SKU</th><th>每条收入</th><th>排除条数</th></tr></thead><tbody>{dup_rows}</tbody></table></div></details></div>
 <div class="card"><h3>检查与来源</h3><p>已核对各期间每日、渠道、品牌、动力源收入合计与总收入，以及 GM、各费用和 CM 的勾稽关系。THD 每日、每月销售合计一致。原始 Excel 与历史 W39 快照保留。</p>
-<p>源表：actual order A:X；KPI Rawdata A:AJ；SKU MAP A:E；THD- robot Sell out A:G、I:J。使用 Excel 已保存值；未重算源文件公式。页面仅在本地生成，尚未发布。</p><details><summary>文件核验信息</summary><p>SHA256：<code style="overflow-wrap:anywhere">{audit['source']['sha256']}</code></p></details></div></div>"""
+<p>源表：actual order A:X；KPI Rawdata A:AJ；SKU MAP A:E；THD- robot Sell out A:G、I:J；2026 acutal cost 的对应月列。使用 Excel 已保存值；未重算源文件公式。页面仅在本地生成，尚未发布。</p><details><summary>文件核验信息</summary><p>SHA256：<code style="overflow-wrap:anywhere">{audit['source']['sha256']}</code></p></details></div></div>"""
     review=audit['margin_review'];wf=data['periods'][data['period_keys'][0]]['waterfalls']['Overall']
     bridge=[('Revenue',wf['gmv']),('COGS',wf['cogs']),('GM',wf['gm']),('Fixed cost',wf['fixed_cost']),('Marketing',wf['mkt_insite']+wf['mkt_offsite_seed']+wf['mkt_channel']),('Return + Warranty',wf['return_warranty']),('Funding',wf['funding']),('Warehouse + Shipping',0),('CM',wf['cm'])]
     bridge_rows=''.join(f'<tr><td class="name">{name}</td><td>${value:,.2f}</td><td>{value/wf["gmv"]*100:.2f}%</td></tr>' for name,value in bridge)
@@ -450,11 +484,18 @@ def write_weekly_preview(template,data,audit,output):
 <p><b>GM = Revenue − COGS；CM = GM − Fixed cost − Marketing − Return + Warranty − Funding。</b>百分比分母均为同范围、同期间 Revenue；各分项独立四舍五入，勾稽使用未舍入金额。CM 是本表已列费用后的贡献利润，不是公司净利润；未擅自补估未列费用。</p>
 <p>Revenue 使用 actual order 的 V 列 Ordered Revenue；COGS 使用 D 列 Cost/ALL（已是整行成本，不再乘销量）；费用读取 F:K。平台汇总用金额加总后计算比率，不平均各渠道百分比。THD 汇总含 DS 和 DFC 订单；消费者 sell-out 另页展示，不重复并入收入。</p>
 <div class="method-grid"><div><table><thead><tr><th>项目</th><th>USD</th><th>占收入</th></tr></thead><tbody>{bridge_rows}</tbody></table></div><div class="review-findings">
-<h3>核对结果</h3><p>本月 {review['unit_cost_checks']:,} 条数字成本记录通过“单价 × 数量 = Cost/ALL”检查；{len(review['monthly_cost_checks'])} 项渠道 / 品牌收入及费用与 2026 acutal cost 月度汇总一致至逐行分摊舍入范围。Warehouse + Shipping 本月源表为 0，不另扣重复费用。</p>
+<h3>核对结果</h3><p>本月 {review['unit_cost_checks']:,} 条数字成本记录通过“单价 × 数量 = Cost/ALL”检查；{len(review['monthly_cost_checks'])} 项渠道 / 品牌收入及费用已与 2026 acutal cost 月度汇总核对；其中 {sum(v.get('reviewed_source_difference',False) for v in review['monthly_cost_checks'])} 项已复核的源表差异单独披露，其余在逐行分摊舍入范围内。Warehouse + Shipping 本月源表为 0，不另扣重复费用。</p>
 <h3>零成本影响</h3><p>${review['zero_cogs_revenue']:,.2f} 收入对应源表零 COGS，占收入 {review['zero_cogs_revenue']/wf['gmv']*100:.1f}%。这些行在扣渠道费用前的 GM 等于收入，会抬高 GM。按已确认成本口径保留；未独立核实商品实际成本。</p>
 <h3>汇总页与明细不一致</h3><p>over view 的部分已保存数值与订单明细不一致。采用与 2026 acutal cost 相互核对的订单明细；不混用汇总页的 GM / CM。具体原因无法仅凭数值导出确认，不能认定为已重算的财务汇总。</p></div></div>
 <details><summary>查看汇总差异与零成本 SKU</summary><table><thead><tr><th>范围</th><th>指标</th><th>over view 单元格</th><th>汇总页</th><th>订单明细</th></tr></thead><tbody>{differences}</tbody></table><table><thead><tr><th>范围</th><th>零 COGS SKU</th><th>收入</th></tr></thead><tbody>{zero_rows}</tbody></table></details></div>"""
-    notes=notes.replace('<div class="card"><h2',margin_notes+'<div class="card"><h2',1)
+    review_note=''
+    if audit.get('source_review'):
+        source_review=audit['source_review']
+        adjustment_rows=''.join(f"<tr><td>{html.escape(v['channel'])} / {html.escape(v['brand'])}</td><td>{v['source_cell']}</td><td>${v['source_total']:,.2f}</td><td>${v['allocated_detail']:,.2f}</td><td>${v['amount']:,.2f}</td></tr>" for v in source_review.get('monthly_cost_adjustments',[]))
+        corrections='、'.join(f"{html.escape(cell)} → {html.escape(str(value))}" for cell,value in source_review.get('approved_cell_corrections',{}).items())
+        source_differences='；'.join(f"{html.escape(cell)}：月度汇总 ${v['summary']:,.2f}，订单明细 ${v['detail']:,.2f}" for cell,v in source_review.get('known_monthly_source_differences',{}).items())
+        review_note=f"<div class='card'><h3>本批次源表复核</h3><p>已按用户确认处理 actual order 的归月及空白费用：{corrections}；原始文件保留。通过与上期源表比对，{len(source_review.get('superseded_source_rows',[])):,} 条费用旧副本已排除。排除项与上期费用逐项一致，保留项为本次费用修订，并已与月度汇总交叉核对。Filter 标记不单独决定取舍；新增记录保留。</p><p>用户确认下列月度营销费用已经发生。仅扣入尚未分摊部分，不伪造订单或分配到 SKU。按渠道 / 品牌入账，动力源采用该范围源表一致的分类；订单数、销量、销售收入与商品成本不受费用补计影响。</p><table><thead><tr><th>范围</th><th>费用来源</th><th>月度费用</th><th>订单已分摊</th><th>独立补计</th></tr></thead><tbody>{adjustment_rows}</tbody></table><p>保留已复核的源表差异：{source_differences}。采用用户确认归月后的订单收入和已列费用，未将差异标为一致。</p></div>"
+    notes=notes.replace('<div class="card"><h2',margin_notes+review_note+'<div class="card"><h2',1)
     preview=re.sub(r'^var DATA = .*;$',lambda _: 'var DATA = '+json.dumps(data,ensure_ascii=False).replace('</','<\\/')+';',template,flags=re.M)
     preview=re.sub(r'<h1>.*?</h1>',f'<h1>STORM · {week} Weekly Business Cockpit</h1>',preview,count=1)
     preview=preview.replace('<head>',f'<head><title>STORM {week} · {cutoff.isoformat()}</title>',1)
@@ -467,7 +508,7 @@ def write_weekly_preview(template,data,audit,output):
     preview=preview.replace('<th>Inventory</th>','<th>Inventory (source snapshot)</th>')
     preview=preview.replace("{l:'DFC AUG GMV',v:fmt$(DATA.shared.dfc.aug_gmv),s:DATA.shared.dfc.monthly_summary['2026-08'].units+' units',c:''}", "{l:'DFC '+DATA.shared.meta.dfc_label+' GMV',v:fmt$(DATA.shared.dfc.monthly_summary[DATA.shared.meta.dfc_period].gmv),s:DATA.shared.dfc.monthly_summary[DATA.shared.meta.dfc_period].units+' units',c:''}")
     preview=preview.replace('fmt$(ex.total_revenue*ex.gm_pct)','fmt$(P.waterfalls.Overall.gm)')
-    preview=preview.replace("currentPeriod='Sep MTD'",f"currentPeriod='{data['period_keys'][0]}'")
+    preview=re.sub(r"(\bcurrentPeriod\s*=\s*)'Sep MTD'",lambda m:m.group(1)+repr(data['period_keys'][0]),preview)
     # No positive growth is fabricated when all SKUs declined (or vice versa).
     for element in ['wg-t','wd-t','mg-t','md-t']:
         pattern=r"(\$\('"+re.escape(element)+r"'\)\.innerHTML=.*?\.join\(''\))(;)"
@@ -489,6 +530,9 @@ def write_weekly_preview(template,data,audit,output):
     preview=preview.replace('<div id="p-bp" class="panel">','<div id="p-bp" class="panel"><p class="scope-note">Walmart / Sunseeker 未设 BP，不参与达成率评价。部分月平台达成率按日均外推；SKU 达成率按实际收入。</p>')
     preview=preview.replace('<div id="p-waterfall" class="panel">','<div id="p-waterfall" class="panel"><p class="scope-note">GM 仅扣商品成本；CM 再扣渠道费用、营销、退货 / 质保及 Funding，代表贡献利润。详见「数据口径」。</p>')
     preview=preview.replace("CM (Net)","CM (Contribution)")
+    preview=preview.replace("text:'CM% = '+w.cm_pct_display+'%'", "text:w.gmv?'CM% = '+w.cm_pct_display+'%':'CM% 不适用（本期无收入）'")
+    preview=preview.replace("return fmt$(Math.abs(this.y))+' ('+pct+'%)'", "return fmt$(Math.abs(this.y))+(w.gmv?' ('+pct+'%)':' · 比率不适用')")
+    preview=preview.replace("+(i[1]/gmv*100).toFixed(1)+'%</td></tr>'", "+(w.gmv?(i[1]/gmv*100).toFixed(1)+'%':'不适用')+'</td></tr>'")
     (output/'index.html').write_text(preview,encoding='utf-8')
 
 def validate_weekly(data):
@@ -502,6 +546,10 @@ def validate_weekly(data):
         if abs(round(wf['gmv']-sum(wf[k] for k in COSTS)-wf['cm'],2))>.02:
             raise ValueError(f'{name} CM reconciliation failed')
         checks.append(f'{name}/CM')
+        for metric in ['gmv','gm','cm',*COSTS]:
+            delta=round(sum(v[metric] for key,v in p['waterfalls'].items() if key!='Overall')-wf[metric],2)
+            if abs(delta)>.02:raise ValueError(f'{name} platform/brand {metric} mismatch {delta}')
+            checks.append(f'{name}/platform-brand/{metric}')
     dfc=data['shared']['dfc']
     for month,summary in dfc['monthly_summary'].items():
         for field in ['gmv','units','traffic']:
@@ -514,7 +562,9 @@ def build_weekly(args):
     if not args.na_cost_zero_approved:
         raise ValueError('Weekly mode requires an explicitly confirmed #N/A zero-cost policy')
     source_hash=digest(args.source);baseline_hash=digest(args.baseline)
-    rows,raw_bp,dfc,inventory,audit=read_source(args.source,strict=True,na_cost_zero=True)
+    review_policy=json.loads(args.source_review.read_text(encoding='utf-8')) if args.source_review else {}
+    adjustments=review_policy.get('monthly_cost_adjustments',[])
+    rows,raw_bp,dfc,inventory,audit=read_source(args.source,strict=True,na_cost_zero=True,review_policy=review_policy)
     bp=approved_weekly_bp(raw_bp)
     cutoff=max(r['date'] for r in rows)
     if set(range(1,cutoff.month+1))-{r['month'] for r in rows}:
@@ -522,22 +572,22 @@ def build_weekly(args):
     definitions=weekly_definitions(cutoff)
     latest_dfc=max(r['date'] for r in dfc);dfc_period=latest_dfc.strftime('%Y-%m')
     label=calendar.month_abbr[latest_dfc.month].upper()+(' MTD' if latest_dfc.day<calendar.monthrange(latest_dfc.year,latest_dfc.month)[1] else '')
-    data={'periods':{name:make_period(rows,bp,months,name,mom,cutoff) for name,months,mom in definitions},
+    data={'periods':{name:make_period(rows,bp,months,name,mom,cutoff,weekly=True,cost_adjustments=adjustments) for name,months,mom in definitions},
         'shared':{'colors':COLORS,'meta':{'data_through':cutoff.isoformat(),'dfc_data_through':latest_dfc.isoformat(),'pacing_factor':round(calendar.monthrange(cutoff.year,cutoff.month)[1]/cutoff.day,4),'dfc_period':dfc_period,'dfc_label':label},'dfc':make_dfc(dfc,inventory)},'period_keys':[d[0] for d in definitions]}
     for p in data['periods'].values():
-        prepare_weekly_period(p,rows,cutoff)
+        prepare_weekly_period(p,rows,cutoff,adjustments)
         apply_weekly_sku_bp_scope(p,rows,bp)
-    audit['margin_review']=review_monthly_source(args.source,rows,cutoff)
+    audit['margin_review']=review_monthly_source(args.source,rows,cutoff,review_policy)
     audit['bp_excluded_raw_rows']=[v for v in raw_bp if (v['platform'],v['brand'])==('Walmart','Sunseeker')]
 
-    audit.update({'source':{'file':args.source.name,'sha256':source_hash,'sheets':['actual order','KPI Rawdata','SKU MAP','THD- robot Sell out']},'baseline':{'file':str(args.baseline),'sha256':baseline_hash},'data_through':cutoff.isoformat(),'dfc_data_through':latest_dfc.isoformat(),'zero_cost_policy':{'status':'USER_CONFIRMED','confirmed_on':'2026-09-29','rule':'#N/A costs = 0; included SKUs bear no cost; dash retains source zero representation'},'bp_policy':'USER_CONFIRMED 2026-09-29: Walmart / Sunseeker has no approved BP; exclude raw planning entries from targets and all attainment denominators; keep actual sales','duplicate_policy':'Only identical rows may be collapsed; conflicting same-key rows block weekly builds','duplicate_revenue_removed':round(sum(v['revenue']*v['extra_rows'] for v in audit['duplicates']),2),'validation':validate_weekly(data)})
+    audit.update({'source':{'file':args.source.name,'sha256':source_hash,'sheets':['actual order','KPI Rawdata','SKU MAP','THD- robot Sell out','2026 acutal cost']},'baseline':{'file':str(args.baseline),'sha256':baseline_hash},'data_through':cutoff.isoformat(),'dfc_data_through':latest_dfc.isoformat(),'zero_cost_policy':{'status':'USER_CONFIRMED','confirmed_on':'2026-09-29','rule':'#N/A costs = 0; included SKUs bear no cost; dash retains source zero representation'},'bp_policy':'USER_CONFIRMED 2026-09-29: Walmart / Sunseeker has no approved BP; exclude raw planning entries from targets and all attainment denominators; keep actual sales','duplicate_policy':'Only identical rows may be collapsed; conflicting same-key rows block weekly builds','duplicate_revenue_removed':round(sum(v['revenue']*v['extra_rows'] for v in audit['duplicates']),2),'validation':validate_weekly(data)})
     if args.previous_source:
         old_hash=digest(args.previous_source)
         old_rows,*_=read_source(args.previous_source)
         through=max(r['date'] for r in old_rows)
-        old=[r for r in old_rows if r['month']==cutoff.month and r['date']<=through]
-        current=[r for r in rows if r['month']==cutoff.month and r['date']<=through]
-        audit['previous_source_comparison']={'file':args.previous_source.name,'sha256':old_hash,'through':through.isoformat(),'old_revenue':total(old,'revenue'),'current_revenue':total(current,'revenue'),'revenue_revision':round(total(current,'revenue')-total(old,'revenue'),2),'old_cm':total(old,'cm'),'current_cm':total(current,'cm')}
+        old=[r for r in old_rows if r['month']==through.month and r['date']<=through]
+        current=[r for r in rows if r['month']==through.month and r['date']<=through]
+        audit['previous_source_comparison']={'file':args.previous_source.name,'sha256':old_hash,'through':through.isoformat(),'comparison_month':through.month,'old_revenue':total(old,'revenue'),'current_revenue':total(current,'revenue'),'revenue_revision':round(total(current,'revenue')-total(old,'revenue'),2),'old_cm':total(old,'cm'),'current_cm':total(current,'cm')}
         assert digest(args.previous_source)==old_hash
     args.output_dir.mkdir(parents=True,exist_ok=True)
     (args.output_dir/'weekly_data.json').write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
@@ -548,7 +598,7 @@ def build_weekly(args):
 
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--mode',choices=['reproduce','weekly'],default='reproduce');ap.add_argument('--na-cost-zero-approved',action='store_true');ap.add_argument('--previous-source',type=Path);ap.add_argument('--source',type=Path,required=True);ap.add_argument('--baseline',type=Path,default=Path('snapshots/storm_dashboard_cdn_2026-09-21_w39.html'));ap.add_argument('--output-dir',type=Path,required=True);args=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--mode',choices=['reproduce','weekly'],default='reproduce');ap.add_argument('--na-cost-zero-approved',action='store_true');ap.add_argument('--previous-source',type=Path);ap.add_argument('--source-review',type=Path);ap.add_argument('--source',type=Path,required=True);ap.add_argument('--baseline',type=Path,default=Path('snapshots/storm_dashboard_cdn_2026-09-21_w39.html'));ap.add_argument('--output-dir',type=Path,required=True);args=ap.parse_args()
     safe_root=Path(__file__).resolve().parents[1]/'outputs'
     if not args.output_dir.resolve().is_relative_to(safe_root) or args.output_dir.resolve()==safe_root:
         raise ValueError('Private reproduction outputs must be in a subfolder of ignored outputs/')
@@ -561,7 +611,7 @@ def main():
     definitions=[('Sep MTD',[9],(8,9)),('Aug',[8],(7,8)),('Q3',[7,8,9],(7,8)),('Q2',[4,5,6],(5,6)),('Q1',[1,2,3],(2,3)),('YTD',list(range(1,10)),(8,9))]
     data={'periods':{label:make_period(rows,bp,months,label,mom,cutoff) for label,months,mom in definitions},'shared':{'colors':COLORS,'meta':{'data_through':cutoff.isoformat(),'pacing_factor':round(30/21,2)},'dfc':make_dfc(dfc,inventory)},'period_keys':[v[0] for v in definitions]}
     template=args.baseline.read_text(encoding='utf-8');baseline=json.loads(re.search(r'^var DATA = (.*);$',template,re.M).group(1))
-    audit['source']={'file':args.source.name,'sha256':source_hash,'sheets':['actual order','KPI Rawdata','SKU MAP','THD- robot Sell out']};audit['baseline']={'file':str(args.baseline),'sha256':baseline_hash};audit['comparison']=compare(baseline,data)
+    audit['source']={'file':args.source.name,'sha256':source_hash,'sheets':['actual order','KPI Rawdata','SKU MAP','THD- robot Sell out','2026 acutal cost']};audit['baseline']={'file':str(args.baseline),'sha256':baseline_hash};audit['comparison']=compare(baseline,data)
     audit['data_through']=cutoff.isoformat();audit['dfc_data_through']=max(r['date'] for r in dfc).isoformat()
     audit['cm_acceptance']='UNKNOWN'
     compatible_bp=[v for v in bp if not (v['platform']=='Walmart' and v['brand']=='Sunseeker')]
