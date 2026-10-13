@@ -163,4 +163,17 @@ class ReconstructionTests(unittest.TestCase):
         self.assertEqual(definitions[3][1],[7,8,9])
         self.assertEqual(definitions[3][2],(8,9))
 
+    def test_previous_snapshot_uses_its_reviewed_monthly_expenses(self):
+        old=dict(row(7,100),date=date(2026,10,7),month=10)
+        current=dict(row(7,120),date=date(2026,10,7),month=10)
+        later=dict(row(12,999),date=date(2026,10,12),month=10)
+        base={'month':10,'platform':"Lowe's",'channel':"Lowe's / DS",'brand':'Sunseeker','power':'Robot','metric':'mkt_insite'}
+        policy={'monthly_cost_adjustments':[dict(base,amount=15)]}
+        with patch.object(r,'read_source',return_value=([old],[],[],{},{})) as reader, patch.object(r,'digest',return_value='HASH'):
+            comparison=r.compare_previous_source(Path('previous.xlsx'),[current,later],[dict(base,amount=20)],policy)
+        self.assertEqual((comparison['old_revenue'],comparison['current_revenue']),(100,120))
+        self.assertEqual((comparison['old_cm'],comparison['current_cm']),(35,40))
+        self.assertTrue(comparison['previous_source_review_applied'])
+        self.assertEqual(reader.call_args.kwargs['review_policy'],policy)
+
 if __name__=='__main__':unittest.main()

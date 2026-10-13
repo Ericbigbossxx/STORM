@@ -367,7 +367,9 @@ def review_monthly_source(path,rows,cutoff, review_policy=None):
         for col,ch,brand in [(6,'THD / DS','Sunseeker'),(7,'THD / DFC','Sunseeker'),(9,"Lowe's / DS",'Sunseeker'),(10,'Walmart / MP','Sunseeker'),(12,'THD / DS','Badger'),(13,"Lowe's / DS",'Badger'),(14,'Walmart / MP','Badger'),(15,'Walmart / DSV','Badger')]:
             detail=[v for v in current if v['channel']==ch and v['brand']==brand]
             for row,metric in [(81,'revenue'),(83,'cogs'),(106,'cm')]:
-                value=overview[row][col];amount=total(detail,metric)
+                value=overview[row][col]
+                scope=scoped_adjustments(adjustments,[cutoff.month],channel=ch,brand=brand)
+                amount=waterfall(detail,scope)['cm'] if metric=='cm' else total(detail,metric)
                 if abs(amount-value)>2:
                     overview_diffs.append({'cell':f'{openpyxl.utils.get_column_letter(col+1)}{row+1}','channel':ch,'brand':brand,'metric':metric,'overview':value,'detail':amount,'delta':round(amount-value,2)})
     zero=[v for v in current if v['cogs']==0 and v['revenue']!=0]
@@ -491,10 +493,13 @@ def write_weekly_preview(template,data,audit,output):
     review_note=''
     if audit.get('source_review'):
         source_review=audit['source_review']
-        adjustment_rows=''.join(f"<tr><td>{html.escape(v['channel'])} / {html.escape(v['brand'])}</td><td>{v['source_cell']}</td><td>${v['source_total']:,.2f}</td><td>${v['allocated_detail']:,.2f}</td><td>${v['amount']:,.2f}</td></tr>" for v in source_review.get('monthly_cost_adjustments',[]))
+        adjustment_rows=''.join(f"<tr><td>{html.escape(v['channel'])} / {html.escape(v['brand'])}</td><td>{html.escape({'mkt_insite':'站内营销','mkt_channel':'渠道营销','return_warranty':'退货 / 质保'}.get(v['metric'],v['metric']))} · {v['source_cell']}</td><td>${v['source_total']:,.2f}</td><td>${v['allocated_detail']:,.2f}</td><td>${v['amount']:,.2f}</td></tr>" for v in source_review.get('monthly_cost_adjustments',[]))
         corrections='、'.join(f"{html.escape(cell)} → {html.escape(str(value))}" for cell,value in source_review.get('approved_cell_corrections',{}).items())
         source_differences='；'.join(f"{html.escape(cell)}：月度汇总 ${v['summary']:,.2f}，订单明细 ${v['detail']:,.2f}" for cell,v in source_review.get('known_monthly_source_differences',{}).items())
-        review_note=f"<div class='card'><h3>本批次源表复核</h3><p>已按用户确认处理 actual order 的归月及空白费用：{corrections}；原始文件保留。通过与上期源表比对，{len(source_review.get('superseded_source_rows',[])):,} 条费用旧副本已排除。排除项与上期费用逐项一致，保留项为本次费用修订，并已与月度汇总交叉核对。Filter 标记不单独决定取舍；新增记录保留。</p><p>用户确认下列月度营销费用已经发生。仅扣入尚未分摊部分，不伪造订单或分配到 SKU。按渠道 / 品牌入账，动力源采用该范围源表一致的分类；订单数、销量、销售收入与商品成本不受费用补计影响。</p><table><thead><tr><th>范围</th><th>费用来源</th><th>月度费用</th><th>订单已分摊</th><th>独立补计</th></tr></thead><tbody>{adjustment_rows}</tbody></table><p>保留已复核的源表差异：{source_differences}。采用用户确认归月后的订单收入和已列费用，未将差异标为一致。</p></div>"
+        corrections_note=f'已按用户确认处理 actual order 的归月及空白费用：{corrections}。' if corrections else '本批次无归月或空白费用修正。'
+        excluded_count=len(source_review.get('superseded_source_rows',[]))
+        revision_note=f'通过与上期源表比对，{excluded_count:,} 条费用旧副本已排除。排除项与上期费用逐项一致，保留项为本次费用修订，并已与月度汇总交叉核对。' if excluded_count else '本批次无同键费用冲突，无需排除费用旧副本。'
+        review_note=f"<div class='card'><h3>本批次源表复核</h3><p>{corrections_note}原始文件保留。{revision_note}Filter 标记不单独决定取舍；新增记录保留。</p><p>用户确认下列月度费用已经发生。仅扣入尚未分摊部分，不伪造订单或分配到 SKU。按渠道 / 品牌入账，动力源采用该范围源表一致的分类；订单数、销量、销售收入与商品成本不受费用补计影响。</p><table><thead><tr><th>范围</th><th>费用 / 来源</th><th>月度费用</th><th>订单已分摊</th><th>独立补计</th></tr></thead><tbody>{adjustment_rows}</tbody></table><p>保留已复核的源表差异：{source_differences or '无月度费用表与已处理订单明细差异'}。汇总页与明细的差异见上方列表；采用订单收入和已列费用，未将差异标为一致。</p></div>"
     notes=notes.replace('<div class="card"><h2',margin_notes+review_note+'<div class="card"><h2',1)
     preview=re.sub(r'^var DATA = .*;$',lambda _: 'var DATA = '+json.dumps(data,ensure_ascii=False).replace('</','<\\/')+';',template,flags=re.M)
     preview=re.sub(r'<h1>.*?</h1>',f'<h1>STORM · {week} Weekly Business Cockpit</h1>',preview,count=1)
@@ -558,6 +563,26 @@ def validate_weekly(data):
             checks.append(f'DFC/{month}/{field}')
     return checks
 
+def compare_previous_source(path,current_rows,current_adjustments=(),review_policy=None):
+    """Compare with the reviewed prior snapshot, retaining its accepted fees."""
+    review_policy=review_policy or {}
+    source_hash=digest(path)
+    old_rows,*_=read_source(path,review_policy=review_policy,strict=bool(review_policy),na_cost_zero=True)
+    through=max(v['date'] for v in old_rows)
+    old=[v for v in old_rows if v['month']==through.month and v['date']<=through]
+    current=[v for v in current_rows if v['month']==through.month and v['date']<=through]
+    old_adjustments=scoped_adjustments(review_policy.get('monthly_cost_adjustments',[]),[through.month])
+    new_adjustments=scoped_adjustments(current_adjustments,[through.month])
+    result={'file':path.name,'sha256':source_hash,'through':through.isoformat(),'comparison_month':through.month,
+        'old_revenue':total(old,'revenue'),'current_revenue':total(current,'revenue'),
+        'revenue_revision':round(total(current,'revenue')-total(old,'revenue'),2),
+        'old_cm':waterfall(old,old_adjustments)['cm'],'current_cm':waterfall(current,new_adjustments)['cm'],
+        'previous_source_review_applied':bool(review_policy),
+        'cm_comparison_basis':"Order allocations through the same cutoff plus each snapshot's source-month unallocated expenses; expense-incurrence dates are not inferred"}
+    assert digest(path)==source_hash
+    return result
+
+
 def build_weekly(args):
     if not args.na_cost_zero_approved:
         raise ValueError('Weekly mode requires an explicitly confirmed #N/A zero-cost policy')
@@ -582,13 +607,8 @@ def build_weekly(args):
 
     audit.update({'source':{'file':args.source.name,'sha256':source_hash,'sheets':['actual order','KPI Rawdata','SKU MAP','THD- robot Sell out','2026 acutal cost']},'baseline':{'file':str(args.baseline),'sha256':baseline_hash},'data_through':cutoff.isoformat(),'dfc_data_through':latest_dfc.isoformat(),'zero_cost_policy':{'status':'USER_CONFIRMED','confirmed_on':'2026-09-29','rule':'#N/A costs = 0; included SKUs bear no cost; dash retains source zero representation'},'bp_policy':'USER_CONFIRMED 2026-09-29: Walmart / Sunseeker has no approved BP; exclude raw planning entries from targets and all attainment denominators; keep actual sales','duplicate_policy':'Only identical rows may be collapsed; conflicting same-key rows block weekly builds','duplicate_revenue_removed':round(sum(v['revenue']*v['extra_rows'] for v in audit['duplicates']),2),'validation':validate_weekly(data)})
     if args.previous_source:
-        old_hash=digest(args.previous_source)
-        old_rows,*_=read_source(args.previous_source)
-        through=max(r['date'] for r in old_rows)
-        old=[r for r in old_rows if r['month']==through.month and r['date']<=through]
-        current=[r for r in rows if r['month']==through.month and r['date']<=through]
-        audit['previous_source_comparison']={'file':args.previous_source.name,'sha256':old_hash,'through':through.isoformat(),'comparison_month':through.month,'old_revenue':total(old,'revenue'),'current_revenue':total(current,'revenue'),'revenue_revision':round(total(current,'revenue')-total(old,'revenue'),2),'old_cm':total(old,'cm'),'current_cm':total(current,'cm')}
-        assert digest(args.previous_source)==old_hash
+        previous_review=json.loads(args.previous_source_review.read_text(encoding='utf-8')) if args.previous_source_review else {}
+        audit['previous_source_comparison']=compare_previous_source(args.previous_source,rows,adjustments,previous_review)
     args.output_dir.mkdir(parents=True,exist_ok=True)
     (args.output_dir/'weekly_data.json').write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
     (args.output_dir/'source_audit.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2),encoding='utf-8')
@@ -598,7 +618,7 @@ def build_weekly(args):
 
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--mode',choices=['reproduce','weekly'],default='reproduce');ap.add_argument('--na-cost-zero-approved',action='store_true');ap.add_argument('--previous-source',type=Path);ap.add_argument('--source-review',type=Path);ap.add_argument('--source',type=Path,required=True);ap.add_argument('--baseline',type=Path,default=Path('snapshots/storm_dashboard_cdn_2026-09-21_w39.html'));ap.add_argument('--output-dir',type=Path,required=True);args=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--mode',choices=['reproduce','weekly'],default='reproduce');ap.add_argument('--na-cost-zero-approved',action='store_true');ap.add_argument('--previous-source',type=Path);ap.add_argument('--source-review',type=Path);ap.add_argument('--previous-source-review',type=Path);ap.add_argument('--source',type=Path,required=True);ap.add_argument('--baseline',type=Path,default=Path('snapshots/storm_dashboard_cdn_2026-09-21_w39.html'));ap.add_argument('--output-dir',type=Path,required=True);args=ap.parse_args()
     safe_root=Path(__file__).resolve().parents[1]/'outputs'
     if not args.output_dir.resolve().is_relative_to(safe_root) or args.output_dir.resolve()==safe_root:
         raise ValueError('Private reproduction outputs must be in a subfolder of ignored outputs/')

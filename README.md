@@ -6,14 +6,15 @@ NA E-commerce 周会看板，覆盖 THD、Lowe’s、Walmart，按 Badger / Suns
 
 ## 当前版本
 
-当前发布版本为 **W41**：源文件 `STORM V2 RAW DATA 10.9.xlsx`，订单截至 **2026-10-07**，THD sell-out 截至 **2026-10-08**。本次发布日期为 2026-10-09；GitHub Pages 从 main 分支发布。
+当前发布版本为 **W42**：源文件 `STORM V2 RAW DATA 10.13.xlsx`，订单及 THD sell-out 均截至 **2026-10-12**。本次发布日期为 2026-10-13；GitHub Pages 从 main 分支发布。
 
 - 保留原看板布局、品牌及渠道划分；Walmart / Sunseeker 仍未设 BP。
-- 本批次复核记录存于忽略的 `outputs/w41-2026-10-07/source_review_policy.json`，绑定源文件 SHA256；原始 Excel 保留。
-- 费用旧副本依据与上期文件的逐项匹配排除；Filter 标记本身不作为有效 / 无效规则。
-- 用户确认的归月与空白费用处理、未分摊的已发生月度费用、源表差异均在“数据口径”披露。月度费用仅补计尚未分摊部分，不伪造订单或分配到 SKU。
-- 六个期间为 Oct MTD、Sep、Q4、Q3、Q2、YTD；月初 WoW 读取完整的跨月两段 7 天。
-- 保留 W40 及此前快照；W41 发布快照为 `snapshots/storm_dashboard_cdn_2026-10-07_w41.html`。
+- 本批次复核记录存于忽略的 `outputs/w42-2026-10-12/source_review_policy.json`，绑定源文件 SHA256；原始 Excel 保留。
+- 本批次没有归月、空白费用或同键费用冲突，仅合并完全重复的业务记录。Filter 标记不单独决定取舍。
+- 已确认发生但未分摊到订单的月度费用按渠道 / 品牌独立补计，不伪造订单或分配到 SKU；汇总页差异保留披露。
+- 上期比较读取 W41 的已复核源表及已确认费用，避免重新引入原始表中的旧副本或归月问题。
+- 六个期间为 Oct MTD、Sep、Q4、Q3、Q2、YTD；WoW 使用完整的两段 7 天。
+- 保留 W41 及此前快照；W42 发布快照为 `snapshots/storm_dashboard_cdn_2026-10-12_w42.html`。
 
 ## 本地生成与验收
 
@@ -21,15 +22,15 @@ NA E-commerce 周会看板，覆盖 THD、Lowe’s、Walmart，按 Badger / Suns
 在项目根目录运行：
 
 ```powershell
-python -B scripts/reproduce_weekly_dashboard.py --mode weekly --na-cost-zero-approved --source "STORM V2 RAW DATA 10.9.xlsx" --previous-source "STORM V2 RAW DATA  9.29.xlsx" --source-review outputs/w41-2026-10-07/source_review_policy.json --output-dir outputs/w41-2026-10-07
+python -B scripts/reproduce_weekly_dashboard.py --mode weekly --na-cost-zero-approved --source "STORM V2 RAW DATA 10.13.xlsx" --previous-source "STORM V2 RAW DATA 10.9.xlsx" --source-review outputs/w42-2026-10-12/source_review_policy.json --previous-source-review outputs/w41-2026-10-07/source_review_policy.json --output-dir outputs/w42-2026-10-12
 python -B tests/test_weekly_dashboard_reproduction.py
 ```
 
-打开 `outputs/w41-2026-10-07/index.html` 预览。`weekly_data.json` 为计算数据，`source_audit.json` 保留来源摘要、重复行、BP 排除依据、利润复核与前期修订；这些本地产物和 Excel 保持忽略，不提交。
+打开 `outputs/w42-2026-10-12/index.html` 预览。`weekly_data.json` 为计算数据，`source_audit.json` 保留来源摘要、重复行、BP 排除依据、利润复核与前期修订；这些本地产物和 Excel 保持忽略，不提交。
 
 默认模板固定使用 `snapshots/storm_dashboard_cdn_2026-09-21_w39.html`。模板仅提供布局，指标从源表计算；不要将已生成的 W40 页面作为输入模板，否则会重复套用页面结构。`--baseline` 可显式指定兼容的历史模板。
 
-本入口已核对 9 月及本次 10 月批次。新的月份及不同结构源文件仍需核对期间、表头与口径后验收，不能把程序成功运行视为新批次已获确认。`--source-review` 只接受与该工作簿哈希一致的复核记录；下一批次不能直接沿用。没有复核记录时，费用冲突与未认可的成本值仍会阻止生成。
+本入口已核对 9 月及本次 10 月批次。新的月份及不同结构源文件仍需核对期间、表头与口径后验收，不能把程序成功运行视为新批次已获确认。`--source-review` 只接受与该工作簿哈希一致的复核记录；下一批次不能直接沿用。没有复核记录时，费用冲突与未认可的成本值仍会阻止生成。上期源表需要修正时，通过 `--previous-source-review` 显式读取该批次已确认的复核记录，不把上期例外应用到当前源表。
 
 ## 数据口径
 
