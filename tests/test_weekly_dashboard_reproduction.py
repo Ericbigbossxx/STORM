@@ -176,4 +176,113 @@ class ReconstructionTests(unittest.TestCase):
         self.assertTrue(comparison['previous_source_review_applied'])
         self.assertEqual(reader.call_args.kwargs['review_policy'],policy)
 
+class MonthlySourceTests(unittest.TestCase):
+    labels=[('GMV','revenue'),('Fixed Cost','fixed_cost'),('MKT-Insite','mkt_insite'),('MKT-Offsite(种草)','mkt_offsite_seed'),('MKT-Offsite(Channel MKT)','mkt_channel'),('Return+Warranty','return_warranty'),('Funding','funding'),('Warehouse+Shipping','warehouse_shipping')]
+
+    def fixture(self,samples=None):
+        samples=samples or [row(21,100)]
+        actual=[['header']*24];records=[]
+        for n,sample in enumerate(samples,2):
+            sample=dict(sample,source_row=n);records.append(sample)
+            raw=[None]*24;raw[2]=sample['cogs']/sample['units'];raw[3]=sample['cogs']
+            for metric,col in r.COSTS.items():raw[col]=sample[metric]
+            for col,value in {13:sample['brand'],15:2026,16:sample['month'],17:sample['date'],18:'US',19:'Walmart Seller',20:sample['sku'],21:sample['revenue'],22:sample['units'],23:sample['order']}.items():raw[col]=value
+            actual.append(raw)
+        monthly=[]
+        for label,metric in self.labels:
+            values=[label,'Walmart Seller','Sunseeker',None,None]+[0]*12
+            for month in range(1,11):values[month+4]=sum(x.get(metric,0) for x in records if x['month']==month)
+            monthly.append(values)
+        return actual,monthly,records
+
+    def adjustment(self,metric,month,amount):
+        n=next(n for n,(_,key) in enumerate(self.labels,1) if key==metric)
+        return {'month':month,'platform':'Walmart','channel':'Walmart / MP','brand':'Sunseeker','power':'Robot','metric':metric,'source_sheet':'2026 acutal cost','source_cell':f'{r.openpyxl.utils.get_column_letter(month+5)}{n}','source_total':amount,'allocated_detail':0,'amount':amount}
+
+    def test_historical_no_sales_fee_blocks_without_an_approved_adjustment(self):
+        actual,monthly,records=self.fixture();monthly[2][5]=25
+        with self.assertRaisesRegex(ValueError,'month 1'):
+            r.reconcile_monthly_costs(actual,monthly,records,date(2026,9,21),{})
+        adjustment=self.adjustment('mkt_insite',1,25)
+        checks,warehouse=r.reconcile_monthly_costs(actual,monthly,records,date(2026,9,21),{'monthly_cost_adjustments':[adjustment]})
+        self.assertEqual({x['month'] for x in checks},set(range(1,10)))
+        self.assertEqual((len(checks),len(warehouse)),(63,9))
+        check=next(x for x in checks if x['cell']=='F3')
+        self.assertEqual((check['detail'],check['independent_cost'],check['reconciliation_delta']),(25,25,0))
+
+    def test_deduplicated_fees_are_an_explicit_bridge(self):
+        actual,monthly,records=self.fixture([row(21,100),row(21,100)])
+        checks,_=r.reconcile_monthly_costs(actual,monthly,records[:1],date(2026,9,21),{})
+        check=next(x for x in checks if x['month']==9 and x['metric']=='funding')
+        self.assertEqual((check['summary'],check['detail'],check['removed_duplicate'],check['reconciliation_delta']),(20,10,10,0))
+        monthly[6][13]+=5
+        with self.assertRaisesRegex(ValueError,'unexplained -5'):
+            r.reconcile_monthly_costs(actual,monthly,records[:1],date(2026,9,21),{})
+
+    def test_old_seed_marketing_and_warehouse_shipping_are_checked(self):
+        actual,monthly,records=self.fixture();monthly[3][5]=25
+        with self.assertRaisesRegex(ValueError,'month 1'):
+            r.reconcile_monthly_costs(actual,monthly,records,date(2026,9,21),{})
+        monthly[3][5]=0;monthly[7][5]=5
+        with self.assertRaisesRegex(ValueError,'Warehouse'):
+            r.reconcile_monthly_costs(actual,monthly,records,date(2026,9,21),{})
+
+    def test_blank_or_missing_historical_summary_blocks(self):
+        actual,monthly,records=self.fixture();monthly[2][5]=None
+        with self.assertRaisesRegex(ValueError,'Missing monthly'):
+            r.reconcile_monthly_costs(actual,monthly,records,date(2026,9,21),{})
+        with self.assertRaisesRegex(ValueError,'coverage'):
+            r.reconcile_monthly_costs(actual,monthly[:2]+monthly[3:],records,date(2026,9,21),{})
+
+    def test_duplicate_stale_or_wrong_scope_adjustments_block(self):
+        actual,monthly,records=self.fixture();monthly[2][5]=25
+        approved=self.adjustment('mkt_insite',1,25)
+        for values in [[approved,approved],[dict(approved,amount=24)],[dict(approved,source_total=24)],[dict(approved,allocated_detail=1)],[dict(approved,month=2)],[dict(approved,source_cell='NOT-A-CELL')]]:
+            with self.subTest(values=values),self.assertRaisesRegex(ValueError,'adjustment'):
+                r.reconcile_monthly_costs(actual,monthly,records,date(2026,9,21),{'monthly_cost_adjustments':values})
+
+    def test_reviewed_export_difference_is_exact_and_requires_a_reason(self):
+        actual,monthly,records=self.fixture();monthly[0][13]=102
+        exception={'summary':102,'detail':100,'removed_duplicate':0,'reason':'Reviewed export precision difference'}
+        checks,_=r.reconcile_monthly_costs(actual,monthly,records,date(2026,9,21),{'known_monthly_source_differences':{'N1':exception}})
+        check=next(x for x in checks if x['cell']=='N1')
+        self.assertFalse(check['within_rounding']);self.assertTrue(check['reviewed_source_difference'])
+        for change in [dict(exception,detail=99),dict(exception,reason='')]:
+            with self.assertRaisesRegex(ValueError,'summary differs'):
+                r.reconcile_monthly_costs(actual,monthly,records,date(2026,9,21),{'known_monthly_source_differences':{'N1':change}})
+
+    def test_historical_adjustment_propagates_only_to_its_month_and_rollups(self):
+        jan=dict(row(21,100,order='JAN'),month=1,date=date(2026,1,21))
+        oct=dict(row(12,100,order='OCT'),month=10,date=date(2026,10,12))
+        adjustment=self.adjustment('mkt_insite',1,15)
+        for months,expected in [([1],35),([1,2,3],35),(list(range(1,11)),85),([10],50),([7,8,9],None)]:
+            if expected is None:continue
+            p=r.make_period([jan,oct],[],months,'test',(9,10),date(2026,10,12),weekly=True,cost_adjustments=[adjustment])
+            self.assertEqual(p['waterfalls']['Overall']['cm'],expected)
+            self.assertEqual(p['executive']['total_orders'],2 if len(months)==10 else 1)
+
+    def test_historical_unit_cost_rounding_is_quantity_bounded(self):
+        sample=dict(row(21,2000),month=1,date=date(2026,1,21),units=20,cogs=800.08)
+        actual,monthly,records=self.fixture([sample]);actual[1][2]=40
+        class Sheet:
+            def __init__(self,values):self.values=values
+        class Book(dict):
+            def close(self):pass
+        book=Book({'actual order':Sheet(actual),'2026 acutal cost':Sheet(monthly),'over view':Sheet([[None,None],[None,'Unknown'],[None,None]])})
+        with patch.object(r.openpyxl,'load_workbook',return_value=book):
+            result=r.review_monthly_source(Path('synthetic.xlsx'),records,date(2026,9,21),{})
+        self.assertEqual((result['unit_cost_checks'],result['unit_cost_mismatches']),(1,[]))
+        actual[1][3]=800.2
+        with patch.object(r.openpyxl,'load_workbook',return_value=book),self.assertRaisesRegex(ValueError,'Unit cost'):
+            r.review_monthly_source(Path('synthetic.xlsx'),records,date(2026,9,21),{})
+
+    def test_private_outputs_cannot_overwrite_public_project_paths(self):
+        project=Path(__file__).resolve().parents[1]
+        for path in [project,project/'dashboard',project/'snapshots',project/'outputs',Path(project.anchor)]:
+            with self.subTest(path=path),self.assertRaisesRegex(ValueError,'Private outputs'):
+                r.private_output_directory(path)
+        legacy=project/'outputs'/'synthetic';outside=project.parent/'private-synthetic'
+        self.assertEqual(r.private_output_directory(legacy),legacy.resolve())
+        self.assertEqual(r.private_output_directory(outside),outside.resolve())
+
 if __name__=='__main__':unittest.main()

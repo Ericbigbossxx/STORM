@@ -2,7 +2,8 @@
 
 The historical compatibility calculation is deliberately separate from source-quality
 acceptance. Baseline HTML contributes layout and comparison targets, never metrics.
-Business outputs belong in ignored outputs/, never in a Git commit.
+Private business outputs belong outside the repository; legacy ignored outputs/ remains supported.
+Only explicitly approved dashboard artifacts belong in Git.
 """
 from __future__ import annotations
 import argparse
@@ -327,42 +328,108 @@ def apply_weekly_sku_bp_scope(p,rows,bp):
     p['bp_att_lookup']={'by_sku_all':att_lookup(actual,plan),'by_platform':{pl:att_lookup([v for v in actual if v['platform']==pl],[v for v in plan if v['platform']==pl]) for pl in ['THD',"Lowe's",'Walmart']}}
 
 
+def reconcile_monthly_costs(actual,monthly,rows,cutoff,review_policy):
+    """Reconcile every source month, retaining explicit deduplication bridges."""
+    months=list(range(1,cutoff.month+1))
+    mapping={'GMV':'revenue','Fixed Cost':'fixed_cost','MKT-Insite':'mkt_insite','MKT-Offsite(种草)':'mkt_offsite_seed','MKT-Offsite(Channel MKT)':'mkt_channel','Return+Warranty':'return_warranty','Funding':'funding'}
+    allocated=groups(rows,'month','channel','brand')
+    raw_groups=defaultdict(list)
+    excluded=set(review_policy.get('superseded_source_rows',[]))
+    retained={v['source_row'] for v in rows}
+    for n,raw in enumerate(actual[1:],2):
+        if n in excluded or raw[19] not in CHANNELS:continue
+        raw=tuple(clean(v) for v in raw)
+        if raw[15]!=cutoff.year or raw[18]!='US' or raw[16] not in months:continue
+        raw_groups[(raw[16],CHANNELS[raw[19]][1],raw[13])].append((n,raw))
+    summaries={};source_groups=set()
+    warehouse=[]
+    for n,raw in enumerate(monthly,1):
+        if raw[1] not in CHANNELS:continue
+        if raw[0] not in mapping and raw[0]!='Warehouse+Shipping':continue
+        source_groups.add((CHANNELS[raw[1]][1],raw[2]))
+        for month in months:
+            cell=f'{openpyxl.utils.get_column_letter(month+5)}{n}'
+            value=raw[month+4]
+            if not isinstance(value,(int,float)):
+                raise ValueError(f'Missing monthly cost summary at {cell}')
+            if raw[0]=='Warehouse+Shipping':
+                warehouse.append({'month':month,'cell':cell,'channel':raw[1],'brand':raw[2],'amount':value})
+                if value!=0:raise ValueError(f'Nonzero or unknown Warehouse+Shipping at {cell} requires a separate cost mapping')
+                continue
+            key=(month,CHANNELS[raw[1]][1],raw[2],mapping[raw[0]])
+            if key in summaries:raise ValueError(f'Duplicate monthly summary scope at {cell}')
+            summaries[key]={'month':month,'cell':cell,'channel':raw[1],'brand':raw[2],'metric':mapping[raw[0]],'summary':value}
+    source_groups|={(ch,brand) for _,ch,brand in raw_groups}
+    required={(month,ch,brand,metric) for month in months for ch,brand in source_groups for metric in mapping.values()}
+    if required-summaries.keys():raise ValueError('Missing channel/brand/month expense summary coverage')
+    if set(months)-{v['month'] for v in warehouse}:
+        raise ValueError('Missing historical Warehouse+Shipping summary')
+    adjustments=review_policy.get('monthly_cost_adjustments',[])
+    by_cell={v['cell']:(key,v) for key,v in summaries.items()}
+    seen=set()
+    for adjustment in adjustments:
+        cell=adjustment.get('source_cell')
+        if cell in seen:raise ValueError(f'Duplicate monthly cost adjustment for {cell}')
+        seen.add(cell)
+        if cell not in by_cell or adjustment.get('source_sheet')!='2026 acutal cost':
+            raise ValueError(f'Monthly cost adjustment has no matching source cell: {cell}')
+        key,source=by_cell[cell];month,ch,brand,metric=key
+        detail=total(allocated.get((month,ch,brand),[]),metric)
+        expected={'month':month,'platform':CHANNELS[source['channel']][0],'channel':ch,'brand':brand,'metric':metric}
+        if metric=='revenue' or any(adjustment.get(k)!=v for k,v in expected.items()):
+            raise ValueError(f'Monthly cost adjustment scope mismatch at {cell}')
+        for name,value in [('source_total',source['summary']),('allocated_detail',detail),('amount',round(source['summary']-detail,2))]:
+            if not isinstance(adjustment.get(name),(int,float)) or abs(adjustment[name]-value)>.001:
+                raise ValueError(f'Monthly cost adjustment {name} does not match source at {cell}')
+    comparisons=[]
+    for (month,ch,brand,metric),check in sorted(summaries.items()):
+        check=dict(check)
+        detail=allocated.get((month,ch,brand),[]);source=raw_groups.get((month,ch,brand),[])
+        col=21 if metric=='revenue' else COSTS[metric]
+        removed=round(sum(num(raw[col]) for n,raw in source if n not in retained),2)
+        raw_total=round(sum(num(raw[col]) for _,raw in source),2)
+        detail_total=total(detail,metric)
+        if abs(raw_total-detail_total-removed)>.011:
+            raise ValueError(f'Order/deduplication bridge failed at {check["cell"]}')
+        independent=round(sum(v['amount'] for v in scoped_adjustments(adjustments,[month],channel=ch,brand=brand) if v['metric']==metric),2)
+        amount=round(detail_total+independent,2);delta=round(amount-check['summary'],2)
+        reconciliation_delta=round(delta+removed,2)
+        tolerance=.5+.005*len(source)
+        exception=review_policy.get('known_monthly_source_differences',{}).get(check['cell'])
+        reviewed=bool(exception and exception.get('reason') and exception['summary']==check['summary'] and abs(exception['detail']-amount)<.001 and abs(exception.get('removed_duplicate',0)-removed)<.001)
+        check.update({'detail':amount,'allocated_detail':detail_total,'independent_cost':independent,'removed_duplicate':removed,'raw_allocated_detail':raw_total,'delta':delta,'reconciliation_delta':reconciliation_delta,'rounding_tolerance':round(tolerance,3),'within_rounding':abs(reconciliation_delta)<=tolerance,'reviewed_source_difference':reviewed})
+        if not check['within_rounding'] and not reviewed:
+            raise ValueError(f'Monthly cost summary differs beyond order allocation rounding: month {month}, {check["cell"]}, {metric}, unexplained {reconciliation_delta}')
+        comparisons.append(check)
+    return comparisons,warehouse
+
+
 def review_monthly_source(path,rows,cutoff, review_policy=None):
-    """Cross-check detail against separately saved summaries; retain disagreements."""
+    """Check all months against source summaries, without editing source workbooks."""
     review_policy=review_policy or {}
     adjustments=review_policy.get('monthly_cost_adjustments',[])
     wb=openpyxl.load_workbook(path,read_only=True,data_only=True)
-    actual=list(wb['actual order'].values)
+    try:
+        actual=list(wb['actual order'].values)
+        monthly=list(wb['2026 acutal cost'].values)
+        overview=list(wb['over view'].values)
+    finally:wb.close()
+    for cell,value in review_policy.get('approved_cell_corrections',{}).items():
+        col,n=openpyxl.utils.cell.coordinate_from_string(cell)
+        raw=list(actual[n-1]);raw[openpyxl.utils.column_index_from_string(col)-1]=value;actual[n-1]=tuple(raw)
     current=[v for v in rows if v['month']==cutoff.month]
     unit_checks=[]
-    for v in current:
+    for v in rows:
         raw=actual[v['source_row']-1]
         if isinstance(raw[2],(int,float)) and isinstance(raw[3],(int,float)):
             delta=round(raw[2]*raw[22]-raw[3],2)
-            unit_checks.append({'row':v['source_row'],'delta':delta})
-    mismatches=[v for v in unit_checks if abs(v['delta'])>.02]
+            tolerance=max(.02,.005*abs(raw[22])+.005)
+            unit_checks.append({'row':v['source_row'],'month':v['month'],'delta':delta,'rounding_tolerance':tolerance})
+    mismatches=[v for v in unit_checks if abs(v['delta'])>v['rounding_tolerance']+1e-9]
     if mismatches:raise ValueError('Unit cost times quantity differs from Cost/ALL; review required')
-    mapping={'GMV':'revenue','Fixed Cost':'fixed_cost','MKT-Insite':'mkt_insite','MKT-Offsite(Channel MKT)':'mkt_channel','Return+Warranty':'return_warranty','Funding':'funding'}
-    comparisons=[]
-    for n,raw in enumerate(wb['2026 acutal cost'].values,1):
-        if raw[1] not in CHANNELS or raw[0] not in mapping:continue
-        detail=[v for v in current if v['channel']==CHANNELS[raw[1]][1] and v['brand']==raw[2]]
-        value=raw[cutoff.month+4]
-        if not isinstance(value,(int,float)):raise ValueError('Missing monthly cost summary')
-        amount=round(total(detail,mapping[raw[0]])+sum(v['amount'] for v in scoped_adjustments(adjustments,[cutoff.month],channel=CHANNELS[raw[1]][1],brand=raw[2]) if v['metric']==mapping[raw[0]]),2);delta=round(amount-value,2)
-        tolerance=.5+.005*len(detail)  # whole-dollar summary vs cent-rounded order allocations
-        comparisons.append({'cell':f"{openpyxl.utils.get_column_letter(cutoff.month+5)}{n}",'channel':raw[1],'brand':raw[2],'metric':mapping[raw[0]],'summary':value,'detail':amount,'delta':delta,'rounding_tolerance':round(tolerance,3),'within_rounding':abs(delta)<=tolerance})
-    for check in comparisons:
-        exception=review_policy.get('known_monthly_source_differences',{}).get(check['cell'])
-        check['reviewed_source_difference']=bool(exception and exception['summary']==check['summary'] and abs(exception['detail']-check['detail'])<.01)
-    if any(not v['within_rounding'] and not v['reviewed_source_difference'] for v in comparisons):
-        raise ValueError('Monthly cost summary differs beyond order allocation rounding')
-    warehouse=[r[cutoff.month+4] for r in wb['2026 acutal cost'].values if r[0]=='Warehouse+Shipping' and r[1] in CHANNELS]
-    if not warehouse or any(v!=0 for v in warehouse):
-        raise ValueError('Nonzero or unknown Warehouse+Shipping requires a separate cost mapping')
-    overview=list(wb['over view'].values)
+    comparisons,warehouse=reconcile_monthly_costs(actual,monthly,rows,cutoff,review_policy)
     overview_diffs=[]
-    # These rows are the saved Sep MTD panel, not a recalculated workbook.
+    # The saved Overview panel is diagnostic evidence, not a recalculated source.
     if clean(overview[1][1])==calendar.month_abbr[cutoff.month] and clean(overview[2][1])=='MTD':
         for col,ch,brand in [(6,'THD / DS','Sunseeker'),(7,'THD / DFC','Sunseeker'),(9,"Lowe's / DS",'Sunseeker'),(10,'Walmart / MP','Sunseeker'),(12,'THD / DS','Badger'),(13,"Lowe's / DS",'Badger'),(14,'Walmart / MP','Badger'),(15,'Walmart / DSV','Badger')]:
             detail=[v for v in current if v['channel']==ch and v['brand']==brand]
@@ -374,8 +441,12 @@ def review_monthly_source(path,rows,cutoff, review_policy=None):
                     overview_diffs.append({'cell':f'{openpyxl.utils.get_column_letter(col+1)}{row+1}','channel':ch,'brand':brand,'metric':metric,'overview':value,'detail':amount,'delta':round(amount-value,2)})
     zero=[v for v in current if v['cogs']==0 and v['revenue']!=0]
     zero_groups=[{'platform':k[0],'brand':k[1],'sku':k[2],'revenue':total(v,'revenue'),'rows':[r['source_row'] for r in v]} for k,v in groups(zero,'platform','brand','sku').items()]
-    wb.close()
-    return {'unit_cost_checks':len(unit_checks),'unit_cost_mismatches':mismatches,'monthly_cost_checks':comparisons,'overview_differences':overview_diffs,'zero_cogs_revenue':total(zero,'revenue'),'zero_cogs_groups':zero_groups,'warehouse_shipping':0}
+    monthly_summary=[]
+    for month in range(1,cutoff.month+1):
+        checks=[v for v in comparisons if v['month']==month]
+        fees=[v for v in checks if v['metric']!='revenue']
+        monthly_summary.append({'month':month,'checks':len(checks),'warehouse_checks':sum(v['month']==month for v in warehouse),'source_fees':round(sum(v['summary'] for v in fees),2),'retained_fees':round(sum(v['allocated_detail'] for v in fees),2),'removed_duplicate_fees':round(sum(v['removed_duplicate'] for v in fees),2),'independent_costs':round(sum(v['independent_cost'] for v in fees),2),'reconciled_fee_delta':round(sum(v['reconciliation_delta'] for v in fees),2),'reviewed_source_differences':sum(v['reviewed_source_difference'] for v in checks)})
+    return {'months_reviewed':list(range(1,cutoff.month+1)),'unit_cost_checks':len(unit_checks),'unit_cost_mismatches':mismatches,'monthly_cost_checks':comparisons,'monthly_reconciliation':monthly_summary,'warehouse_checks':warehouse,'overview_differences':overview_diffs,'zero_cogs_revenue':total(zero,'revenue'),'zero_cogs_groups':zero_groups,'warehouse_shipping':0}
 
 
 def weekly_definitions(cutoff):
@@ -482,24 +553,26 @@ def write_weekly_preview(template,data,audit,output):
     bridge_rows=''.join(f'<tr><td class="name">{name}</td><td>${value:,.2f}</td><td>{value/wf["gmv"]*100:.2f}%</td></tr>' for name,value in bridge)
     differences=''.join(f'<tr><td class="name">{html.escape(v["channel"])} / {html.escape(v["brand"])}</td><td>{v["metric"]}</td><td>{v["cell"]}</td><td>${v["overview"]:,.2f}</td><td>${v["detail"]:,.2f}</td></tr>' for v in review['overview_differences'])
     zero_rows=''.join(f'<tr><td class="name">{html.escape(v["platform"])} / {v["brand"]}</td><td>{html.escape(v["sku"])}</td><td>${v["revenue"]:,.2f}</td></tr>' for v in review['zero_cogs_groups'])
+    monthly_rows=''.join(f'<tr><td>{v["month"]} 月</td><td>{v["checks"]+v["warehouse_checks"]}</td><td>${v["source_fees"]:,.2f}</td><td>${v["retained_fees"]:,.2f}</td><td>${v["independent_costs"]:,.2f}</td><td>${v["removed_duplicate_fees"]:,.2f}</td><td>${v["reconciled_fee_delta"]:,.2f}</td></tr>' for v in review['monthly_reconciliation'])
     margin_notes=f"""<div class="card method-card"><div class="sec">GM → CM · {data['period_keys'][0]}</div>
 <p><b>GM = Revenue − COGS；CM = GM − Fixed cost − Marketing − Return + Warranty − Funding。</b>百分比分母均为同范围、同期间 Revenue；各分项独立四舍五入，勾稽使用未舍入金额。CM 是本表已列费用后的贡献利润，不是公司净利润；未擅自补估未列费用。</p>
 <p>Revenue 使用 actual order 的 V 列 Ordered Revenue；COGS 使用 D 列 Cost/ALL（已是整行成本，不再乘销量）；费用读取 F:K。平台汇总用金额加总后计算比率，不平均各渠道百分比。THD 汇总含 DS 和 DFC 订单；消费者 sell-out 另页展示，不重复并入收入。</p>
 <div class="method-grid"><div><table><thead><tr><th>项目</th><th>USD</th><th>占收入</th></tr></thead><tbody>{bridge_rows}</tbody></table></div><div class="review-findings">
-<h3>核对结果</h3><p>本月 {review['unit_cost_checks']:,} 条数字成本记录通过“单价 × 数量 = Cost/ALL”检查；{len(review['monthly_cost_checks'])} 项渠道 / 品牌收入及费用已与 2026 acutal cost 月度汇总核对；其中 {sum(v.get('reviewed_source_difference',False) for v in review['monthly_cost_checks'])} 项已复核的源表差异单独披露，其余在逐行分摊舍入范围内。Warehouse + Shipping 本月源表为 0，不另扣重复费用。</p>
+<h3>核对结果</h3><p>1—{cutoff.month} 月 {review['unit_cost_checks']:,} 条数字成本记录通过“单价 × 数量 = Cost/ALL”检查（含单价与整行金额各自取整的误差界限）；{len(review['monthly_cost_checks'])+len(review['warehouse_checks'])} 项渠道 / 品牌月度收入、费用及仓储运费检查覆盖全部 {cutoff.month} 个月。费用按“保留订单分摊 + 独立补费 + 已剔除的重复行费用”与月度来源勾稽；其中 {sum(v.get('reviewed_source_difference',False) for v in review['monthly_cost_checks'])} 项收入导出差异按原值披露，其余差额均在分摊取整界限内。Warehouse + Shipping 全部已核月份为 0。</p>
 <h3>零成本影响</h3><p>${review['zero_cogs_revenue']:,.2f} 收入对应源表零 COGS，占收入 {review['zero_cogs_revenue']/wf['gmv']*100:.1f}%。这些行在扣渠道费用前的 GM 等于收入，会抬高 GM。按已确认成本口径保留；未独立核实商品实际成本。</p>
 <h3>汇总页与明细不一致</h3><p>over view 的部分已保存数值与订单明细不一致。采用与 2026 acutal cost 相互核对的订单明细；不混用汇总页的 GM / CM。具体原因无法仅凭数值导出确认，不能认定为已重算的财务汇总。</p></div></div>
-<details><summary>查看汇总差异与零成本 SKU</summary><table><thead><tr><th>范围</th><th>指标</th><th>over view 单元格</th><th>汇总页</th><th>订单明细</th></tr></thead><tbody>{differences}</tbody></table><table><thead><tr><th>范围</th><th>零 COGS SKU</th><th>收入</th></tr></thead><tbody>{zero_rows}</tbody></table></details></div>"""
+<details><summary>查看全月份费用核对</summary><div style="overflow-x:auto"><table><thead><tr><th>月份</th><th>检查数</th><th>源表费用</th><th>保留订单分摊</th><th>独立补费</th><th>重复行费用扣除</th><th>取整净差</th></tr></thead><tbody>{monthly_rows}</tbody></table></div><p>重复行费用与重复收入按既定订单去重口径同步扣除，单列差额桥接；独立费用不分配给 SKU。取整净差不是待补费用。</p></details><details><summary>查看汇总差异与零成本 SKU</summary><table><thead><tr><th>范围</th><th>指标</th><th>over view 单元格</th><th>汇总页</th><th>订单明细</th></tr></thead><tbody>{differences}</tbody></table><table><thead><tr><th>范围</th><th>零 COGS SKU</th><th>收入</th></tr></thead><tbody>{zero_rows}</tbody></table></details></div>"""
     review_note=''
     if audit.get('source_review'):
         source_review=audit['source_review']
-        adjustment_rows=''.join(f"<tr><td>{html.escape(v['channel'])} / {html.escape(v['brand'])}</td><td>{html.escape({'mkt_insite':'站内营销','mkt_channel':'渠道营销','return_warranty':'退货 / 质保'}.get(v['metric'],v['metric']))} · {v['source_cell']}</td><td>${v['source_total']:,.2f}</td><td>${v['allocated_detail']:,.2f}</td><td>${v['amount']:,.2f}</td></tr>" for v in source_review.get('monthly_cost_adjustments',[]))
+        adjustment_rows=''.join(f"<tr><td>{v['month']} 月 · {html.escape(v['channel'])} / {html.escape(v['brand'])}</td><td>{html.escape({'mkt_insite':'站内营销','mkt_channel':'渠道营销','return_warranty':'退货 / 质保'}.get(v['metric'],v['metric']))} · {v['source_cell']}</td><td>${v['source_total']:,.2f}</td><td>${v['allocated_detail']:,.2f}</td><td>${v['amount']:,.2f}</td></tr>" for v in source_review.get('monthly_cost_adjustments',[]))
         corrections='、'.join(f"{html.escape(cell)} → {html.escape(str(value))}" for cell,value in source_review.get('approved_cell_corrections',{}).items())
         source_differences='；'.join(f"{html.escape(cell)}：月度汇总 ${v['summary']:,.2f}，订单明细 ${v['detail']:,.2f}" for cell,v in source_review.get('known_monthly_source_differences',{}).items())
+        difference_reasons='；'.join(sorted({v.get('reason','') for v in source_review.get('known_monthly_source_differences',{}).values() if v.get('reason')}))
         corrections_note=f'已按用户确认处理 actual order 的归月及空白费用：{corrections}。' if corrections else '本批次无归月或空白费用修正。'
         excluded_count=len(source_review.get('superseded_source_rows',[]))
         revision_note=f'通过与上期源表比对，{excluded_count:,} 条费用旧副本已排除。排除项与上期费用逐项一致，保留项为本次费用修订，并已与月度汇总交叉核对。' if excluded_count else '本批次无同键费用冲突，无需排除费用旧副本。'
-        review_note=f"<div class='card'><h3>本批次源表复核</h3><p>{corrections_note}原始文件保留。{revision_note}Filter 标记不单独决定取舍；新增记录保留。</p><p>用户确认下列月度费用已经发生。仅扣入尚未分摊部分，不伪造订单或分配到 SKU。按渠道 / 品牌入账，动力源采用该范围源表一致的分类；订单数、销量、销售收入与商品成本不受费用补计影响。</p><table><thead><tr><th>范围</th><th>费用 / 来源</th><th>月度费用</th><th>订单已分摊</th><th>独立补计</th></tr></thead><tbody>{adjustment_rows}</tbody></table><p>保留已复核的源表差异：{source_differences or '无月度费用表与已处理订单明细差异'}。汇总页与明细的差异见上方列表；采用订单收入和已列费用，未将差异标为一致。</p></div>"
+        review_note=f"<div class='card'><h3>本批次源表复核</h3><p>{corrections_note}原始文件保留。{revision_note}Filter 标记不单独决定取舍；新增记录保留。</p><p>用户确认下列月度费用已经发生。仅扣入尚未分摊部分，不伪造订单或分配到 SKU。按渠道 / 品牌入账，动力源采用该范围源表一致的分类；订单数、销量、销售收入与商品成本不受费用补计影响。</p><table><thead><tr><th>范围</th><th>费用 / 来源</th><th>月度费用</th><th>订单已分摊</th><th>独立补计</th></tr></thead><tbody>{adjustment_rows}</tbody></table><p>保留已复核的源表差异：{source_differences or '无超出费用取整界限的未解释差异'}。{html.escape(difference_reasons)} 汇总页与明细的差异见上方列表；采用订单收入和已列费用，未将差异标为一致。</p></div>"
     notes=notes.replace('<div class="card"><h2',margin_notes+review_note+'<div class="card"><h2',1)
     preview=re.sub(r'^var DATA = .*;$',lambda _: 'var DATA = '+json.dumps(data,ensure_ascii=False).replace('</','<\\/')+';',template,flags=re.M)
     preview=re.sub(r'<h1>.*?</h1>',f'<h1>STORM · {week} Weekly Business Cockpit</h1>',preview,count=1)
@@ -617,11 +690,17 @@ def build_weekly(args):
     print(json.dumps({'week':cutoff.isocalendar().week,'cutoff':str(cutoff),'executive':data['periods'][data['period_keys'][0]]['executive'],'validation_checks':len(audit['validation']),'duplicates_removed':audit['removed_rows'],'conflicting_groups':audit['conflicting_groups'],'output':str(args.output_dir)},ensure_ascii=False))
 
 
+def private_output_directory(path):
+    """Keep private outputs out of public repository paths; support legacy runs."""
+    output=path.resolve();project=Path(__file__).resolve().parents[1];legacy=project/'outputs'
+    if output==Path(output.anchor) or output==project or (output.is_relative_to(project) and (not output.is_relative_to(legacy) or output==legacy)):
+        raise ValueError('Private outputs must be outside the repository or in a subfolder of ignored outputs/')
+    return output
+
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--mode',choices=['reproduce','weekly'],default='reproduce');ap.add_argument('--na-cost-zero-approved',action='store_true');ap.add_argument('--previous-source',type=Path);ap.add_argument('--source-review',type=Path);ap.add_argument('--previous-source-review',type=Path);ap.add_argument('--source',type=Path,required=True);ap.add_argument('--baseline',type=Path,default=Path('snapshots/storm_dashboard_cdn_2026-09-21_w39.html'));ap.add_argument('--output-dir',type=Path,required=True);args=ap.parse_args()
-    safe_root=Path(__file__).resolve().parents[1]/'outputs'
-    if not args.output_dir.resolve().is_relative_to(safe_root) or args.output_dir.resolve()==safe_root:
-        raise ValueError('Private reproduction outputs must be in a subfolder of ignored outputs/')
+    args.output_dir=private_output_directory(args.output_dir)
     if args.mode=='weekly':
         build_weekly(args)
         return
