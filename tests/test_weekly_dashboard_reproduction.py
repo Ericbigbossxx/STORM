@@ -158,10 +158,19 @@ class ReconstructionTests(unittest.TestCase):
 
     def test_october_period_definitions(self):
         definitions=r.weekly_definitions(date(2026,10,7))
-        self.assertEqual([v[0] for v in definitions],['Oct MTD','Sep','Q4','Q3','Q2','YTD'])
+        self.assertEqual([v[0] for v in definitions],['Oct MTD','Sep','Q4','Q3','Q2','Q1','YTD'])
         self.assertEqual(definitions[2][1],[10])
         self.assertEqual(definitions[3][1],[7,8,9])
         self.assertEqual(definitions[3][2],(8,9))
+
+    def test_q4_never_drops_q1(self):
+        for month in (10,11,12):
+            with self.subTest(month=month):
+                definitions=r.weekly_definitions(date(2026,month,7))
+                quarters=[v for v in definitions if v[0].startswith('Q')]
+                self.assertEqual([v[0] for v in quarters],['Q4','Q3','Q2','Q1'])
+                self.assertEqual(quarters[-1],('Q1',[1,2,3],(2,3)))
+                self.assertEqual(definitions[-1][0],'YTD')
 
     def test_previous_snapshot_uses_its_reviewed_monthly_expenses(self):
         old=dict(row(7,100),date=date(2026,10,7),month=10)

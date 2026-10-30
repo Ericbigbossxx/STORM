@@ -15,8 +15,10 @@ NA E-commerce 周会看板，覆盖 THD、Lowe’s、Walmart，按 Badger / Suns
 - 已确认发生但未分摊到订单的月度费用按渠道 / 品牌独立补计，不伪造订单或分配到 SKU；汇总页差异保留披露。
 - 上期比较读取 W42 的 10.13 已复核源表及对应费用记录，不把旧批次例外应用到当前源表。
 - 已重新核对 1—10 月费用及 Warehouse + Shipping，并与原 CM 已保存的月度数据交叉检查；1—9 月历史结果与上期一致。独立复算各期间及渠道、品牌、动力源，未解释差额阻止生成和发布。
-- 六个期间为 Oct MTD、Sep、Q4、Q3、Q2、YTD；WoW 使用 10/16—10/22 与 10/23—10/29 两段完整 7 天。
-- 保留全部旧快照；本期快照为 `snapshots/storm_dashboard_cdn_2026-10-29_w44.html`。逐行审计明细不随公开页面上传。
+- 七个期间为 Oct MTD、Sep、Q4、Q3、Q2、Q1、YTD；WoW 使用 10/16—10/22 与 10/23—10/29 两段完整 7 天。
+- 2026-10-30 补回 Q1：季度筛选保留当年全部已发生季度，修复进入 Q4 后 Q1 被最近三季度上限移除的问题。原有六个期间及 YTD 结果完全不变。
+- 保留全部旧快照；本次补充快照为 `snapshots/storm_dashboard_cdn_2026-10-29_w44_q1_fix_2026-10-30.html`。逐行审计明细不随公开页面上传。
+- Q1 补充验收及利润诊断保存在仓库外 `%LOCALAPPDATA%/STORM/releases/w44-2026-10-29-q1-fix-2026-10-30/`；原 CM 继续只读。
 
 ## 本地生成与验收
 
@@ -24,7 +26,7 @@ NA E-commerce 周会看板，覆盖 THD、Lowe’s、Walmart，按 Badger / Suns
 在项目根目录运行：
 
 ```powershell
-$stormRelease = Join-Path $env:LOCALAPPDATA "STORM/releases/w44-2026-10-29"
+$stormRelease = Join-Path $env:LOCALAPPDATA "STORM/releases/w44-2026-10-29-q1-fix-2026-10-30"
 $stormPrevious = Join-Path $env:LOCALAPPDATA "STORM/releases/w42-2026-10-12-cm-fix-2026-10-15"
 python -B scripts/reproduce_weekly_dashboard.py --mode weekly --na-cost-zero-approved --source "STORM V2 RAW DATA 10.30.xlsx" --previous-source "STORM V2 RAW DATA 10.13.xlsx" --source-review "$stormRelease/source_review_policy.json" --previous-source-review "$stormPrevious/source_review_policy.json" --output-dir "$stormRelease/w44"
 python -B tests/test_weekly_dashboard_reproduction.py

@@ -450,14 +450,14 @@ def review_monthly_source(path,rows,cutoff, review_policy=None):
 
 
 def weekly_definitions(cutoff):
-    """Keep the established MTD / prior month / quarters / YTD presentation."""
+    """Keep MTD, prior month, every elapsed quarter and YTD available."""
     m=cutoff.month
     if m<2:
         raise ValueError('January rollover requires an explicit prior-year source contract')
     current=calendar.month_abbr[m]+(' MTD' if cutoff.day<calendar.monthrange(cutoff.year,m)[1] else '')
     defs=[(current,[m],(m-1,m)),(calendar.month_abbr[m-1],[m-1],(max(1,m-2),m-1))]
     quarter=(m-1)//3+1
-    for q in range(quarter,max(0,quarter-3),-1):
+    for q in range(quarter,0,-1):
         months=list(range((q-1)*3+1,min(q*3,m)+1))
         last=months[-1]
         if q==quarter and cutoff.day<calendar.monthrange(cutoff.year,m)[1] and len(months)>1:
