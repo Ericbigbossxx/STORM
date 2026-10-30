@@ -6,17 +6,17 @@ NA E-commerce 周会看板，覆盖 THD、Lowe’s、Walmart，按 Badger / Suns
 
 ## 当前版本
 
-当前发布版本为 **W42**：源文件 `STORM V2 RAW DATA 10.13.xlsx`，订单及 THD sell-out 均截至 **2026-10-12**。本次修正发布日期为 2026-10-15；GitHub Pages 从 main 分支发布。
+当前发布版本为 **W44**：源文件 `STORM V2 RAW DATA 10.30.xlsx`，订单截至 **2026-10-29**，THD sell-out 截至 **2026-10-28**。发布日期为 2026-10-30；GitHub Pages 从 main 分支发布。
 
 - 保留原看板布局、品牌及渠道划分；Walmart / Sunseeker 仍未设 BP。
-- 本批次复核记录和审计产物存于仓库外的本机 `%LOCALAPPDATA%/STORM/releases/w42-2026-10-12-cm-fix-2026-10-15/`，绑定源文件 SHA256；原始 Excel 保留。
+- 本批次复核记录、源表同步前快照和审计产物存于仓库外的本机 `%LOCALAPPDATA%/STORM/releases/w44-2026-10-29/`，绑定同步后源文件 SHA256。
+- 按用户授权，将原 CM 的当前已保存值同步到 RAW 导出中的附件分类、相关 10 月费用分摊及汇总；原 CM 始终只读，既有格式及 1—9 月历史数据保留。
 - 本批次没有归月、空白费用或同键费用冲突，仅合并完全重复的业务记录。Filter 标记不单独决定取舍。
 - 已确认发生但未分摊到订单的月度费用按渠道 / 品牌独立补计，不伪造订单或分配到 SKU；汇总页差异保留披露。
-- 上期比较读取 W41 的已复核源表及已确认费用，避免重新引入原始表中的旧副本或归月问题。
-- 本次补入 1、2、5 月已确认且未分摊到订单的费用；沿用源表整数精度，与现有当月补费一致。原 CM 工作簿只读，不修改。
-- 1 月至截止月的收入、全部费用项目和 Warehouse + Shipping 均需校验。订单去重费用单列桥接；已核实的导出取整差异逐项披露，未解释的差额、缺失月度汇总或补费来源不符会阻止生成。
-- 六个期间为 Oct MTD、Sep、Q4、Q3、Q2、YTD；WoW 使用完整的两段 7 天。
-- 保留 W42 原发布及此前全部快照；本次修正快照为 `snapshots/storm_dashboard_cdn_2026-10-12_w42_cm_fix_2026-10-15.html`。
+- 上期比较读取 W42 的 10.13 已复核源表及对应费用记录，不把旧批次例外应用到当前源表。
+- 已重新核对 1—10 月费用及 Warehouse + Shipping，并与原 CM 已保存的月度数据交叉检查；1—9 月历史结果与上期一致。独立复算各期间及渠道、品牌、动力源，未解释差额阻止生成和发布。
+- 六个期间为 Oct MTD、Sep、Q4、Q3、Q2、YTD；WoW 使用 10/16—10/22 与 10/23—10/29 两段完整 7 天。
+- 保留全部旧快照；本期快照为 `snapshots/storm_dashboard_cdn_2026-10-29_w44.html`。逐行审计明细不随公开页面上传。
 
 ## 本地生成与验收
 
@@ -24,12 +24,13 @@ NA E-commerce 周会看板，覆盖 THD、Lowe’s、Walmart，按 Badger / Suns
 在项目根目录运行：
 
 ```powershell
-$stormRelease = Join-Path $env:LOCALAPPDATA "STORM/releases/w42-2026-10-12-cm-fix-2026-10-15"
-python -B scripts/reproduce_weekly_dashboard.py --mode weekly --na-cost-zero-approved --source "STORM V2 RAW DATA 10.13.xlsx" --previous-source "STORM V2 RAW DATA 10.9.xlsx" --source-review "$stormRelease/source_review_policy.json" --previous-source-review outputs/w41-2026-10-07/source_review_policy.json --output-dir "$stormRelease/w42"
+$stormRelease = Join-Path $env:LOCALAPPDATA "STORM/releases/w44-2026-10-29"
+$stormPrevious = Join-Path $env:LOCALAPPDATA "STORM/releases/w42-2026-10-12-cm-fix-2026-10-15"
+python -B scripts/reproduce_weekly_dashboard.py --mode weekly --na-cost-zero-approved --source "STORM V2 RAW DATA 10.30.xlsx" --previous-source "STORM V2 RAW DATA 10.13.xlsx" --source-review "$stormRelease/source_review_policy.json" --previous-source-review "$stormPrevious/source_review_policy.json" --output-dir "$stormRelease/w44"
 python -B tests/test_weekly_dashboard_reproduction.py
 ```
 
-打开上述本机目录的 `w42/index.html` 预览。`weekly_data.json` 为计算数据，`source_audit.json` 保留来源摘要、重复行、BP 排除依据、利润复核与前期修订；本次私有产物保存在仓库外；已有忽略目录仅保留历史证据。审计 JSON、复核记录和 Excel 均不提交。
+打开上述本机目录的 `w44/index.html` 预览。`weekly_data.json` 为计算数据，`source_audit.json` 保留来源摘要、重复行、BP 排除依据、利润复核与前期修订；本次私有产物保存在仓库外；已有忽略目录仅保留历史证据。审计 JSON、复核记录和 Excel 均不提交。
 
 默认模板固定使用 `snapshots/storm_dashboard_cdn_2026-09-21_w39.html`。模板仅提供布局，指标从源表计算；不要将已生成的 W40 页面作为输入模板，否则会重复套用页面结构。`--baseline` 可显式指定兼容的历史模板。
 
